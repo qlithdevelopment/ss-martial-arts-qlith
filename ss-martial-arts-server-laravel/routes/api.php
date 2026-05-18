@@ -1,7 +1,36 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BatchController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StudentController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/running', function () {
     return "SS Martial Arts Server is Running";
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/batches', [BatchController::class, 'index']);
+    Route::post('/batches', [BatchController::class, 'store']);
+    Route::get('/batches/{id}', [BatchController::class, 'show']);
+    Route::put('/batches/{id}', [BatchController::class, 'update']);
+    Route::delete('/batches/{id}', [BatchController::class, 'destroy']);
+
+    Route::get('/students', [StudentController::class, 'index']);
+    Route::get('/students/{id}', [StudentController::class, 'show']);
+    Route::post('/students/register', [StudentController::class, 'register']);
+    Route::get('/student/my-batch', [StudentController::class, 'myBatch']);
+
+    Route::get('/student/fee-status', [PaymentController::class, 'myFeeStatus']);
+    Route::post('/payments/add', [PaymentController::class, 'addPayment']);
+});
+
+
+// Middleware for admin 
