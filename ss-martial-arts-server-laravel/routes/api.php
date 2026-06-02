@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BatchController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StudentController;
 use GuzzleHttp\Middleware;
@@ -30,6 +32,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/student/fee-status', [PaymentController::class, 'myFeeStatus']);
     Route::post('/payments/add', [PaymentController::class, 'addPayment']);
+
+    Route::get('/galleries', [GalleryController::class, 'index']);
+    Route::post('/galleries', [GalleryController::class, 'store']);
+    Route::get('/galleries/{id}', [GalleryController::class, 'show']);
+    Route::post('/galleries/{id}', [GalleryController::class, 'update']);
+    Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
+
+    Route::get('/events', [EventController::class, 'index']);
+    Route::post('/events', [EventController::class, 'store']);
+    Route::get('/events/{id}', [EventController::class, 'show']);
+    Route::post('/events/{id}', [EventController::class, 'update']);
+    Route::delete('/events/{id}', [EventController::class, 'destroy']);
+
 });
 
 
