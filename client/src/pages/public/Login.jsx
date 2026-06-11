@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import Logo from "../../assets/Logo_compress.png";
 
+import silhouetteImg from "../../assets/samurai_shadow.png";
+
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -109,9 +111,18 @@ const Login = () => {
       </div>
 
       {/* RIGHT SIDE: Clean Login Form */}
-      <div className="w-full md:w-[55%] lg:w-[60%] min-h-[60vh] md:min-h-screen flex flex-col justify-center items-center px-6 py-12 md:px-12 lg:px-24 bg-white relative">
+      <div className="w-full md:w-[55%] lg:w-[60%] min-h-[60vh] md:min-h-screen flex flex-col justify-center items-center px-6 py-12 md:px-12 lg:px-24 bg-white relative overflow-hidden">
         
-        <div className="w-full max-w-sm">
+        {/* Subtle Samurai Watermark */}
+        <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-end overflow-hidden opacity-15">
+          <img 
+            src={silhouetteImg} 
+            alt="Samurai Background" 
+            className="w-auto h-[120%] object-contain object-right-bottom translate-x-[15%] translate-y-[10%]"
+          />
+        </div>
+
+        <div className="w-full max-w-sm relative z-10">
           {/* Header */}
           <div className="mb-10 md:mb-12">
             <h1 className="text-3xl md:text-4xl font-black text-[#26c0ff] mb-3 tracking-tight uppercase">

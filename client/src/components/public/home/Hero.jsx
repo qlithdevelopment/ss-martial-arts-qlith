@@ -10,8 +10,10 @@ const Hero = () => {
         muted
         loop
         playsInline
+        preload="auto"
         className="
           absolute
+          bg-black
           inset-0
           w-full
           h-full
