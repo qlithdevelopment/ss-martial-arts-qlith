@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Logo from "../../../assets/Full_Logo.png";
 import { motion } from "framer-motion";
+import { MapPin, Phone, Mail, Instagram, Facebook, Twitter } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -65,17 +66,17 @@ const Footer = () => {
           {/* CONTACT INFO */}
           <div className="col-span-2 md:col-span-1">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Contact</h4>
-            <ul className="flex flex-col gap-1.5 md:gap-4 text-[10px] md:text-sm text-secondary">
+            <ul className="flex flex-col gap-2 md:gap-4 text-[10px] md:text-sm text-secondary">
               <li className="flex items-start gap-2 md:gap-3">
-                <span className="text-primary mt-0.5 md:mt-1">📍</span>
+                <MapPin className="text-primary mt-0.5 md:mt-1 w-4 h-4 md:w-5 md:h-5 shrink-0" />
                 <span>123 Warrior Way, Combat City, ST 90210</span>
               </li>
               <li className="flex items-center gap-2 md:gap-3">
-                <span className="text-primary">📞</span>
+                <Phone className="text-primary w-4 h-4 md:w-5 md:h-5 shrink-0" />
                 <span>(555) 123-4567</span>
               </li>
               <li className="flex items-center gap-2 md:gap-3">
-                <span className="text-primary">✉️</span>
+                <Mail className="text-primary w-4 h-4 md:w-5 md:h-5 shrink-0" />
                 <span>info@ssmartialarts.com</span>
               </li>
             </ul>
@@ -88,15 +89,18 @@ const Footer = () => {
           <p className="text-secondary text-[9px] md:text-xs">
             &copy; {new Date().getFullYear()} SS Martial Arts Schools. All rights reserved.
           </p>
+          <p className="text-secondary text-[9px] md:text-xs">
+            Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
+          </p>
           <div className="flex gap-3 md:gap-4">
-            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-primary transition-colors">
-              <span className="text-[9px] md:text-xs">IG</span>
+            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-[#E1306C] transition-colors duration-300 group">
+              <Instagram className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform duration-300" />
             </a>
-            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-primary transition-colors">
-              <span className="text-[9px] md:text-xs">FB</span>
+            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-[#1877F2] transition-colors duration-300 group">
+              <Facebook className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform duration-300" />
             </a>
-            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-primary transition-colors">
-              <span className="text-[9px] md:text-xs">X</span>
+            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300 group">
+              <Twitter className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform duration-300" />
             </a>
           </div>
         </div>

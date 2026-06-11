@@ -112,15 +112,15 @@ const Testimonials = () => {
             {[1, 2, 3].map((setIndex) => (
             <React.Fragment key={setIndex}>
               {/* COLUMN 1 */}
-              <div className="flex flex-col gap-6 shrink-0 h-full w-[300px] justify-center">
+              <div className="flex flex-col gap-6 shrink-0 h-auto w-[300px] justify-center">
                 {/* Card 1: Quote Box */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm relative">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm relative h-auto">
                   <QuoteIcon />
                   <p className="text-[11px] text-gray-600 mt-3 font-medium leading-relaxed">
                     {testimonialsData[0].text}
                   </p>
                   <div className="flex items-center gap-3 mt-4 border-t border-gray-100 pt-3">
-                    <img src={testimonialsData[0].image} className="w-8 h-8 rounded-full object-cover" alt="User" />
+                    <img src={testimonialsData[0].image} className="w-8 h-8 rounded-full object-cover shrink-0" alt="User" />
                     <div>
                       <h4 className="text-[11px] font-bold text-gray-900">{testimonialsData[0].name}</h4>
                       <p className="text-[9px] text-[#0b1b24]">{testimonialsData[0].role}</p>
@@ -129,13 +129,13 @@ const Testimonials = () => {
                 </div>
                 
                 {/* Card 2: Square Text Box */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm flex-1 max-h-[220px]">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm flex-1 min-h-[220px] h-auto flex flex-col justify-between">
                   <p className="text-[12px] text-gray-800 font-medium leading-relaxed mt-2">
                     {testimonialsData[1].text}
                   </p>
                   <div className="flex items-center justify-between mt-6">
                     <div className="flex items-center gap-3">
-                      <img src={testimonialsData[1].image} className="w-10 h-10 rounded-full object-cover" alt="User" />
+                      <img src={testimonialsData[1].image} className="w-10 h-10 rounded-full object-cover shrink-0" alt="User" />
                       <div>
                         <h4 className="text-[12px] font-bold text-gray-900">{testimonialsData[1].name}</h4>
                         <p className="text-[10px] text-gray-500">{testimonialsData[1].role}</p>
@@ -145,7 +145,7 @@ const Testimonials = () => {
                 </div>
 
                 {/* Card 3: Down Bubble */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm relative bubble-down mt-2">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm relative bubble-down mt-2 h-auto">
                   <h4 className="text-center text-sm font-black text-gray-900 mb-2">{testimonialsData[2].title}</h4>
                   <p className="text-[11px] text-gray-600 text-center font-medium leading-relaxed">
                     {testimonialsData[2].text}
@@ -154,20 +154,20 @@ const Testimonials = () => {
               </div>
 
               {/* COLUMN 2 */}
-              <div className="flex flex-col shrink-0 h-full w-[240px] pt-8 justify-center">
+              <div className="flex flex-col shrink-0 h-auto w-[240px] pt-8 justify-center">
                 {/* Card 4: Tall Card */}
-                <div className="bg-white rounded-[24px] p-8 shadow-sm flex flex-col items-center text-center h-[380px]">
-                  <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-[3px] border-white shadow-md relative -top-[40px]">
+                <div className="bg-white rounded-[24px] p-8 shadow-sm flex flex-col items-center text-center min-h-[380px] h-auto">
+                  <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-[3px] border-white shadow-md relative -top-[40px] shrink-0">
                     <img src={testimonialsData[3].image} className="w-full h-full object-cover" alt="User" />
                   </div>
                   <div className="-mt-6">
                     <Stars count={testimonialsData[3].stars} />
                   </div>
                   <h4 className="text-[14px] font-black text-gray-900 mb-3">{testimonialsData[3].title}</h4>
-                  <p className="text-[12px] text-gray-600 font-medium leading-relaxed">
+                  <p className="text-[12px] text-gray-600 font-medium leading-relaxed flex-1">
                     {testimonialsData[3].text}
                   </p>
-                  <div className="mt-auto w-full text-right">
+                  <div className="mt-6 w-full text-right">
                     <div className="inline-block transform scale-x-[-1]">
                       <QuoteIcon />
                     </div>
@@ -176,10 +176,10 @@ const Testimonials = () => {
               </div>
 
               {/* COLUMN 3 */}
-              <div className="flex flex-col gap-6 shrink-0 h-full w-[280px] justify-center">
+              <div className="flex flex-col gap-6 shrink-0 h-auto w-[280px] justify-center">
                 {/* Card 5: Large Image Card */}
-                <div className="bg-white rounded-[24px] p-3 shadow-sm">
-                  <div className="w-full h-[220px] rounded-[16px] overflow-hidden mb-4 bg-gray-100">
+                <div className="bg-white rounded-[24px] p-3 shadow-sm h-auto">
+                  <div className="w-full h-[220px] rounded-[16px] overflow-hidden mb-4 bg-gray-100 shrink-0">
                     <img src={testimonialsData[4].image} className="w-full h-full object-cover" alt="Training" />
                   </div>
                   <div className="px-3 pb-3">
@@ -190,9 +190,9 @@ const Testimonials = () => {
                 </div>
 
                 {/* Card 6: Small Bubble */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm relative bubble-down mt-4 mb-[40px] flex flex-col items-center">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm relative bubble-down mt-4 mb-[40px] flex flex-col items-center h-auto">
                   <div className="absolute -top-[30px] left-1/2 -translate-x-1/2">
-                    <img src={testimonialsData[5].image} className="w-12 h-12 rounded-full border-[3px] border-white shadow-sm" alt="User" />
+                    <img src={testimonialsData[5].image} className="w-12 h-12 rounded-full border-[3px] border-white shadow-sm shrink-0" alt="User" />
                   </div>
                   <div className="mt-4">
                     <Stars count={testimonialsData[5].stars} />
@@ -204,11 +204,11 @@ const Testimonials = () => {
               </div>
 
               {/* COLUMN 4 */}
-              <div className="flex flex-col gap-6 shrink-0 h-full w-[340px] justify-center">
+              <div className="flex flex-col gap-6 shrink-0 h-auto w-[340px] justify-center">
                 {/* Card 7: Wide Top */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm relative bubble-up mt-[30px]">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm relative bubble-up mt-[30px] h-auto">
                   <div className="absolute -top-[40px] right-8">
-                    <img src={testimonialsData[6].image} className="w-12 h-12 rounded-full border-[3px] border-[#e0e1e5]" alt="User" />
+                    <img src={testimonialsData[6].image} className="w-12 h-12 rounded-full border-[3px] border-[#e0e1e5] shrink-0" alt="User" />
                   </div>
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="text-[13px] font-black text-gray-900">{testimonialsData[6].name}</h4>
@@ -220,7 +220,7 @@ const Testimonials = () => {
                 </div>
 
                 {/* Card 8: Wide Middle */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm flex items-center gap-4">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm flex items-center gap-4 h-auto">
                   <img src={testimonialsData[7].image} className="w-20 h-20 rounded-lg object-cover shrink-0" alt="User" />
                   <div>
                     <QuoteIcon />
@@ -231,12 +231,12 @@ const Testimonials = () => {
                 </div>
 
                 {/* Card 9: Wide Bottom */}
-                <div className="bg-white rounded-[20px] p-6 shadow-sm flex items-center justify-between gap-4">
+                <div className="bg-white rounded-[20px] p-6 shadow-sm flex items-center justify-between gap-4 h-auto">
                   <p className="text-[11px] text-gray-600 font-medium leading-relaxed">
                     {testimonialsData[8].text}
                   </p>
                   <div className="flex flex-col items-center shrink-0">
-                    <img src={testimonialsData[8].image} className="w-14 h-14 rounded-full object-cover shadow-sm mb-2" alt="User" />
+                    <img src={testimonialsData[8].image} className="w-14 h-14 rounded-full object-cover shadow-sm mb-2 shrink-0" alt="User" />
                     <h4 className="text-[10px] font-bold text-gray-900">{testimonialsData[8].name}</h4>
                   </div>
                 </div>
