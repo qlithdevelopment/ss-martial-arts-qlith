@@ -1,10 +1,31 @@
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import heroVideo from "../../../assets/VN20260611_112458.mp4";
-import heroPoster from "../../../assets/samurai_shadow.png";
+import fallbackImage from "../../../assets/ChatGPT Image Jun 11, 2026, 02_08_50 PM.png";
 
 const Hero = () => {
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
   return (
     <section className="relative w-full min-h-screen overflow-hidden bg-bgColor pt-10">
+      
+      {/* FALLBACK IMAGE */}
+      <img
+        src={fallbackImage}
+        alt="Hero Background"
+        className={`
+          absolute
+          inset-0
+          w-full
+          h-full
+          object-cover
+          scale-[1.15] md:scale-[1.20]
+          object-[70%_40%] md:object-[70%_40%] lg:object-[0%_40%] xl:object-[5%_40%]
+          transition-opacity duration-[1000ms] delay-1000 ease-in-out
+          ${videoLoaded ? "opacity-0" : "opacity-100"}
+        `}
+      />
+
       {/* VIDEO BG */}
       <video
         autoPlay
@@ -12,22 +33,20 @@ const Hero = () => {
         loop
         playsInline
         preload="auto"
-        poster={heroPoster}
-        className="
+        onCanPlayThrough={() => setVideoLoaded(true)}
+        className={`
           absolute
-          bg-black
           inset-0
           w-full
           h-full
           object-cover
           scale-[1.15] md:scale-[1.20]
           object-[70%_40%] md:object-[70%_40%] lg:object-[0%_40%] xl:object-[5%_40%]
-        "
+          transition-opacity duration-[1000ms] ease-in-out
+          ${videoLoaded ? "opacity-100" : "opacity-0"}
+        `}
       >
-        <source
-          src={heroVideo}
-          type="video/mp4"
-        />
+        <source src={heroVideo} type="video/mp4" />
       </video>
 
       {/* DARK OVERLAY */}
