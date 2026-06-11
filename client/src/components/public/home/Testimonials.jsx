@@ -79,17 +79,17 @@ const Testimonials = () => {
       `}</style>
 
       {/* Sticky Container */}
-      <div className="sticky top-0 h-[100svh] overflow-hidden flex flex-col pt-[100px] md:pt-24 pb-8 md:pb-12">
+      <div className="sticky top-0 h-[100svh] overflow-hidden flex flex-col pt-[80px] md:pt-20 pb-4 md:pb-8">
         
         {/* Header */}
-        <div className="global-container mb-4 shrink-0 flex flex-col md:flex-row justify-between items-end gap-6 z-10 relative">
+        <div className="global-container mb-2 md:mb-4 shrink-0 flex flex-col md:flex-row justify-between items-end gap-4 z-10 relative">
           <div>
             <div className="flex flex-col items-start">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-4 mb-2 md:mb-4">
                 <div className="h-1 w-12 bg-[#f97316]"></div>
-                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Success Stories</h3>
+                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-xs md:text-sm">Success Stories</h3>
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-[#0b1b24]">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black uppercase leading-none tracking-tighter text-[#0b1b24]">
                 MEMBER  <span className="text-[#26c0ff]">REVIEWS</span>
               </h2>
             </div>
@@ -101,11 +101,11 @@ const Testimonials = () => {
         </div>
 
         {/* Scrolling Track */}
-        <div ref={parentRef} className="w-full h-full overflow-hidden">
+        <div ref={parentRef} className="w-full flex-1 min-h-0 overflow-hidden flex items-center relative">
           <motion.div 
             ref={childRef}
             style={{ x }} 
-            className="flex gap-6 px-4 md:px-8 xl:px-[calc((100vw-1400px)/2+2rem)] pt-4 pb-20 md:pt-8 md:pb-16 items-center h-full w-max scale-[0.85] sm:scale-100 origin-left"
+            className="flex gap-4 md:gap-6 px-4 md:px-8 xl:px-[calc((100vw-1400px)/2+2rem)] items-center h-auto w-max scale-[0.7] sm:scale-[0.75] md:scale-[0.85] xl:scale-100 origin-left"
           >
             
             {/* We render the 4 columns THREE times so there is a continuous stream of cards with no gaps at the end */}
