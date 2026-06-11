@@ -7,59 +7,33 @@ const WhatsAppButton = () => {
       href="https://wa.me/1234567890" // Replace with actual WhatsApp number
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-[1000] flex items-center justify-center group"
+      className="fixed bottom-6 right-6 z-[1000] flex items-center justify-center group w-14 h-14"
     >
-      {/* Outer Ripple 1 */}
+      {/* The Liquid Morphing Blob Background */}
       <motion.div
-        className="absolute inset-0 rounded-full bg-[#25D366]"
         animate={{
-          scale: [1, 1.8, 2.5],
-          opacity: [0.5, 0.2, 0],
+          borderRadius: [
+            "50%",
+            "60% 40% 30% 70% / 60% 30% 70% 40%",
+            "30% 60% 70% 40% / 50% 60% 30% 60%",
+            "50%"
+          ],
+          rotate: [0, 360],
+          scale: [1, 1.05, 1],
         }}
         transition={{
-          duration: 2.5,
+          duration: 6,
           repeat: Infinity,
-          ease: "easeOut",
+          ease: "linear"
         }}
-      />
-      {/* Outer Ripple 2 (Offset by half duration) */}
-      <motion.div
-        className="absolute inset-0 rounded-full bg-[#25D366]"
-        animate={{
-          scale: [1, 1.8, 2.5],
-          opacity: [0.5, 0.2, 0],
-        }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          ease: "easeOut",
-          delay: 1.25,
-        }}
+        className="absolute inset-0 bg-[#25D366] shadow-[0_4px_20px_rgba(37,211,102,0.6)] group-hover:shadow-[0_8px_30px_rgba(37,211,102,0.9)] group-hover:bg-[#128C7E] transition-all duration-300"
       />
       
-      {/* Main Button */}
+      {/* The Icon (Stationary, pops on hover) */}
       <motion.div
-        animate={{ 
-          y: [0, -6, 0],
-          rotate: [0, -12, 12, -12, 12, 0],
-        }}
-        transition={{
-          y: {
-            duration: 2.5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          },
-          rotate: {
-            duration: 0.6,
-            repeat: Infinity,
-            repeatDelay: 4,
-            ease: "easeInOut"
-          }
-        }}
-        whileHover={{ scale: 1.15, rotate: 0, y: 0 }}
-        className="relative bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(37,211,102,0.6)] cursor-pointer hover:shadow-[0_0_30px_rgba(37,211,102,0.9)] hover:bg-[#128C7E] transition-colors duration-300"
+        whileHover={{ scale: 1.2, rotate: -10 }}
+        className="relative z-10 text-white w-14 h-14 flex items-center justify-center pointer-events-none"
       >
-        
         {/* WhatsApp Icon */}
         <svg 
           viewBox="0 0 24 24" 
