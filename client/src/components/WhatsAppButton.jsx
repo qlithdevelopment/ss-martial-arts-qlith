@@ -9,14 +9,55 @@ const WhatsAppButton = () => {
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-[1000] flex items-center justify-center group"
     >
-      {/* Pulsing Ring Animation */}
-      <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-40 animate-ping" style={{ animationDuration: '3s' }}></span>
-      
+      {/* Outer Ripple 1 */}
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        className="relative bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] cursor-pointer hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] hover:bg-[#128C7E] transition-all duration-300"
+        className="absolute inset-0 rounded-full bg-[#25D366]"
+        animate={{
+          scale: [1, 1.8, 2.5],
+          opacity: [0.5, 0.2, 0],
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: "easeOut",
+        }}
+      />
+      {/* Outer Ripple 2 (Offset by half duration) */}
+      <motion.div
+        className="absolute inset-0 rounded-full bg-[#25D366]"
+        animate={{
+          scale: [1, 1.8, 2.5],
+          opacity: [0.5, 0.2, 0],
+        }}
+        transition={{
+          duration: 2.5,
+          repeat: Infinity,
+          ease: "easeOut",
+          delay: 1.25,
+        }}
+      />
+      
+      {/* Main Button */}
+      <motion.div
+        animate={{ 
+          y: [0, -6, 0],
+          rotate: [0, -12, 12, -12, 12, 0],
+        }}
+        transition={{
+          y: {
+            duration: 2.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          },
+          rotate: {
+            duration: 0.6,
+            repeat: Infinity,
+            repeatDelay: 4,
+            ease: "easeInOut"
+          }
+        }}
+        whileHover={{ scale: 1.15, rotate: 0, y: 0 }}
+        className="relative bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(37,211,102,0.6)] cursor-pointer hover:shadow-[0_0_30px_rgba(37,211,102,0.9)] hover:bg-[#128C7E] transition-colors duration-300"
       >
         
         {/* WhatsApp Icon */}
