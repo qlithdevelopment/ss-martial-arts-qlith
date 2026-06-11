@@ -108,12 +108,12 @@ const Contact = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="bg-[#f9fafb] p-5 md:p-6 rounded-3xl border border-gray-200 shadow-2xl relative overflow-hidden h-full">
+          <div className="bg-gradient-to-br from-[#f8fcfd] to-[#dcf2ff] p-5 md:p-6 rounded-3xl border border-[#26c0ff]/20 shadow-2xl relative overflow-hidden h-full">
             
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#26c0ff] rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"></div>
 
             {/* Subtle Samurai Watermark */}
-            <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-end overflow-hidden opacity-10">
+            <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-end overflow-hidden opacity-20">
               <img 
                 src={silhouetteImg} 
                 alt="Samurai Background" 
