@@ -1,7 +1,32 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../../assets/Full_Logo.png";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Instagram, Facebook, Twitter } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
+
+// Simple SVG Icons for Socials
+const InstagramIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
+
+const FacebookIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+  </svg>
+);
+
+const TwitterIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4l11.73 11.73"></path>
+    <path d="M4 20l6.76-6.76"></path>
+    <path d="M20 20L8.27 8.27"></path>
+    <path d="M20 4l-6.76 6.76"></path>
+  </svg>
+);
 
 const Footer = () => {
   return (
@@ -85,22 +110,39 @@ const Footer = () => {
         </motion.div>
 
         {/* BOTTOM COPYRIGHT */}
-        <div className="border-t border-white/10 pt-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
-          <p className="text-secondary text-[9px] md:text-xs">
+        <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-secondary text-[9px] md:text-xs flex-1 text-center md:text-left">
             &copy; {new Date().getFullYear()} SS Martial Arts Schools. All rights reserved.
           </p>
-          <p className="text-secondary text-[9px] md:text-xs">
+          
+          <p className="text-secondary text-[9px] md:text-xs flex-1 text-center">
             Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
           </p>
-          <div className="flex gap-3 md:gap-4">
-            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-[#E1306C] transition-colors duration-300 group">
-              <Instagram className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform duration-300" />
+
+          <div className="flex gap-3 md:gap-4 flex-1 justify-center md:justify-end">
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              className="w-8 h-8 md:w-10 md:h-10 border border-[#333] rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#E1306C] hover:border-[#E1306C] transition-all duration-300 hover:scale-110 shadow-lg group"
+            >
+              <InstagramIcon className="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform duration-300 group-hover:scale-110" />
             </a>
-            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-[#1877F2] transition-colors duration-300 group">
-              <Facebook className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform duration-300" />
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              className="w-8 h-8 md:w-10 md:h-10 border border-[#333] rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877F2] hover:border-[#1877F2] transition-all duration-300 hover:scale-110 shadow-lg group"
+            >
+              <FacebookIcon className="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform duration-300 group-hover:scale-110" />
             </a>
-            <a href="#" className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300 group">
-              <Twitter className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform duration-300" />
+            <a
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              className="w-8 h-8 md:w-10 md:h-10 border border-[#333] rounded-full flex items-center justify-center text-gray-400 hover:text-black hover:bg-white hover:border-white transition-all duration-300 hover:scale-110 shadow-lg group"
+            >
+              <TwitterIcon className="w-3.5 h-3.5 md:w-4 md:h-4 transition-transform duration-300 group-hover:scale-110" />
             </a>
           </div>
         </div>
