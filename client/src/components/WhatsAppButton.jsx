@@ -9,32 +9,16 @@ const WhatsAppButton = () => {
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-[1000] flex items-center justify-center group w-14 h-14"
     >
-      {/* Continuous Pulsing Aura */}
+      {/* A solid, hard-edged button with a simple bounce animation */}
       <motion.div
-        className="absolute inset-0 rounded-full bg-[#25D366]"
-        animate={{
-          boxShadow: [
-            "0px 0px 0px 0px rgba(37,211,102,0.7)",
-            "0px 0px 0px 20px rgba(37,211,102,0)",
-          ]
-        }}
+        animate={{ y: [0, -10, 0] }}
         transition={{
           duration: 2,
           repeat: Infinity,
-          ease: "easeOut"
-        }}
-      />
-      
-      {/* The Floating Button */}
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
           ease: "easeInOut"
         }}
-        whileHover={{ scale: 1.15, y: -4 }}
-        className="relative z-10 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#128C7E] shadow-[0_4px_15px_rgba(37,211,102,0.5)] transition-colors duration-300"
+        whileHover={{ scale: 1.15, y: 0 }}
+        className="relative z-10 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#128C7E] shadow-lg transition-all duration-300"
       >
         {/* WhatsApp Icon */}
         <svg 
