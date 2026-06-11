@@ -125,7 +125,7 @@ const About = () => {
               <motion.div 
                 animate={{ opacity: [0.1, 0.8, 0.1] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute z-40 flex gap-[12px] sm:gap-[16px] lg:gap-[20px] top-[34%] sm:top-[32%] lg:top-[30%] left-[50%] -translate-x-[50%]"
+                className="absolute z-40 flex gap-[12px] sm:gap-[16px] lg:gap-[20px] top-[24%] sm:top-[28%] lg:top-[30%] left-[50%] -translate-x-[50%]"
               >
                 {/* Left Eye */}
                 <div className="w-[3px] h-[3px] sm:w-[4px] sm:h-[4px] lg:w-[5px] lg:h-[5px] bg-white rounded-full shadow-[0_0_12px_4px_rgba(255,255,255,0.8)]"></div>
