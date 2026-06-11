@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import heroVideo from "../../../assets/VN20260611_112458.mp4";
+import heroPoster from "../../../assets/samurai_shadow.png";
 
 const Hero = () => {
   return (
@@ -11,6 +12,7 @@ const Hero = () => {
         loop
         playsInline
         preload="auto"
+        poster={heroPoster}
         className="
           absolute
           bg-black

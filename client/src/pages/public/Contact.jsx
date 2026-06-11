@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import silhouetteImg from '../../assets/samurai_shadow.png';
 
 const Contact = () => {
   useEffect(() => {
@@ -111,7 +112,16 @@ const Contact = () => {
             
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#26c0ff] rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"></div>
 
-            <h3 className="text-xl md:text-2xl font-black text-[#26c0ff] uppercase tracking-tighter mb-5">Send a Message</h3>
+            {/* Subtle Samurai Watermark */}
+            <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-end overflow-hidden opacity-10">
+              <img 
+                src={silhouetteImg} 
+                alt="Samurai Background" 
+                className="w-auto h-[120%] object-contain object-right-bottom translate-x-[20%] translate-y-[10%]"
+              />
+            </div>
+
+            <h3 className="text-xl md:text-2xl font-black text-[#26c0ff] uppercase tracking-tighter mb-5 relative z-10">Send a Message</h3>
             
             <form className="flex flex-col gap-5 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
