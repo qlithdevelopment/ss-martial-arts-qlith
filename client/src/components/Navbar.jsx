@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import Logo from '../assets/Full_Logo.png'
@@ -7,23 +7,21 @@ import Logo from '../assets/Full_Logo.png'
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('hero')
 
   const location = useLocation()
-  const navigate = useNavigate()
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/#about' },
-    { name: 'Trainers', path: '/#trainers' },
-    { name: 'Events', path: '/#events' },
-    { name: 'Services', path: '/#services' },
-    { name: 'Gallery', path: '/#gallery' },
+    { name: 'About', path: '/about' },
+    { name: 'Trainers', path: '/trainers' },
+    { name: 'Events', path: '/events' },
+    { name: 'Services', path: '/services' },
+    { name: 'Gallery', path: '/gallery' },
     { name: 'Contact', path: '/contact' },
     { name: 'Login', path: '/login' },
   ]
 
-  // SCROLL NAVBAR EFFECT & INTERSECTION OBSERVER
+  // SCROLL NAVBAR EFFECT ONLY
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -34,81 +32,17 @@ const Navbar = () => {
     }
 
     window.addEventListener('scroll', handleScroll)
-
-    // Intersection Observer to detect active section
-    if (location.pathname === '/') {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setActiveSection(entry.target.id || 'hero');
-            }
-          });
-        },
-        { rootMargin: '-100px 0px -60% 0px' } // Triggers more accurately taking sticky nav into account
-      );
-
-      const sectionIds = ['hero', 'about', 'trainers', 'programs', 'events', 'services', 'gallery', 'testimonials', 'faq'];
-      sectionIds.forEach((id) => {
-        const element = document.getElementById(id);
-        if (element) observer.observe(element);
-      });
-
-      return () => {
-        window.removeEventListener('scroll', handleScroll)
-        observer.disconnect();
-      }
-    }
-
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [location.pathname])
+  }, [])
 
-  // Handle hash scrolling from other pages
-  useEffect(() => {
-    if (location.pathname === '/' && location.hash) {
-      const targetId = location.hash.substring(1);
-      setTimeout(() => {
-        const element = document.getElementById(targetId);
-        if (element) {
-          const navbarHeight = 60; // Offset for sticky navbar
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - navbarHeight;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  }, [location.pathname, location.hash]);
-
-  const handleNavClick = (e, path) => {
+  const handleNavClick = () => {
     setIsOpen(false)
-    if (path.startsWith('/#')) {
-      const targetId = path.split('#')[1]
-      if (location.pathname === '/') {
-        // If already on Home, smooth scroll to the element
-        e.preventDefault()
-        const element = document.getElementById(targetId)
-        if (element) {
-          const navbarHeight = 60; // Offset for fixed navbar
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - navbarHeight;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
-          window.history.pushState(null, '', path)
-        }
-      }
-    } else if (path === '/') {
-      if (location.pathname === '/') {
-        e.preventDefault()
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        window.history.pushState(null, '', path)
-      }
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const checkIsActive = (path) => {
-    if (path === '/') return location.pathname === '/' && activeSection === 'hero';
-    if (path.startsWith('/#')) return location.pathname === '/' && activeSection === path.split('#')[1];
     return location.pathname === path;
   }
 
@@ -136,7 +70,7 @@ const Navbar = () => {
       <div className="global-container">
         <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-12' : 'h-16'}`}>
           {/* LOGO */}
-          <Link to="/" onClick={(e) => handleNavClick(e, '/')} className="flex items-center h-full">
+          <Link to="/" onClick={handleNavClick} className="flex items-center h-full">
             <img src={Logo} alt="Logo" className={`object-contain transition-all duration-300 ${isScrolled ? 'w-28' : 'w-36 md:w-40'}`} />
           </Link>
 
@@ -149,7 +83,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={(e) => handleNavClick(e, item.path)}
+                  onClick={handleNavClick}
                   className={`
                     relative
                     text-[10px] xl:text-[12px]
@@ -221,14 +155,14 @@ const Navbar = () => {
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#26c0ff]/50 to-transparent" />
 
             <div className="flex flex-col p-2">
-              {navLinks.map((item, index) => {
+              {navLinks.map((item) => {
                 const isActive = checkIsActive(item.path)
 
                 return (
                   <Link
                     key={item.name}
                     to={item.path}
-                    onClick={(e) => handleNavClick(e, item.path)}
+                    onClick={handleNavClick}
                     className={`
                         relative
                         flex
