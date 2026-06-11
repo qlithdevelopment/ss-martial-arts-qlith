@@ -11,8 +11,16 @@ import AdminLayout from "../layouts/AdminLayout";
 import StudentLayout from "../layouts/StudentLayout";
 
 import Home from "../pages/public/Home";
+import Trainers from "../pages/public/Trainers";
 import About from "../pages/public/About";
+import Programs from "../pages/public/Programs";
+import Events from "../pages/public/Events";
+import Services from "../pages/public/Services";
+import Gallery from "../pages/public/Gallery";
+import Testimonials from "../pages/public/Testimonials";
+import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
+import Contact from "../pages/public/Contact";
 
 import AdminDashboard from "../pages/admin/Dashboard";
 
@@ -34,9 +42,15 @@ const AppRoutes = () => {
       {/* PUBLIC */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
-
         <Route path="/about" element={<About />} />
-
+        <Route path="/trainers" element={<Trainers />} />
+        <Route path="/programs" element={<Programs />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/contact" element={<Contact />} />
         {!user && (
           <Route
             path="/login"

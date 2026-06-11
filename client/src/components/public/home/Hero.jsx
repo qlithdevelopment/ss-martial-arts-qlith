@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import heroVideo from "../../../assets/VN20260611_112458.mp4";
 
 const Hero = () => {
   return (
@@ -15,16 +16,18 @@ const Hero = () => {
           w-full
           h-full
           object-cover
+          scale-[1.15] md:scale-[1.20]
+          object-[70%_40%] md:object-[70%_40%] lg:object-[0%_40%] xl:object-[5%_40%]
         "
       >
         <source
-          src="https://www.pexels.com/download/video/4440998/"
+          src={heroVideo}
           type="video/mp4"
         />
       </video>
 
       {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-black/75 z-10" />
+      <div className="absolute inset-0 bg-black/30 z-10" />
 
       {/* LIGHT EFFECT */}
       <div
@@ -61,21 +64,14 @@ const Hero = () => {
         className="
           relative
           z-20
-
-          min-h-screen
-
-          max-w-7xl
-          mx-auto
-
-          px-5
-          sm:px-8
-          lg:px-10
-
+          min-h-[100svh]
+          global-container
           flex
-          items-center
+          items-end lg:items-center
+          pb-12 sm:pb-20 lg:pb-0
         "
       >
-        <div className="max-w-4xl">
+        <div className="max-w-4xl w-full mt-auto lg:mt-0 pt-24 lg:pt-0">
           {/* TAG */}
           <motion.div
             initial={{
@@ -129,36 +125,20 @@ const Hero = () => {
 
           {/* HEADING */}
           <motion.h1
-            initial={{
-              opacity: 0,
-              y: 40,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-              delay: 0.2,
-            }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             className="
               text-text
-
-              text-5xl
-              sm:text-6xl
-              md:text-7xl
-              lg:text-[110px]
-
+              text-[32px]
+              sm:text-5xl
+              md:text-6xl
+              lg:text-[80px]
               font-black
-
               uppercase
-
-              leading-[0.9]
-
+              leading-[1] lg:leading-[0.9]
               tracking-tight
-
-              mb-8
-
+              mb-4 lg:mb-6
               drop-shadow-[0_5px_20px_rgba(0,0,0,0.7)]
             "
             style={{
@@ -170,52 +150,28 @@ const Hero = () => {
             }}
           >
             Train Like A
-            <span
-              className="
-                block
-
-                text-primary
-
-                mt-3
-              "
-            >
+            <span className="block text-primary mt-2">
               True Warrior
             </span>
           </motion.h1>
 
           {/* DESCRIPTION */}
           <motion.p
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-              delay: 0.4,
-            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
             className="
-              text-secondary
-
-              text-base
-              sm:text-lg
-              md:text-xl
-
+              text-white
+              text-xs
+              sm:text-base
+              md:text-lg
               leading-relaxed
-
-              max-w-2xl
-
-              mb-10
+              max-w-xl
+              mb-6 lg:mb-10
             "
           >
-            Build discipline, confidence,
-            strength, and focus through
-            elite martial arts training
-            designed for champions and
-            future leaders.
+            Build discipline, confidence, strength, and focus through elite
+            martial arts training designed for champions and future leaders.
           </motion.p>
 
           {/* BUTTONS */}
@@ -237,14 +193,14 @@ const Hero = () => {
               flex-col
               sm:flex-row
 
-              gap-5
+              gap-3 lg:gap-5
             "
           >
             {/* BTN 1 */}
             <button
               className="
-                px-8
-                py-4
+                px-6 lg:px-8
+                py-3 lg:py-4
 
                 rounded-xl
 
@@ -253,6 +209,7 @@ const Hero = () => {
                 text-black
 
                 font-bold
+                text-sm lg:text-base
 
                 tracking-wide
 
@@ -272,8 +229,8 @@ const Hero = () => {
             {/* BTN 2 */}
             <button
               className="
-                px-8
-                py-4
+                px-6 lg:px-8
+                py-3 lg:py-4
 
                 rounded-xl
 
@@ -287,6 +244,7 @@ const Hero = () => {
                 text-text
 
                 font-bold
+                text-sm lg:text-base
 
                 tracking-wide
 
@@ -304,84 +262,41 @@ const Hero = () => {
 
           {/* STATS */}
           <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-              delay: 0.8,
-            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
             className="
-              flex
-              flex-wrap
-
-              gap-8
-              sm:gap-14
-
-              mt-16
+              hidden sm:flex flex-wrap gap-4 sm:gap-14 mt-6 lg:mt-16
+              bg-transparent
+              w-fit
             "
           >
             {/* ITEM */}
             <div>
-              <h3
-                className="
-                  text-4xl
-                  md:text-5xl
-
-                  font-black
-
-                  text-primary
-                "
-              >
+              <h3 className="text-4xl md:text-5xl font-black text-white">
                 10+
               </h3>
-
-              <p className="text-secondary mt-2">
+              <p className="text-gray-300 font-bold uppercase tracking-widest text-xs mt-2">
                 Years Experience
               </p>
             </div>
 
             {/* ITEM */}
             <div>
-              <h3
-                className="
-                  text-4xl
-                  md:text-5xl
-
-                  font-black
-
-                  text-primary2
-                "
-              >
+              <h3 className="text-4xl md:text-5xl font-black text-[#26c0ff]">
                 500+
               </h3>
-
-              <p className="text-secondary mt-2">
+              <p className="text-gray-300 font-bold uppercase tracking-widest text-xs mt-2">
                 Active Students
               </p>
             </div>
 
             {/* ITEM */}
             <div>
-              <h3
-                className="
-                  text-4xl
-                  md:text-5xl
-
-                  font-black
-
-                  text-primary
-                "
-              >
+              <h3 className="text-4xl md:text-5xl font-black text-white">
                 24/7
               </h3>
-
-              <p className="text-secondary mt-2">
+              <p className="text-gray-300 font-bold uppercase tracking-widest text-xs mt-2">
                 Online Support
               </p>
             </div>

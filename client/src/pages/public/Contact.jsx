@@ -1,0 +1,161 @@
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+
+const Contact = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="relative overflow-hidden w-full min-h-screen bg-black pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 font-sans selection:bg-[#26c0ff] selection:text-white">
+      
+      {/* MASSIVE BACKGROUND TEXT */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+        CONTACT
+      </div>
+
+      {/* Header */}
+      <div className="global-container mb-10 md:mb-16 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="flex flex-col items-start mb-8">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="h-1 w-12 bg-[#f97316]"></div>
+              <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Reach Out</h3>
+            </div>
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-white">
+              LET'S  <span className="text-[#26c0ff]">WORK</span>
+            </h2>
+          </div>
+          <p className="text-gray-300 max-w-2xl text-lg font-medium">
+            Ready to begin your journey? Whether you have questions about our programs, want to schedule a trial, or are interested in private coaching, we are here to help.
+          </p>
+        </motion.div>
+      </div>
+
+      <div className="global-container grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        
+        {/* Left Side: Contact Info & Map */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex flex-col gap-6"
+        >
+          {/* Info Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            {/* Email Card */}
+            <div className="bg-[#f9fafb] p-5 rounded-2xl border border-gray-200 shadow-xl flex flex-col items-start gap-3 hover:border-[#26c0ff] transition-colors group">
+              <div className="w-10 h-10 rounded-full bg-[#26c0ff]/10 flex items-center justify-center text-[#26c0ff] group-hover:bg-[#26c0ff] group-hover:text-white transition-colors">
+                <Mail size={20} />
+              </div>
+              <div>
+                <h3 className="text-[#26c0ff] font-black uppercase tracking-wider mb-1 text-sm">Email Us</h3>
+                <p className="text-black font-bold text-sm">contact@ssmartialarts.com</p>
+                <p className="text-gray-500 text-xs mt-1">We reply within 24 hours.</p>
+              </div>
+            </div>
+
+            {/* Phone Card */}
+            <div className="bg-[#f9fafb] p-5 rounded-2xl border border-gray-200 shadow-xl flex flex-col items-start gap-3 hover:border-[#26c0ff] transition-colors group">
+              <div className="w-10 h-10 rounded-full bg-[#26c0ff]/10 flex items-center justify-center text-[#26c0ff] group-hover:bg-[#26c0ff] group-hover:text-white transition-colors">
+                <Phone size={20} />
+              </div>
+              <div>
+                <h3 className="text-[#26c0ff] font-black uppercase tracking-wider mb-1 text-sm">Call Us</h3>
+                <p className="text-black font-bold text-sm">+91 98765 43210</p>
+                <p className="text-gray-500 text-xs mt-1">Mon - Sat, 8am to 8pm</p>
+              </div>
+            </div>
+
+            {/* Location Card */}
+            <div className="bg-[#f9fafb] p-5 rounded-2xl border border-gray-200 shadow-xl flex flex-col items-start gap-3 hover:border-[#26c0ff] transition-colors sm:col-span-2 group">
+              <div className="w-10 h-10 rounded-full bg-[#26c0ff]/10 flex items-center justify-center text-[#26c0ff] group-hover:bg-[#26c0ff] group-hover:text-white transition-colors">
+                <MapPin size={20} />
+              </div>
+              <div>
+                <h3 className="text-[#26c0ff] font-black uppercase tracking-wider mb-1 text-sm">Academy Location</h3>
+                <p className="text-black font-medium text-sm leading-relaxed">
+                  123 Warrior Way, Combat City, ST 90210<br/>
+                  Near the Central Metro Station
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Let's Work Together Banner */}
+          <div className="bg-[#26c0ff] border border-[#26c0ff] rounded-2xl p-6 flex items-center justify-between shadow-lg">
+             <div>
+                <h4 className="text-black font-black text-xl uppercase tracking-tight mb-1">Start Training Today</h4>
+                <p className="text-black/80 font-bold text-xs">Join the elite rank of our academy.</p>
+             </div>
+             <div className="w-14 h-14 bg-[#f9fafb] rounded-xl p-1 shrink-0 shadow-sm flex items-center justify-center border border-white/10">
+                <span className="text-[9px] font-bold text-[#26c0ff] text-center uppercase tracking-widest leading-none">Scan<br/>To<br/>Join</span>
+             </div>
+          </div>
+        </motion.div>
+
+        {/* Right Side: Contact Form */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <div className="bg-[#f9fafb] p-5 md:p-6 rounded-3xl border border-gray-200 shadow-2xl relative overflow-hidden h-full">
+            
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#26c0ff] rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"></div>
+
+            <h3 className="text-xl md:text-2xl font-black text-[#26c0ff] uppercase tracking-tighter mb-5">Send a Message</h3>
+            
+            <form className="flex flex-col gap-5 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">First Name</label>
+                  <input type="text" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" placeholder="John" />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Last Name</label>
+                  <input type="text" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" placeholder="Doe" />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Email Address</label>
+                <input type="email" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" placeholder="john@example.com" />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Program of Interest</label>
+                <select className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all appearance-none cursor-pointer text-sm">
+                  <option className="text-black">Adult Martial Arts</option>
+                  <option className="text-black">Youth Classes</option>
+                  <option className="text-black">Private Coaching</option>
+                  <option className="text-black">General Inquiry</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Message</label>
+                <textarea rows="3" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-colors resize-none custom-scrollbar shadow-inner text-sm" placeholder="How can we help you?"></textarea>
+              </div>
+
+              <button type="button" className="mt-2 w-full bg-black hover:bg-[#26c0ff] text-white font-black uppercase tracking-widest py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg text-sm">
+                Send Message <Send size={16} />
+              </button>
+            </form>
+
+          </div>
+        </motion.div>
+
+      </div>
+    </div>
+  );
+};
+
+export default Contact;

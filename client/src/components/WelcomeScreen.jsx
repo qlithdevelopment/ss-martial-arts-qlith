@@ -170,7 +170,7 @@ const WelcomeScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.7, ease: "easeOut" }}
         >
-          Welcome to our platform
+          Welcome to SS Martial Arts Schools
         </motion.p>
       </motion.div>
     </motion.div>
