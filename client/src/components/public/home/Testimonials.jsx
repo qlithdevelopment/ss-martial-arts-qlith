@@ -31,19 +31,29 @@ const Testimonials = () => {
   const parentRef = useRef(null);
   const childRef = useRef(null);
   const [maxScroll, setMaxScroll] = useState(0);
+  const [dynamicScale, setDynamicScale] = useState(1);
 
   useEffect(() => {
-    const updateMaxScroll = () => {
-      if (parentRef.current && childRef.current) {
-        const pWidth = parentRef.current.clientWidth;
-        const cWidth = childRef.current.offsetWidth;
-        setMaxScroll(Math.max(0, cWidth - pWidth));
-      }
+    const updateLayout = () => {
+      // 1. Calculate dynamic scale based on exact viewport height to GUARANTEE no clipping
+      // Reserve ~280px for the Header and padding. The tallest column is ~620px.
+      const availableHeight = window.innerHeight - 280;
+      const newScale = Math.min(1, availableHeight / 620);
+      setDynamicScale(newScale);
+
+      // 2. Wait for Framer Motion to apply scale, then read scaled width for perfect scrolling
+      setTimeout(() => {
+        if (parentRef.current && childRef.current) {
+          const pWidth = parentRef.current.clientWidth;
+          const cWidth = childRef.current.getBoundingClientRect().width;
+          setMaxScroll(Math.max(0, cWidth - pWidth));
+        }
+      }, 50);
     };
     
-    setTimeout(updateMaxScroll, 100);
-    window.addEventListener('resize', updateMaxScroll);
-    return () => window.removeEventListener('resize', updateMaxScroll);
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
   }, []);
 
   const x = useTransform(scrollYProgress, [0, 1], [0, -maxScroll]);
@@ -104,8 +114,12 @@ const Testimonials = () => {
         <div ref={parentRef} className="w-full flex-1 min-h-0 overflow-hidden flex items-center relative">
           <motion.div 
             ref={childRef}
-            style={{ x }} 
-            className="flex gap-4 md:gap-6 px-4 md:px-8 xl:px-[calc((100vw-1400px)/2+2rem)] items-center h-max w-max scale-[0.65] sm:scale-[0.75] md:scale-[0.85] xl:scale-100 origin-left"
+            style={{ 
+              x,
+              scale: dynamicScale,
+              transformOrigin: "left center" 
+            }} 
+            className="flex gap-4 md:gap-6 px-4 md:px-8 xl:px-[calc((100vw-1400px)/2+2rem)] items-center h-max w-max"
           >
             
             {/* We render the 4 columns THREE times so there is a continuous stream of cards with no gaps at the end */}
