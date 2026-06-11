@@ -112,11 +112,7 @@ const Footer = () => {
         {/* BOTTOM COPYRIGHT */}
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-secondary text-[9px] md:text-xs flex-1 text-center md:text-left">
-            &copy; {new Date().getFullYear()} SS Martial Arts Schools. All rights reserved.
-          </p>
-          
-          <p className="text-secondary text-[9px] md:text-xs flex-1 text-center">
-            Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
+            &copy; {new Date().getFullYear()} SS Martial Arts Schools. All rights reserved. <span className="mx-1 md:mx-2 text-white/20">|</span> Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
           </p>
 
           <div className="flex gap-3 md:gap-4 flex-1 justify-center md:justify-end">
