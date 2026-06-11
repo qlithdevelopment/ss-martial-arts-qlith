@@ -9,16 +9,15 @@ const WhatsAppButton = () => {
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-[1000] flex items-center justify-center group"
     >
+      {/* Pulsing Ring Animation */}
+      <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-40 animate-ping" style={{ animationDuration: '3s' }}></span>
+      
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.1 }}
         className="relative bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] cursor-pointer hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] hover:bg-[#128C7E] transition-all duration-300"
       >
-        {/* Notification Badge */}
-        <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-          1
-        </div>
         
         {/* WhatsApp Icon */}
         <svg 
