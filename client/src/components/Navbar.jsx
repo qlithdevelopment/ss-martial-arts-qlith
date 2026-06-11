@@ -14,11 +14,11 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Trainers', path: '/trainers' },
-    { name: 'Events', path: '/events' },
-    { name: 'Services', path: '/services' },
-    { name: 'Gallery', path: '/gallery' },
+    { name: 'About', path: '/#about' },
+    { name: 'Trainers', path: '/#trainers' },
+    { name: 'Events', path: '/#events' },
+    { name: 'Services', path: '/#services' },
+    { name: 'Gallery', path: '/#gallery' },
     { name: 'Contact', path: '/contact' },
     { name: 'Login', path: '/login' },
   ]
@@ -45,7 +45,7 @@ const Navbar = () => {
             }
           });
         },
-        { rootMargin: '-30% 0px -70% 0px' } // Triggers when section is near the top
+        { rootMargin: '-100px 0px -60% 0px' } // Triggers more accurately taking sticky nav into account
       );
 
       const sectionIds = ['hero', 'about', 'trainers', 'programs', 'events', 'services', 'gallery', 'testimonials', 'faq'];
@@ -65,6 +65,22 @@ const Navbar = () => {
     }
   }, [location.pathname])
 
+  // Handle hash scrolling from other pages
+  useEffect(() => {
+    if (location.pathname === '/' && location.hash) {
+      const targetId = location.hash.substring(1);
+      setTimeout(() => {
+        const element = document.getElementById(targetId);
+        if (element) {
+          const navbarHeight = 60; // Offset for sticky navbar
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - navbarHeight;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [location.pathname, location.hash]);
+
   const handleNavClick = (e, path) => {
     setIsOpen(false)
     if (path.startsWith('/#')) {
@@ -74,7 +90,10 @@ const Navbar = () => {
         e.preventDefault()
         const element = document.getElementById(targetId)
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' })
+          const navbarHeight = 60; // Offset for fixed navbar
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - navbarHeight;
+          window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
           window.history.pushState(null, '', path)
         }
       }
@@ -139,7 +158,7 @@ const Navbar = () => {
                     transition-all
                     duration-300
                     group
-                    ${isActive ? 'text-primary' : 'text-white hover:text-primary'}
+                    ${isActive ? 'text-[#26c0ff]' : 'text-white hover:text-[#26c0ff]'}
                   `}
                 >
                   {item.name.toUpperCase()}
@@ -152,7 +171,7 @@ const Navbar = () => {
                       -bottom-2
                       h-[2px]
                       w-full
-                      bg-amber-500
+                      bg-[#f97316]
                       transition-all
                       duration-300
                       ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'}
@@ -188,7 +207,7 @@ const Navbar = () => {
               right-4
               w-[calc(100vw-32px)]
               md:w-[350px]
-              bg-[#0b1b24]/80
+              bg-[#0b1b24]/90
               backdrop-blur-2xl
               border
               border-white/10
@@ -226,7 +245,7 @@ const Navbar = () => {
                         rounded-xl
                         group
                         overflow-hidden
-                        ${isActive ? 'text-white bg-white/10' : 'text-gray-300 hover:text-white hover:bg-white/5'}
+                        ${isActive ? 'text-[#26c0ff] bg-white/10' : 'text-gray-300 hover:text-white hover:bg-white/5'}
                       `}
                   >
                     {/* Active/Hover Indicator Line */}
@@ -237,7 +256,7 @@ const Navbar = () => {
                         top-1/4 
                         bottom-1/4 
                         w-1 
-                        bg-[#26c0ff] 
+                        bg-[#f97316] 
                         rounded-r-full 
                         transition-transform 
                         duration-300

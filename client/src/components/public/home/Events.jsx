@@ -23,7 +23,7 @@ const Events = () => {
   });
 
   return (
-    <section ref={targetRef} className="h-[300vh] bg-black relative pb-0">
+    <section id="events" ref={targetRef} className="h-[300vh] bg-black relative pb-0">
       
       {/* Sticky Container */}
       <div className="sticky top-0 h-[100svh] flex flex-col justify-center overflow-hidden">

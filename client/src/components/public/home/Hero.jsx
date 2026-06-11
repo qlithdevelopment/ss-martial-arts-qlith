@@ -7,7 +7,7 @@ const Hero = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-bgColor pt-10">
+    <section id="hero" className="relative w-full min-h-screen overflow-hidden bg-bgColor pt-10">
       
       {/* FALLBACK IMAGE */}
       <img
