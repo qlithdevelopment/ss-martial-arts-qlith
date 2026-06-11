@@ -39,13 +39,7 @@ const Programs = () => {
           transition={{ duration: 0.6 }}
           className="w-full text-center mb-10 md:mb-16 px-4"
       >
-        <div className="flex items-center justify-center gap-4 mb-3">
-          <div className="w-10 h-[2px] bg-gray-300"></div>
-          <h4 className="text-[#f97316] font-bold tracking-[0.2em] text-xs uppercase">
-            OUR OFFERINGS
-          </h4>
-          <div className="w-10 h-[2px] bg-gray-300"></div>
-        </div>
+
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="h-1 w-12 bg-[#f97316]"></div>
