@@ -18,6 +18,9 @@ import Events from "../pages/public/Events";
 import Services from "../pages/public/Services";
 import Gallery from "../pages/public/Gallery";
 import Testimonials from "../pages/public/Testimonials";
+import Blog from "../pages/public/Blog";
+import BlogDetail from "../pages/public/BlogDetail";
+import ServiceDetail from "../pages/public/ServiceDetail";
 import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
@@ -49,6 +52,9 @@ const AppRoutes = () => {
         <Route path="/services" element={<Services />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
+        <Route path="/services/:slug" element={<ServiceDetail />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
         {!user && (
