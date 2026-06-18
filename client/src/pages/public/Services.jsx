@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { allServices } from '../../data/homeData';
 import RegistrationModal from '../../components/public/shared/RegistrationModal';
 import silhouetteImg from '../../assets/samurai_shadow.png';
@@ -105,12 +106,12 @@ const ServicesPage = () => {
                 </li>
               </ul>
 
-              <button 
-                onClick={() => setSelectedService(service)} 
-                className="w-fit bg-[#26c0ff] hover:bg-[#0b1b24] text-white px-10 py-4 text-sm font-black uppercase tracking-[0.2em] transition-colors duration-300 rounded-xl shadow-xl hover:shadow-none"
+              <Link 
+                to={`/services/${service.slug}`} 
+                className="w-fit bg-[#26c0ff] hover:bg-[#0b1b24] text-white px-10 py-4 text-sm font-black uppercase tracking-[0.2em] transition-colors duration-300 rounded-xl shadow-xl hover:shadow-none inline-block text-center"
               >
                 Explore Services
-              </button>
+              </Link>
             </div>
           </motion.div>
         ))}

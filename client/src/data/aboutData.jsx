@@ -149,7 +149,7 @@ export const faqData = [
   },
   {
     question: "Are there classes for children?",
-    answer: "Yes, we have dedicated youth programs designed to teach discipline, respect, and fitness in a fun, safe, and controlled environment."
+    answer: "Yes, we have dedicated youth programs designed to teach discipline, respect, and fitness in a fun, safe, and controlled environment for ages 5 and up."
   },
   {
     question: "How often should I train to see progress?",
@@ -158,5 +158,45 @@ export const faqData = [
   {
     question: "Is sparring mandatory?",
     answer: "Sparring is entirely optional for beginners. It is only introduced when a student reaches a certain level of proficiency and expresses a desire to participate."
+  },
+  {
+    question: "Do you offer private, one-on-one sessions?",
+    answer: "Yes, we offer private coaching for those who want personalized attention, specialized training, or need flexibility in scheduling."
+  },
+  {
+    question: "What is the typical class size?",
+    answer: "To ensure everyone gets adequate attention from our instructors, we typically limit our group classes to 15-20 students."
+  },
+  {
+    question: "Are there opportunities to compete?",
+    answer: "Absolutely. For students interested in competition, we have an elite competition team and regularly participate in state, national, and international tournaments."
+  },
+  {
+    question: "How do belt promotions work?",
+    answer: "Belt promotions are based on attendance, attitude, and the mastery of specific techniques. We hold official grading ceremonies every few months."
+  },
+  {
+    question: "Do you teach self-defense specifically for women?",
+    answer: "Yes, we offer specialized self-defense workshops and continuous classes that focus on practical, real-world self-defense strategies for women."
+  },
+  {
+    question: "What if I have a pre-existing injury?",
+    answer: "Please let our instructors know before class. We can modify exercises and techniques to ensure you train safely and effectively without aggravating your injury."
+  },
+  {
+    question: "Is there a free trial available?",
+    answer: "Yes, we offer a complementary introductory class so you can experience our facility, meet the instructors, and see if our academy is the right fit for you."
+  },
+  {
+    question: "At what age can I start learning martial arts?",
+    answer: "Martial arts is for everyone! We have students ranging from 5 years old to individuals in their 60s. It's never too late or too early to start."
+  },
+  {
+    question: "Can martial arts help me lose weight?",
+    answer: "Definitely. Our classes provide an intense, full-body cardiovascular workout that burns calories, builds muscle tone, and improves overall fitness."
+  },
+  {
+    question: "What makes your academy different from others?",
+    answer: "We combine traditional martial arts values with modern sports science, taught by internationally certified instructors in a welcoming, ego-free community."
   }
 ];

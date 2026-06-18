@@ -90,6 +90,7 @@ export const servicesCategories = ["ALL", "BODY CONDITIONING", "COMBAT SPORTS", 
 export const allServices = [
   {
     id: 1,
+    slug: "mixed-martial-arts",
     category: "COMBAT SPORTS",
     title: "Mixed Martial Arts",
     subtitle: "Learn striking and grappling",
@@ -98,6 +99,7 @@ export const allServices = [
   },
   {
     id: 2,
+    slug: "muay-thai-and-boxing",
     category: "COMBAT SPORTS",
     title: "Muay Thai & Boxing",
     subtitle: "The art of eight limbs",
@@ -106,6 +108,7 @@ export const allServices = [
   },
   {
     id: 3,
+    slug: "strength-and-agility",
     category: "BODY CONDITIONING",
     title: "Strength & Agility",
     subtitle: "Build explosive power",
@@ -114,6 +117,7 @@ export const allServices = [
   },
   {
     id: 4,
+    slug: "traditional-kobudo",
     category: "WEAPONS TRAINING",
     title: "Traditional Kobudo",
     subtitle: "Master ancient weaponry",
@@ -122,6 +126,7 @@ export const allServices = [
   },
   {
     id: 5,
+    slug: "brazilian-jiu-jitsu",
     category: "COMBAT SPORTS",
     title: "Brazilian Jiu-Jitsu",
     subtitle: "Ground fighting mastery",

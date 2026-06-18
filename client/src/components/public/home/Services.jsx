@@ -124,9 +124,9 @@ const Services = () => {
                   </p>
                   
                   {/* Button */}
-                  <button onClick={() => setSelectedService(service)} className="w-full mt-auto bg-[#26c0ff] text-white py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-[#0b1b24] hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(38,192,255,0.3)] transition-all duration-300 rounded-lg">
+                  <Link to={`/services/${service.slug}`} className="w-full mt-auto bg-[#26c0ff] text-white py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-[#0b1b24] hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(38,192,255,0.3)] transition-all duration-300 rounded-lg text-center flex items-center justify-center">
                     Explore Services
-                  </button>
+                  </Link>
                   
                 </div>
               </motion.div>
