@@ -1,6 +1,6 @@
 const StudentLayout = ({ children }) => {
   return (
-    <div className="p-5">
+    <div>
       {children}
     </div>
   );

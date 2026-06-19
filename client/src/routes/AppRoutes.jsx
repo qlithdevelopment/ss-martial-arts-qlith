@@ -2,6 +2,7 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
 } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
@@ -22,14 +23,17 @@ import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
 
+// Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
+import AdminBlogs from "../pages/admin/Blogs";         // Added
+import AdminEvents from "../pages/admin/Events";       // Added
+import AdminGalleries from "../pages/admin/Galleries"; // Added
 
+// Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
 
 import Unauthorized from "../pages/errors/Unauthorized";
-
 import NotFound from "../pages/errors/NotFound";
-
 import Loader from "../components/Loader";
 
 const AppRoutes = () => {
@@ -59,13 +63,12 @@ const AppRoutes = () => {
         )}
       </Route>
 
-      {/* ADMIN */}
+      {/* ADMIN ROUTES */}
       <Route
-        path="/admin/dashboard"
         element={
           user?.role === "admin" ? (
             <AdminLayout>
-              <AdminDashboard />
+              <Outlet />
             </AdminLayout>
           ) : user ? (
             <Navigate to="/unauthorized" />
@@ -73,7 +76,12 @@ const AppRoutes = () => {
             <Navigate to="/login" />
           )
         }
-      />
+      >
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/blogs" element={<AdminBlogs />} />
+        <Route path="/admin/events" element={<AdminEvents />} />
+        <Route path="/admin/galleries" element={<AdminGalleries />} />
+      </Route>
 
       {/* STUDENT */}
       <Route
