@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { allServices } from '../../data/homeData';
 
 const ServiceDetail = () => {
@@ -21,7 +22,7 @@ const ServiceDetail = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Registration submitted successfully!');
+    toast.success('Registration submitted successfully!');
     setFormData({ name: '', email: '', phone: '', message: '' });
     setIsModalOpen(false);
   };
@@ -30,7 +31,7 @@ const ServiceDetail = () => {
     return (
       <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center pt-20">
         <h1 className="text-4xl text-[#0b1b24] font-black uppercase">Service Not Found</h1>
-        <Link to="/#services" className="mt-6 text-[#26c0ff] hover:text-[#0b1b24] font-bold transition-colors">Return to Services</Link>
+        <Link to="/#services" className="mt-6 text-[var(--color-primary)] hover:text-[#0b1b24] font-bold transition-colors">Return to Services</Link>
       </div>
     );
   }
@@ -55,14 +56,14 @@ const ServiceDetail = () => {
               className="max-w-4xl"
             >
               <div className="flex items-center gap-3 mb-6">
-                <span className="bg-[#f97316] text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded shadow-md">
+                <span className="bg-[var(--color-primary2)] text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded shadow-md">
                   {service.category}
                 </span>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-tight tracking-tighter mb-4 drop-shadow-lg uppercase">
                 {service.title}
               </h1>
-              <p className="text-lg md:text-xl text-[#26c0ff] font-bold uppercase tracking-[0.2em] max-w-2xl drop-shadow-md">
+              <p className="text-lg md:text-xl text-[var(--color-primary)] font-bold uppercase tracking-[0.2em] max-w-2xl drop-shadow-md">
                 {service.subtitle}
               </p>
             </motion.div>
@@ -91,42 +92,42 @@ const ServiceDetail = () => {
 
                 <div className="grid md:grid-cols-2 gap-10">
                   <div>
-                    <h3 className="text-xl font-bold text-[#26c0ff] mb-4 uppercase tracking-wider">Benefits</h3>
+                    <h3 className="text-xl font-bold text-[var(--color-primary)] mb-4 uppercase tracking-wider">Benefits</h3>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#f97316] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary2)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">Expert instruction from certified masters</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#f97316] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary2)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">Flexible scheduling options</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#f97316] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary2)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">Proven training methodologies</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#f97316] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary2)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">State-of-the-art training facilities</span>
                       </li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-[#26c0ff] mb-4 uppercase tracking-wider">Curriculum</h3>
+                    <h3 className="text-xl font-bold text-[var(--color-primary)] mb-4 uppercase tracking-wider">Curriculum</h3>
                     <p className="text-gray-600 leading-relaxed mb-4 font-medium">
                       The curriculum covers foundational techniques, advanced combinations, sparring strategies, and physical conditioning tailored to your skill level.
                     </p>
                     <ul className="space-y-4">
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#26c0ff] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">Beginner to Advanced Levels</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#26c0ff] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">Professional Coaching</span>
                       </li>
                       <li className="flex items-start gap-3">
-                        <div className="mt-1 w-2 h-2 rounded-full bg-[#26c0ff] shrink-0"></div>
+                        <div className="mt-1 w-2 h-2 rounded-full bg-[var(--color-primary)] shrink-0"></div>
                         <span className="text-gray-600 font-medium">Comprehensive Curriculum</span>
                       </li>
                     </ul>
@@ -163,7 +164,7 @@ const ServiceDetail = () => {
                 <div className="mt-8 pt-8 border-t border-gray-100">
                   <button 
                     onClick={() => setIsModalOpen(true)} 
-                    className="block w-full text-center bg-[#0b1b24] hover:bg-[#26c0ff] text-white py-4 font-bold uppercase tracking-widest text-xs rounded-xl transition-colors duration-300 shadow-lg"
+                    className="block w-full text-center bg-[#0b1b24] hover:bg-[var(--color-primary)] text-white py-4 font-bold uppercase tracking-widest text-xs rounded-xl transition-colors duration-300 shadow-lg"
                   >
                     Join Program
                   </button>
@@ -203,10 +204,10 @@ const ServiceDetail = () => {
               </button>
 
               {/* Decorative Top Line */}
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#26c0ff] via-[#f97316] to-[#26c0ff]"></div>
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary2)] to-[var(--color-primary)]"></div>
 
               <div className="text-center mb-6 mt-2">
-                <h2 className="text-3xl md:text-4xl font-black text-[#26c0ff] uppercase tracking-tighter mb-3">
+                <h2 className="text-3xl md:text-4xl font-black text-[var(--color-primary)] uppercase tracking-tighter mb-3">
                   Register Now
                 </h2>
                 <p className="text-gray-500 font-medium">
@@ -224,7 +225,7 @@ const ServiceDetail = () => {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#26c0ff] focus:border-transparent transition-all"
+                    className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                   />
                 </div>
 
@@ -238,7 +239,7 @@ const ServiceDetail = () => {
                       placeholder="john@example.com"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#26c0ff] focus:border-transparent transition-all"
+                      className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
@@ -249,7 +250,7 @@ const ServiceDetail = () => {
                       placeholder="(555) 000-0000"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#26c0ff] focus:border-transparent transition-all"
+                      className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
@@ -262,14 +263,14 @@ const ServiceDetail = () => {
                     placeholder="Any previous experience or questions?"
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#26c0ff] focus:border-transparent transition-all resize-none"
+                    className="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all resize-none"
                   ></textarea>
                 </div>
 
                 <div className="pt-4">
                   <button 
                     type="submit" 
-                    className="w-full bg-[#26c0ff] hover:bg-[#0b1b24] text-white font-black text-sm uppercase tracking-widest py-4 rounded-xl transition-colors shadow-lg hover:shadow-none"
+                    className="w-full bg-[var(--color-primary)] hover:bg-[#0b1b24] text-white font-black text-sm uppercase tracking-widest py-4 rounded-xl transition-colors shadow-lg hover:shadow-none"
                   >
                     Submit Registration
                   </button>

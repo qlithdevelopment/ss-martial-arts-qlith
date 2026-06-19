@@ -16,12 +16,12 @@ const Gallery = () => {
         {/* Header Section */}
         <div className="flex flex-col items-center mb-12">
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-1 w-12 bg-[#f97316]"></div>
-            <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Inside The Academy</h3>
-            <div className="h-1 w-12 bg-[#f97316]"></div>
+            <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+            <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Inside The Academy</h3>
+            <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-center text-white">
-            OUR  <span className="text-[#26c0ff]">GALLERY</span>
+            OUR  <span className="text-[var(--color-primary)]">GALLERY</span>
           </h2>
         </div>
 
@@ -53,7 +53,7 @@ const Gallery = () => {
       
         {/* View More Button */}
         <div className="w-full flex justify-center mt-12">
-          <Link to="/gallery" className="text-white font-bold text-sm tracking-widest uppercase hover:text-[#f97316] transition-colors flex items-center gap-2 border-b-2 border-transparent hover:border-[#f97316] pb-1">
+          <Link to="/gallery" className="text-white font-bold text-sm tracking-widest uppercase hover:text-[var(--color-primary2)] transition-colors flex items-center gap-2 border-b-2 border-transparent hover:border-[var(--color-primary2)] pb-1">
             View More <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
         </div>

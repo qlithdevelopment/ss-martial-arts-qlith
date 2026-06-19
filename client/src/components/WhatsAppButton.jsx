@@ -1,7 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 const WhatsAppButton = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
+  if (isAdmin) return null;
+
   return (
     <a 
       href="https://wa.me/1234567890" // Replace with actual WhatsApp number

@@ -23,8 +23,8 @@ const About = () => {
               {/* TOP: ABOUT ACADEMY (STANDARDIZED) */}
               <div className="flex flex-col items-start mb-8">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="h-1 w-12 bg-[#f97316]"></div>
-                  <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Discover Our Roots</h3>
+                  <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+                  <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Discover Our Roots</h3>
                 </div>
                 <motion.h2 
                   initial={{ opacity: 0, y: 30 }}
@@ -32,7 +32,7 @@ const About = () => {
                   viewport={{ once: true }}
                   className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-[#0b1b24]"
                 >
-                  ABOUT  <span className="text-[#26c0ff]">ACADEMY</span>
+                  ABOUT  <span className="text-[var(--color-primary)]">ACADEMY</span>
                 </motion.h2>
               </div>
 
@@ -41,7 +41,7 @@ const About = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, delay: 0.2 }}
-                className="flex flex-col justify-start mb-10 border-l-[3px] border-[#26c0ff] pl-6"
+                className="flex flex-col justify-start mb-10 border-l-[3px] border-[var(--color-primary)] pl-6"
               >
                 <p className="text-gray-600 text-sm leading-relaxed mb-4 font-medium max-w-[90%]">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos deleniti magnam perspiciatis dolorem error laboriosam necessitatibus, veniam debitis in! Ipsam animi officiis sapiente aspernatur hic repellat minus praesentium facilis.
@@ -63,7 +63,7 @@ const About = () => {
                 <div className="flex flex-col justify-start">
                   <div className="relative">
                     <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
-                      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#f97316] z-[-1] opacity-90 mix-blend-multiply"></span>
+                      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[var(--color-primary2)] z-[-1] opacity-90 mix-blend-multiply"></span>
                       MISSION
                     </h3>
                     <ul className="space-y-2 text-[12px] sm:text-[13px] text-gray-600 font-medium">
@@ -91,7 +91,7 @@ const About = () => {
                 <div className="flex flex-col justify-start">
                   <div className="relative">
                     <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
-                      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#26c0ff] z-[-1] opacity-90 mix-blend-multiply"></span>
+                      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[var(--color-primary)] z-[-1] opacity-90 mix-blend-multiply"></span>
                       VISION
                     </h3>
                     <p className="text-gray-600 leading-relaxed text-[12px] sm:text-[13px] font-medium pr-4">
@@ -112,7 +112,7 @@ const About = () => {
               whileInView={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", bounce: 0.4, duration: 1.5 }}
               viewport={{ once: true }}
-              className="w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] lg:w-[450px] lg:h-[450px] xl:w-[550px] xl:h-[550px] rounded-full bg-[#26c0ff] relative z-0 flex items-center justify-center mt-4 lg:mt-0"
+              className="w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] lg:w-[450px] lg:h-[450px] xl:w-[550px] xl:h-[550px] rounded-full bg-[var(--color-primary)] relative z-0 flex items-center justify-center mt-4 lg:mt-0"
             >
               {/* IMAGE CENTERED, BREAKING OUT BOTTOM */}
               <img 

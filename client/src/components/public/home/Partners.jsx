@@ -42,15 +42,15 @@ const Partners = () => {
       <div className="global-container pt-16 pb-24 md:pt-20 md:pb-32 relative z-10">
         <div className="flex flex-col items-center mb-12">
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-1 w-12 bg-[#f97316]"></div>
-            <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Trusted By</h3>
-            <div className="h-1 w-12 bg-[#f97316]"></div>
+            <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+            <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Trusted By</h3>
+            <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-center">
-            OUR  <span className="text-[#26c0ff]">PARTNERS</span>
+            OUR  <span className="text-[var(--color-primary)]">PARTNERS</span>
           </h2>
         </div>
-        <div className="w-16 h-1 bg-[#f97316] mx-auto mt-4 md:mt-6 rounded-full" />
+        <div className="w-16 h-1 bg-[var(--color-primary2)] mx-auto mt-4 md:mt-6 rounded-full" />
       </div>
 
       <div className="global-container flex flex-col gap-2 relative">

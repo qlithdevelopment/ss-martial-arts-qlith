@@ -26,6 +26,8 @@ import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
 
 import AdminDashboard from "../pages/admin/Dashboard";
+import AdminGalleries from "../pages/admin/Galleries";
+import AdminEvents from "../pages/admin/Events";
 
 import StudentDashboard from "../pages/student/Dashboard";
 
@@ -57,12 +59,18 @@ const AppRoutes = () => {
         <Route path="/services/:slug" element={<ServiceDetail />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
-        {!user && (
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-        )}
+        <Route
+          path="/login"
+          element={
+            !user ? (
+              <Login />
+            ) : user.role === "admin" ? (
+              <Navigate to="/admin/dashboard" />
+            ) : (
+              <Navigate to="/student/dashboard" />
+            )
+          }
+        />
       </Route>
 
       {/* ADMIN */}
@@ -72,6 +80,34 @@ const AppRoutes = () => {
           user?.role === "admin" ? (
             <AdminLayout>
               <AdminDashboard />
+            </AdminLayout>
+          ) : user ? (
+            <Navigate to="/unauthorized" />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/admin/galleries"
+        element={
+          user?.role === "admin" ? (
+            <AdminLayout>
+              <AdminGalleries />
+            </AdminLayout>
+          ) : user ? (
+            <Navigate to="/unauthorized" />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/admin/events"
+        element={
+          user?.role === "admin" ? (
+            <AdminLayout>
+              <AdminEvents />
             </AdminLayout>
           ) : user ? (
             <Navigate to="/unauthorized" />

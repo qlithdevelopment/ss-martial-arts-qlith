@@ -15,7 +15,7 @@ const BlogDetail = () => {
     return (
       <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center pt-20">
         <h1 className="text-4xl text-[#0b1b24] font-black uppercase">Article Not Found</h1>
-        <Link to="/blog" className="mt-6 text-[#26c0ff] hover:text-[#0b1b24] font-bold transition-colors">Return to Blog</Link>
+        <Link to="/blog" className="mt-6 text-[var(--color-primary)] hover:text-[#0b1b24] font-bold transition-colors">Return to Blog</Link>
       </div>
     );
   }
@@ -44,7 +44,7 @@ const BlogDetail = () => {
               className="max-w-4xl"
             >
               <div className="flex items-center gap-3 mb-4">
-                <span className="bg-[#26c0ff] text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-sm shadow-md">
+                <span className="bg-[var(--color-primary)] text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-sm shadow-md">
                   {blog.category}
                 </span>
                 <span className="text-white text-xs md:text-sm font-medium tracking-wide drop-shadow-md">
@@ -54,7 +54,7 @@ const BlogDetail = () => {
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-4 drop-shadow-lg">
                 {blog.title}
               </h1>
-              <p className="text-lg md:text-xl text-gray-100 font-medium max-w-2xl drop-shadow-md border-l-4 border-[#26c0ff] pl-4">
+              <p className="text-lg md:text-xl text-gray-100 font-medium max-w-2xl drop-shadow-md border-l-4 border-[var(--color-primary)] pl-4">
                 {blog.subtitle}
               </p>
             </motion.div>
@@ -80,7 +80,7 @@ const BlogDetail = () => {
       <div className="w-full bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-10">
-            <div className="h-1 w-12 bg-[#26c0ff]"></div>
+            <div className="h-1 w-12 bg-[var(--color-primary)]"></div>
             <h3 className="text-[#0b1b24] text-2xl md:text-3xl font-black tracking-tight">
               Related Articles
             </h3>
@@ -116,7 +116,7 @@ const BlogDetail = () => {
                         {item.date}
                       </span>
                     </div>
-                    <h4 className="text-xl font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[#26c0ff] transition-colors line-clamp-2">
+                    <h4 className="text-xl font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
                       {item.title}
                     </h4>
                     <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">

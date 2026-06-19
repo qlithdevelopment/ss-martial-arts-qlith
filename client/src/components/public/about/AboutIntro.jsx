@@ -8,7 +8,7 @@ const AboutIntro = () => {
     <section className="relative w-full min-h-[100svh] flex items-center bg-[#fafafa] pt-16 pb-12 md:pt-20 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 overflow-hidden">
       
       {/* MASSIVE BACKGROUND TEXT */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+      <div className="fixed top-[35vh] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
         ABOUT
       </div>
 
@@ -24,11 +24,11 @@ const AboutIntro = () => {
           >
             <div className="flex flex-col items-start mb-8">
               <div className="flex items-center gap-4 mb-4">
-                <div className="h-1 w-12 bg-[#f97316]"></div>
-                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Welcome to SS Martial Arts</h3>
+                <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+                <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Welcome to SS Martial Arts</h3>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
-                OUR  <span className="text-[#26c0ff]">LEGACY</span>
+                OUR  <span className="text-[var(--color-primary)]">LEGACY</span>
               </h2>
             </div>
           </motion.div>
@@ -41,7 +41,7 @@ const AboutIntro = () => {
             className="space-y-6 text-gray-600 text-base leading-relaxed font-medium"
           >
             {aboutIntroData.paragraphs.map((paragraph, idx) => (
-              <p key={idx} className={idx === 0 ? "text-lg text-[#0b1b24] font-semibold border-l-4 border-[#26c0ff] pl-6 py-1" : ""}>
+              <p key={idx} className={idx === 0 ? "text-lg text-[#0b1b24] font-semibold border-l-4 border-[var(--color-primary)] pl-6 py-1" : ""}>
                 {paragraph}
               </p>
             ))}
@@ -61,7 +61,7 @@ const AboutIntro = () => {
           >
             <div className="relative">
               <h3 className="relative text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-6">
-                <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#f97316] z-[-1] opacity-90 mix-blend-multiply"></span>
+                <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[var(--color-primary2)] z-[-1] opacity-90 mix-blend-multiply"></span>
                 MISSION
               </h3>
               <p className="text-gray-600 text-[15px] leading-relaxed font-medium">
@@ -80,7 +80,7 @@ const AboutIntro = () => {
           >
             <div className="relative">
               <h3 className="relative text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-6">
-                <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#26c0ff] z-[-1] opacity-90 mix-blend-multiply"></span>
+                <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[var(--color-primary)] z-[-1] opacity-90 mix-blend-multiply"></span>
                 VISION
               </h3>
               <p className="text-gray-600 leading-relaxed text-[15px] font-medium pr-4">

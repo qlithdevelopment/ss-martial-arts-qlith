@@ -96,16 +96,16 @@ const Testimonials = () => {
           <div>
             <div className="flex flex-col items-start">
               <div className="flex items-center gap-3 md:gap-4 mb-2">
-                <div className="h-1 w-8 md:w-12 bg-[#f97316]"></div>
-                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-[10px] md:text-sm">Success Stories</h3>
+                <div className="h-1 w-8 md:w-12 bg-[var(--color-primary2)]"></div>
+                <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-[10px] md:text-sm">Success Stories</h3>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black uppercase leading-none tracking-tighter text-[#0b1b24]">
-                MEMBER  <span className="text-[#26c0ff]">REVIEWS</span>
+                MEMBER  <span className="text-[var(--color-primary)]">REVIEWS</span>
               </h2>
             </div>
           </div>
           <div className="hidden md:flex items-center gap-3 mb-2">
-             <div className="w-2 h-2 rounded-full bg-[#26c0ff] animate-pulse" />
+             <div className="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse" />
              <p className="text-gray-600 font-bold text-xs tracking-widest uppercase">Scroll Down to Explore</p>
           </div>
         </div>

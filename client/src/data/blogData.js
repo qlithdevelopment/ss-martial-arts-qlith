@@ -24,15 +24,15 @@ export const blogData = [
       <h3 class="text-2xl font-bold text-[#0b1b24] mt-8 mb-4">Key Components of Modern Striking:</h3>
       <ul class="list-none space-y-4 mb-8">
         <li class="flex items-start">
-          <span class="text-[#26c0ff] mr-3 mt-1 text-xl">•</span>
+          <span class="text-[var(--color-primary)] mr-3 mt-1 text-xl">•</span>
           <span class="text-lg text-gray-600"><strong class="text-[#0b1b24] font-bold">Feints and Level Changes:</strong> Using subtle twitches, shoulder drops, and eye movements to draw out reactions and create openings that weren't originally there.</span>
         </li>
         <li class="flex items-start">
-          <span class="text-[#26c0ff] mr-3 mt-1 text-xl">•</span>
+          <span class="text-[var(--color-primary)] mr-3 mt-1 text-xl">•</span>
           <span class="text-lg text-gray-600"><strong class="text-[#0b1b24] font-bold">Switch-Stance Mastery:</strong> Being equally dangerous from both orthodox and southpaw stances, allowing fighters to attack from angles the opponent hasn't prepared for.</span>
         </li>
         <li class="flex items-start">
-          <span class="text-[#26c0ff] mr-3 mt-1 text-xl">•</span>
+          <span class="text-[var(--color-primary)] mr-3 mt-1 text-xl">•</span>
           <span class="text-lg text-gray-600"><strong class="text-[#0b1b24] font-bold">The Calf Kick:</strong> A relatively recent phenomenon that targets the peroneal nerve just below the knee. It has completely changed how fighters manage distance and distribute their weight.</span>
         </li>
       </ul>

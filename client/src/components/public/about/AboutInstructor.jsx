@@ -26,7 +26,7 @@ const AboutInstructor = () => {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative w-full h-[350px] sm:h-[450px] lg:flex-1 bg-[#26c0ff] rounded-tl-[60px] rounded-br-[60px] rounded-tr-[20px] rounded-bl-[20px] overflow-hidden"
+            className="relative w-full h-[350px] sm:h-[450px] lg:flex-1 bg-[var(--color-primary)] rounded-tl-[60px] rounded-br-[60px] rounded-tr-[20px] rounded-bl-[20px] overflow-hidden"
           >
             <img 
               src={instructorData.photo} 
@@ -40,7 +40,7 @@ const AboutInstructor = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, delay: 0.2 }}
-            className="bg-[#26c0ff] rounded-[20px] p-5 flex items-center gap-4 shrink-0 shadow-lg"
+            className="bg-[var(--color-primary)] rounded-[20px] p-5 flex items-center gap-4 shrink-0 shadow-lg"
           >
             <div className="w-14 h-14 bg-white rounded-[10px] p-1 shrink-0">
               {/* QR Code Placeholder */}
@@ -76,7 +76,7 @@ const AboutInstructor = () => {
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-4xl text-gray-500 font-serif leading-none">"</span>
-              <h2 className="text-4xl md:text-6xl font-black text-[#26c0ff] tracking-tight uppercase">HELLO.</h2>
+              <h2 className="text-4xl md:text-6xl font-black text-[var(--color-primary)] tracking-tight uppercase">HELLO.</h2>
             </div>
             
             <div className="mb-8">
@@ -84,7 +84,7 @@ const AboutInstructor = () => {
               <p className="text-gray-300 font-black tracking-widest text-sm mb-4">{instructorData.subtitle}</p>
               <div className="flex flex-wrap gap-2">
                 {instructorData.badges.map((badge, idx) => (
-                  <span key={idx} className="px-3 py-1 bg-[#26c0ff] text-[#0b1b24] text-[10px] font-bold rounded-md uppercase tracking-wider shadow-sm">
+                  <span key={idx} className="px-3 py-1 bg-[var(--color-primary)] text-[#0b1b24] text-[10px] font-bold rounded-md uppercase tracking-wider shadow-sm">
                     {badge}
                   </span>
                 ))}
@@ -101,7 +101,7 @@ const AboutInstructor = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, delay: 0.1 }}
             >
-              <h3 className="text-lg font-black text-[#26c0ff] mb-4 border-b-2 border-[#26c0ff] inline-block pb-1">Details</h3>
+              <h3 className="text-lg font-black text-[var(--color-primary)] mb-4 border-b-2 border-[var(--color-primary)] inline-block pb-1">Details</h3>
               <div className="space-y-4">
                 {instructorData.details.map((item, idx) => (
                   <div key={idx} className="flex flex-col">
@@ -118,11 +118,11 @@ const AboutInstructor = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, delay: 0.2 }}
             >
-              <h3 className="text-lg font-black text-[#26c0ff] mb-4 border-b-2 border-[#26c0ff] inline-block pb-1">Key Achievements</h3>
+              <h3 className="text-lg font-black text-[var(--color-primary)] mb-4 border-b-2 border-[var(--color-primary)] inline-block pb-1">Key Achievements</h3>
               <div className="flex flex-col gap-3">
                 {instructorData.achievements.map((achievement, idx) => (
                   <div key={idx} className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#26c0ff] mt-1.5 shrink-0 shadow-[0_0_5px_#26c0ff]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-1.5 shrink-0 shadow-[0_0_5px_var(--color-primary)]" />
                     <p className="text-sm text-gray-300 font-bold leading-relaxed">{achievement}</p>
                   </div>
                 ))}
@@ -137,7 +137,7 @@ const AboutInstructor = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, delay: 0.3 }}
           >
-            <h3 className="text-lg font-black text-[#26c0ff] mb-4 border-b-2 border-[#26c0ff] inline-block pb-1">Working Experience</h3>
+            <h3 className="text-lg font-black text-[var(--color-primary)] mb-4 border-b-2 border-[var(--color-primary)] inline-block pb-1">Working Experience</h3>
             <p className="text-sm font-bold text-gray-300 leading-relaxed bg-white/5 p-6 rounded-xl border border-gray-800 shadow-inner">
               {instructorData.experience}
             </p>
@@ -157,7 +157,7 @@ const AboutInstructor = () => {
           border-radius: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #26c0ff;
+          background: var(--color-primary);
           border-radius: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {

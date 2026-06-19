@@ -11,7 +11,7 @@ const FeatureItem = ({ item, isLeft }) => (
   >
     <div className={`flex items-center gap-3 mb-2 ${isLeft ? 'md:flex-row-reverse' : ''}`}>
       <span className="text-xl md:text-2xl font-black text-[#0b1b24]">{item.number}.</span>
-      <h4 className="text-sm md:text-base font-bold text-[#26c0ff] uppercase tracking-wide">{item.title}</h4>
+      <h4 className="text-sm md:text-base font-bold text-[var(--color-primary)] uppercase tracking-wide">{item.title}</h4>
     </div>
     <p className="text-xs md:text-sm text-gray-500 font-medium leading-relaxed max-w-[280px]">
       {item.desc}
@@ -34,7 +34,7 @@ const AboutFeatures = () => {
           >
             Our <span className="font-black text-[#0b1b24]">Features</span>
           </motion.h2>
-          <div className="w-16 h-1 bg-[#26c0ff] mx-auto mt-4 rounded-full"></div>
+          <div className="w-16 h-1 bg-[var(--color-primary)] mx-auto mt-4 rounded-full"></div>
         </div>
 
         {/* FEATURES GRID */}

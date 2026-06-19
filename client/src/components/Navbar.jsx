@@ -92,7 +92,7 @@ const Navbar = () => {
                     transition-all
                     duration-300
                     group
-                    ${isActive ? 'text-[#26c0ff]' : 'text-white hover:text-[#26c0ff]'}
+                    ${isActive ? 'text-[var(--color-primary)]' : 'text-white hover:text-[var(--color-primary)]'}
                   `}
                 >
                   {item.name.toUpperCase()}
@@ -105,7 +105,7 @@ const Navbar = () => {
                       -bottom-2
                       h-[2px]
                       w-full
-                      bg-[#f97316]
+                      bg-[var(--color-primary2)]
                       transition-all
                       duration-300
                       ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'}
@@ -152,7 +152,7 @@ const Navbar = () => {
             "
           >
             {/* Subtle top highlight */}
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#26c0ff]/50 to-transparent" />
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--color-primary)]/50 to-transparent" />
 
             <div className="flex flex-col p-2">
               {navLinks.map((item) => {
@@ -179,7 +179,7 @@ const Navbar = () => {
                         rounded-xl
                         group
                         overflow-hidden
-                        ${isActive ? 'text-[#26c0ff] bg-white/10' : 'text-gray-300 hover:text-white hover:bg-white/5'}
+                        ${isActive ? 'text-[var(--color-primary)] bg-white/10' : 'text-gray-300 hover:text-white hover:bg-white/5'}
                       `}
                   >
                     {/* Active/Hover Indicator Line */}
@@ -190,7 +190,7 @@ const Navbar = () => {
                         top-1/4 
                         bottom-1/4 
                         w-1 
-                        bg-[#f97316] 
+                        bg-[var(--color-primary2)] 
                         rounded-r-full 
                         transition-transform 
                         duration-300

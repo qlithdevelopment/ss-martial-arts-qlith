@@ -132,7 +132,7 @@ const TrainerCard = ({ instructor, setSelectedId }) => {
     <motion.div 
       layoutId={`card-${instructor.id}`}
       onClick={() => setSelectedId(instructor.id)}
-      className="group relative bg-black rounded-[24px] overflow-hidden border border-white/10 hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(38,192,255,0.4)] hover:border-[#26c0ff]/60 cursor-pointer h-[280px] md:h-[350px] lg:h-[450px] shrink-0 w-[85vw] md:w-[320px] lg:w-[360px] transition-transform duration-300 snap-center"
+      className="group relative bg-black rounded-[24px] overflow-hidden border border-white/10 hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(38,192,255,0.4)] hover:border-[var(--color-primary)]/60 cursor-pointer h-[280px] md:h-[350px] lg:h-[450px] shrink-0 w-[85vw] md:w-[320px] lg:w-[360px] transition-transform duration-300 snap-center"
       style={{ borderRadius: "24px", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
     >
       <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay pointer-events-none z-0"></div>
@@ -152,7 +152,7 @@ const TrainerCard = ({ instructor, setSelectedId }) => {
           <motion.h2 layoutId={`name-${instructor.id}`} className="text-3xl md:text-4xl font-black text-white tracking-tighter uppercase mb-1 leading-none">
             {instructor.name}
           </motion.h2>
-          <motion.p layoutId={`rank-${instructor.id}`} className="text-[#f97316] font-bold text-[10px] md:text-xs tracking-widest uppercase mb-4 leading-tight">
+          <motion.p layoutId={`rank-${instructor.id}`} className="text-[var(--color-primary2)] font-bold text-[10px] md:text-xs tracking-widest uppercase mb-4 leading-tight">
             {instructor.belt}
           </motion.p>
           
@@ -167,10 +167,10 @@ const TrainerCard = ({ instructor, setSelectedId }) => {
         </div>
 
         <div className="mt-auto pt-4 flex items-center gap-3 group-hover:gap-5 transition-all duration-300">
-          <div className="w-8 h-8 rounded-full bg-[#f97316]/10 border border-[#f97316]/30 flex items-center justify-center text-[#f97316] shrink-0">
+          <div className="w-8 h-8 rounded-full bg-[var(--color-primary2)]/10 border border-[var(--color-primary2)]/30 flex items-center justify-center text-[var(--color-primary2)] shrink-0">
             <ArrowRight size={16} />
           </div>
-          <span className="text-[#f97316] text-[10px] font-bold tracking-widest uppercase">View Profile</span>
+          <span className="text-[var(--color-primary2)] text-[10px] font-bold tracking-widest uppercase">View Profile</span>
         </div>
       </div>
     </motion.div>
@@ -237,7 +237,7 @@ const Trainers = () => {
       style={{ 
         height: typeof window !== 'undefined' ? `calc(100vh + ${maxScroll}px)` : 'auto' 
       }} 
-      className="w-full relative bg-[#f8f9fa] font-sans selection:bg-[#f97316] selection:text-white pb-20 lg:pb-0"
+      className="w-full relative bg-[#f8f9fa] font-sans selection:bg-[var(--color-primary2)] selection:text-white pb-20 lg:pb-0"
     >
       
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-center">
@@ -247,8 +247,8 @@ const Trainers = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
           TRAINERS
         </div>
-        <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-[#26c0ff]/10 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-[#f97316]/10 rounded-full blur-[100px]"></div>
+        <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-[var(--color-primary)]/10 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-1/4 left-0 w-[400px] h-[400px] bg-[var(--color-primary2)]/10 rounded-full blur-[100px]"></div>
         <div className="absolute inset-0 opacity-[0.3] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply"></div>
       </div>
 
@@ -269,7 +269,7 @@ const Trainers = () => {
                     {activeIndex === i && (
                       <motion.div 
                         layoutId="activeTimelineDot"
-                        className="w-3 h-3 rounded-full bg-[#f97316] absolute inset-0"
+                        className="w-3 h-3 rounded-full bg-[var(--color-primary2)] absolute inset-0"
                         style={{ scale: 1.5 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       />
@@ -282,12 +282,12 @@ const Trainers = () => {
 
             <div>
               <div className="flex items-center gap-4 mb-4">
-                <div className="h-1 w-12 bg-[#f97316]"></div>
-                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Meet The Team</h3>
+                <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+                <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Meet The Team</h3>
               </div>
               
               <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter">
-                OUR  <span className="text-[#26c0ff]">TRAINERS</span>
+                OUR  <span className="text-[var(--color-primary)]">TRAINERS</span>
               </h2>
               
               <p className="mt-2 lg:mt-6 text-black/60 text-base md:text-xl font-medium max-w-md">
@@ -295,7 +295,7 @@ const Trainers = () => {
               </p>
 
               <div className="mt-6 lg:mt-10">
-                <button className="bg-black text-white px-6 md:px-8 py-3 md:py-4 font-bold tracking-widest uppercase text-xs md:text-sm hover:bg-[#f97316] transition-colors duration-300 rounded-md">
+                <button className="bg-black text-white px-6 md:px-8 py-3 md:py-4 font-bold tracking-widest uppercase text-xs md:text-sm hover:bg-[var(--color-primary2)] transition-colors duration-300 rounded-md">
                   Join a Class
                 </button>
               </div>
@@ -342,7 +342,7 @@ const Trainers = () => {
               
               <button 
                 onClick={() => setSelectedId(null)} 
-                className="absolute top-4 right-4 md:top-6 md:right-6 z-50 w-10 h-10 bg-white/10 border border-white/20 hover:bg-[#f97316] hover:border-[#f97316] text-white rounded-full flex items-center justify-center transition-all"
+                className="absolute top-4 right-4 md:top-6 md:right-6 z-50 w-10 h-10 bg-white/10 border border-white/20 hover:bg-[var(--color-primary2)] hover:border-[var(--color-primary2)] text-white rounded-full flex items-center justify-center transition-all"
               >
                 <X size={20} />
               </button>
@@ -363,7 +363,7 @@ const Trainers = () => {
               <div className="w-full md:w-1/2 h-auto bg-black p-6 md:p-8 lg:p-10 relative flex flex-col justify-center shrink-0">
                 
                 <div>
-                  <div className="inline-block px-3 py-1 bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black text-[10px] tracking-widest uppercase mb-2 md:mb-3 rounded-full">
+                  <div className="inline-block px-3 py-1 bg-[var(--color-primary2)]/10 border border-[var(--color-primary2)]/30 text-[var(--color-primary2)] font-black text-[10px] tracking-widest uppercase mb-2 md:mb-3 rounded-full">
                     {selectedInstructor.rank}
                   </div>
                   
@@ -371,14 +371,14 @@ const Trainers = () => {
                     {selectedInstructor.name}
                   </motion.h2>
                   
-                  <motion.p layoutId={`rank-${selectedInstructor.id}`} className="text-[#f97316] font-bold text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">
+                  <motion.p layoutId={`rank-${selectedInstructor.id}`} className="text-[var(--color-primary2)] font-bold text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">
                     {selectedInstructor.belt} - {selectedInstructor.experience}
                   </motion.p>
                 </div>
 
                 <div className="mb-4 md:mb-6">
-                  <h3 className="text-[#26c0ff] text-sm md:text-base font-black uppercase tracking-wider border-b border-[#26c0ff]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
-                    <History size={16} className="text-[#f97316]" /> Biography
+                  <h3 className="text-[var(--color-primary)] text-sm md:text-base font-black uppercase tracking-wider border-b border-[var(--color-primary)]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
+                    <History size={16} className="text-[var(--color-primary2)]" /> Biography
                   </h3>
                   <p className="text-white/70 leading-relaxed font-medium text-[11px] md:text-xs lg:text-sm">
                     {selectedInstructor.bio}
@@ -387,25 +387,25 @@ const Trainers = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
                   <div>
-                    <h3 className="text-[#26c0ff] text-sm md:text-base font-black uppercase tracking-wider border-b border-[#26c0ff]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
-                      <Users size={16} className="text-[#f97316]" /> Expertise
+                    <h3 className="text-[var(--color-primary)] text-sm md:text-base font-black uppercase tracking-wider border-b border-[var(--color-primary)]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
+                      <Users size={16} className="text-[var(--color-primary2)]" /> Expertise
                     </h3>
                     <ul className="space-y-1.5 md:space-y-2">
                       {selectedInstructor.disciplines.map((d, i) => (
                         <li key={i} className="flex items-center gap-3 text-white/80 font-medium text-[11px] md:text-xs">
-                          <div className="w-1.5 h-1.5 bg-[#f97316] rounded-full shrink-0"></div> {d}
+                          <div className="w-1.5 h-1.5 bg-[var(--color-primary2)] rounded-full shrink-0"></div> {d}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <h3 className="text-[#26c0ff] text-sm md:text-base font-black uppercase tracking-wider border-b border-[#26c0ff]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
-                      <Award size={16} className="text-[#f97316]" /> Achievements
+                    <h3 className="text-[var(--color-primary)] text-sm md:text-base font-black uppercase tracking-wider border-b border-[var(--color-primary)]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
+                      <Award size={16} className="text-[var(--color-primary2)]" /> Achievements
                     </h3>
                     <ul className="space-y-1.5 md:space-y-2">
                       {selectedInstructor.achievements.map((a, i) => (
                         <li key={i} className="flex items-center gap-3 text-white/80 font-medium text-[11px] md:text-xs">
-                          <div className="w-1.5 h-1.5 bg-[#f97316] rounded-full shrink-0"></div> {a}
+                          <div className="w-1.5 h-1.5 bg-[var(--color-primary2)] rounded-full shrink-0"></div> {a}
                         </li>
                       ))}
                     </ul>
@@ -413,13 +413,13 @@ const Trainers = () => {
                 </div>
 
                 <div className="bg-white/5 p-4 rounded-xl md:rounded-2xl border border-white/10 mb-4 md:mb-6 relative overflow-hidden">
-                  <div className="text-[#f97316] text-4xl absolute top-0 left-2 opacity-20 font-serif leading-none">"</div>
+                  <div className="text-[var(--color-primary2)] text-4xl absolute top-0 left-2 opacity-20 font-serif leading-none">"</div>
                   <p className="text-white/90 italic font-medium text-center text-[11px] md:text-xs relative z-10 pt-1">
                     {selectedInstructor.philosophy}
                   </p>
                 </div>
 
-                <button className="w-full py-3 bg-[#f97316] hover:bg-[#b5952f] text-white font-black uppercase tracking-widest text-xs md:text-sm rounded-xl transition-colors shadow-[0_10px_20px_rgba(212,175,55,0.3)] mt-auto shrink-0">
+                <button className="w-full py-3 bg-[var(--color-primary2)] hover:bg-[#b5952f] text-white font-black uppercase tracking-widest text-xs md:text-sm rounded-xl transition-colors shadow-[0_10px_20px_rgba(212,175,55,0.3)] mt-auto shrink-0">
                   Join A Class With {selectedInstructor.name.split(' ')[0]}
                 </button>
               </div>

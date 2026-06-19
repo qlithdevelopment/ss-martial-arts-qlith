@@ -23,26 +23,30 @@ const BlogPage = () => {
   }, [featuredBlogs.length]);
 
   return (
-    <div className="w-full min-h-screen bg-[#f8f9fa] flex flex-col pt-24 pb-20 font-sans">
+    <div className="relative overflow-hidden w-full min-h-screen bg-[#f8f9fa] pt-24 pb-20 font-sans">
+      {/* MASSIVE BACKGROUND TEXT */}
+      <div className="fixed top-[35vh] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+        BLOG
+      </div>
       <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* HEADER */}
-        <div className="text-center mb-12">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-[#0b1b24] tracking-tight mb-4"
+        <div className="mb-12 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            Blog & <span className="text-[#26c0ff]">Newsroom</span>
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-gray-500 font-medium text-lg max-w-2xl mx-auto"
-          >
-            Insights, training guides, and resources from the leaders in martial arts and athletic development.
-          </motion.p>
+            <div className="flex flex-col items-start mb-8">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+                <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Blog & Newsroom</h3>
+              </div>
+              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
+                OUR <span className="text-[var(--color-primary)]">BLOG</span>
+              </h2>
+            </div>
+          </motion.div>
         </div>
 
         {/* FEATURED SLIDER */}
@@ -65,7 +69,7 @@ const BlogPage = () => {
                 >
                   {/* Text Side (Light Theme) */}
                   <div className="w-full md:w-1/2 h-1/2 md:h-full p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1 bg-white">
-                    <span className="text-xs font-bold text-[#26c0ff] uppercase tracking-widest mb-4">
+                    <span className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-widest mb-4">
                       {featuredBlogs[currentSlide].category}
                     </span>
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0b1b24] mb-4 leading-tight tracking-tight">
@@ -80,7 +84,7 @@ const BlogPage = () => {
                       </span>
                       <Link 
                         to={`/blog/${featuredBlogs[currentSlide].id}`}
-                        className="text-sm font-bold text-white bg-[#0b1b24] hover:bg-[#26c0ff] px-6 py-3 rounded-lg transition-colors shadow-md"
+                        className="text-sm font-bold text-white bg-[#0b1b24] hover:bg-[var(--color-primary)] px-6 py-3 rounded-lg transition-colors shadow-md"
                       >
                         Read Article
                       </Link>
@@ -108,7 +112,7 @@ const BlogPage = () => {
                   key={idx}
                   onClick={() => setCurrentSlide(idx)}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    currentSlide === idx ? 'w-8 bg-[#26c0ff]' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                    currentSlide === idx ? 'w-8 bg-[var(--color-primary)]' : 'w-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -154,7 +158,7 @@ const BlogPage = () => {
                       {blog.date}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[#26c0ff] transition-colors">
+                  <h3 className="text-xl font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors">
                     {blog.title}
                   </h3>
                   <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">

@@ -306,7 +306,7 @@ const Hero = () => {
 
             {/* ITEM */}
             <div>
-              <h3 className="text-4xl md:text-5xl font-black text-[#26c0ff]">
+              <h3 className="text-4xl md:text-5xl font-black text-[var(--color-primary)]">
                 500+
               </h3>
               <p className="text-gray-300 font-bold uppercase tracking-widest text-xs mt-2">

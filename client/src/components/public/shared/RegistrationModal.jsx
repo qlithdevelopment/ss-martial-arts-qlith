@@ -57,10 +57,10 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
 
           {/* Left Side: Details */}
           <div className="w-full md:w-1/2 bg-gray-50 p-8 overflow-y-auto border-r border-gray-100">
-            <span className="text-[#f97316] font-bold text-xs tracking-widest uppercase mb-2 block">
+            <span className="text-[var(--color-primary2)] font-bold text-xs tracking-widest uppercase mb-2 block">
               {type === 'program' ? 'Program Details' : 'Course Details'}
             </span>
-            <h2 className="text-3xl font-black text-[#26c0ff] uppercase leading-tight mb-4">
+            <h2 className="text-3xl font-black text-[var(--color-primary)] uppercase leading-tight mb-4">
               {details?.title}
             </h2>
             <p className="text-gray-600 text-sm leading-relaxed mb-6">
@@ -68,22 +68,22 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
             </p>
 
             <div className="mb-6">
-              <h4 className="font-bold text-[#26c0ff] mb-3 uppercase tracking-wide text-sm border-b pb-2">Benefits</h4>
+              <h4 className="font-bold text-[var(--color-primary)] mb-3 uppercase tracking-wide text-sm border-b pb-2">Benefits</h4>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2 text-sm text-gray-700">
-                  <span className="text-[#26c0ff]">✓</span> Expert instruction
+                  <span className="text-[var(--color-primary)]">✓</span> Expert instruction
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-700">
-                  <span className="text-[#26c0ff]">✓</span> Flexible scheduling
+                  <span className="text-[var(--color-primary)]">✓</span> Flexible scheduling
                 </li>
                 <li className="flex items-center gap-2 text-sm text-gray-700">
-                  <span className="text-[#26c0ff]">✓</span> Proven training methodologies
+                  <span className="text-[var(--color-primary)]">✓</span> Proven training methodologies
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold text-[#26c0ff] mb-3 uppercase tracking-wide text-sm border-b pb-2">Curriculum</h4>
+              <h4 className="font-bold text-[var(--color-primary)] mb-3 uppercase tracking-wide text-sm border-b pb-2">Curriculum</h4>
               <p className="text-sm text-gray-600 leading-relaxed">
                 The curriculum covers foundational techniques, advanced combinations, sparring strategies, and physical conditioning tailored to your skill level.
               </p>
@@ -101,12 +101,12 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
                 <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
                 </div>
-                <h3 className="text-2xl font-black text-[#26c0ff] mb-2 uppercase">Registration Successful!</h3>
+                <h3 className="text-2xl font-black text-[var(--color-primary)] mb-2 uppercase">Registration Successful!</h3>
                 <p className="text-gray-600">We'll be in touch with you shortly.</p>
               </motion.div>
             ) : (
               <>
-                <h3 className="text-2xl font-black text-[#26c0ff] uppercase mb-1">Register Now</h3>
+                <h3 className="text-2xl font-black text-[var(--color-primary)] uppercase mb-1">Register Now</h3>
                 <p className="text-gray-500 text-xs mb-6">Fill out the form below to secure your spot.</p>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -118,7 +118,7 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                       placeholder="John Doe"
                     />
                   </div>
@@ -132,7 +132,7 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -144,7 +144,7 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
                         required
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all"
                         placeholder="(555) 000-0000"
                       />
                     </div>
@@ -157,14 +157,14 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
                       rows="3"
                       value={formData.message}
                       onChange={handleChange}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all resize-none"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all resize-none"
                       placeholder="Any previous experience or questions?"
                     ></textarea>
                   </div>
 
                   <button 
                     type="submit"
-                    className="w-full bg-[#26c0ff] hover:bg-[#f97316] text-white font-bold uppercase tracking-widest py-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mt-2"
+                    className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary2)] text-white font-bold uppercase tracking-widest py-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mt-2"
                   >
                     Submit Registration
                   </button>

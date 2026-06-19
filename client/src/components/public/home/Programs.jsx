@@ -42,12 +42,12 @@ const Programs = () => {
 
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-1 w-12 bg-[#f97316]"></div>
-            <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">What We Offer</h3>
-            <div className="h-1 w-12 bg-[#f97316]"></div>
+            <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+            <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">What We Offer</h3>
+            <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-[#0b1b24] text-center">
-            PROGRAMS &  <span className="text-[#26c0ff]">CLASSES</span>
+            PROGRAMS &  <span className="text-[var(--color-primary)]">CLASSES</span>
           </h2>
         </div>
         <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
@@ -90,14 +90,14 @@ const Programs = () => {
             {/* BOTTOM DETAILS HALF */}
             <div className="w-full bg-white p-8 flex flex-col relative">
               
-              <h3 className="text-2xl font-black text-[#1a1a1a] uppercase tracking-tight mb-6 group-hover:text-[#26c0ff] transition-colors duration-300">
+              <h3 className="text-2xl font-black text-[#1a1a1a] uppercase tracking-tight mb-6 group-hover:text-[var(--color-primary)] transition-colors duration-300">
                 {program.title}
               </h3>
 
               <div className="flex flex-col gap-4">
                 {program.bullets.map((bullet, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="mt-0.5 w-4 h-4 rounded-full bg-[#26c0ff]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="mt-0.5 w-4 h-4 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center flex-shrink-0">
                       <Check size={10} strokeWidth={3} className="text-[#0b1b24]" />
                     </div>
                     <span className="text-gray-600 text-[13px] md:text-sm font-medium leading-tight">

@@ -26,7 +26,7 @@ const OurTrainers = () => {
             <div key={current.id} className="w-screen h-full flex flex-col md:flex-row items-center relative flex-shrink-0">
               
               {/* SPLIT BACKGROUND */}
-              <div className="absolute inset-y-0 right-0 w-1/2 bg-[#26c0ff] z-0" />
+              <div className="absolute inset-y-0 right-0 w-1/2 bg-[var(--color-primary)] z-0" />
 
               {/* BACKGROUND TEXT EFFECT */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden mix-blend-overlay opacity-30">
@@ -37,14 +37,14 @@ const OurTrainers = () => {
 
               {/* LEFT CONTENT */}
               <div className="w-full md:w-1/3 flex flex-col justify-center px-6 md:pl-32 md:pr-4 h-[30vh] md:h-full relative z-20 pt-12 md:pt-0">
-                <p className="text-[#f97316] tracking-[0.3em] text-[10px] md:text-xs font-bold mb-2 md:mb-4 uppercase">
+                <p className="text-[var(--color-primary2)] tracking-[0.3em] text-[10px] md:text-xs font-bold mb-2 md:mb-4 uppercase">
                   {current.subtitle}
                 </p>
                 <h1 className="text-4xl md:text-[70px] font-black text-white tracking-widest uppercase mb-2 md:mb-6 leading-none drop-shadow-2xl relative">
                   <span className="relative z-10">{current.title}</span>
-                  <span className="absolute top-0 left-[3px] -z-10 text-[#26c0ff] opacity-50 animate-pulse">{current.title}</span>
+                  <span className="absolute top-0 left-[3px] -z-10 text-[var(--color-primary)] opacity-50 animate-pulse">{current.title}</span>
                 </h1>
-                <div className="h-[2px] bg-[#26c0ff] mb-2 md:mb-6 w-[40px]" />
+                <div className="h-[2px] bg-[var(--color-primary)] mb-2 md:mb-6 w-[40px]" />
                 <p className="text-gray-300 text-[10px] md:text-base leading-relaxed md:leading-loose tracking-wider max-w-md">
                   {current.description}
                 </p>
@@ -83,7 +83,7 @@ const OurTrainers = () => {
             {/* See More Card */}
             <div className="w-[40vw] md:w-[25vw] h-full flex flex-col items-center justify-center relative flex-shrink-0 bg-[#0b1b24]">
               <Link to="/trainers" className="flex flex-col items-center gap-2 md:gap-4 group">
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#f97316] text-white flex items-center justify-center group-hover:scale-110 group-hover:bg-[#26c0ff] transition-all duration-500 shadow-xl">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[var(--color-primary2)] text-white flex items-center justify-center group-hover:scale-110 group-hover:bg-[var(--color-primary)] transition-all duration-500 shadow-xl">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </div>
                 <h2 className="text-base md:text-3xl font-black text-white tracking-widest uppercase">

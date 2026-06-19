@@ -49,7 +49,7 @@ const Events = () => {
 
               {/* Screen (Dynamic Background) */}
               <motion.div 
-                animate={{ backgroundColor: activeIndex % 2 === 0 ? "#26c0ff" : "#f97316" }}
+                animate={{ backgroundColor: activeIndex % 2 === 0 ? "var(--color-primary)" : "var(--color-primary2)" }}
                 transition={{ duration: 0.5 }}
                 className="w-full h-full rounded-[26px] md:rounded-[32px] relative overflow-hidden flex flex-col py-6 px-6 md:py-8 md:px-10 shadow-inner"
               >
@@ -137,11 +137,11 @@ const Events = () => {
           >
             <div className="flex flex-col items-start mb-4">
               <div className="flex items-center gap-4 mb-4">
-                <div className="h-1 w-12 bg-[#f97316]"></div>
-                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Join The Action</h3>
+                <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
+                <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Join The Action</h3>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-white">
-                UPCOMING  <span className="text-[#26c0ff]">EVENTS</span>
+                UPCOMING  <span className="text-[var(--color-primary)]">EVENTS</span>
               </h2>
             </div>
 
@@ -149,13 +149,13 @@ const Events = () => {
               {eventsList.map((evt) => (
                 <div key={evt.id} className="flex items-start gap-4 group cursor-pointer">
                   {/* Icon Circle */}
-                  <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-[#f97316] group-hover:text-white text-[#f97316] transition-colors duration-300">
+                  <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-[var(--color-primary2)] group-hover:text-white text-[var(--color-primary2)] transition-colors duration-300">
                     {evt.icon}
                   </div>
                   
                   {/* Text Content */}
                   <div className="flex flex-col pt-0">
-                    <h4 className="text-base md:text-xl font-bold text-white mb-0.5 group-hover:text-[#f97316] transition-colors">
+                    <h4 className="text-base md:text-xl font-bold text-white mb-0.5 group-hover:text-[var(--color-primary2)] transition-colors">
                       {evt.title}
                     </h4>
                     <p className="text-gray-400 text-xs md:text-base leading-snug max-w-md">
