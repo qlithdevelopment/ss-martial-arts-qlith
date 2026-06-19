@@ -15,6 +15,11 @@ Route::get('/running', function () {
     return "SS Martial Arts Server is Running";
 });
 
+Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show']);
+Route::get('/galleries', [GalleryController::class, 'index']);
+Route::get('/galleries/{id}', [GalleryController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -33,18 +38,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/fee-status', [PaymentController::class, 'myFeeStatus']);
     Route::post('/payments/add', [PaymentController::class, 'addPayment']);
 
-    Route::get('/galleries', [GalleryController::class, 'index']);
     Route::post('/galleries', [GalleryController::class, 'store']);
-    Route::get('/galleries/{id}', [GalleryController::class, 'show']);
     Route::post('/galleries/{id}', [GalleryController::class, 'update']);
     Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
 
-    Route::get('/events', [EventController::class, 'index']);
     Route::post('/events', [EventController::class, 'store']);
-    Route::get('/events/{id}', [EventController::class, 'show']);
+
     Route::post('/events/{id}', [EventController::class, 'update']);
     Route::delete('/events/{id}', [EventController::class, 'destroy']);
-
 });
 
 
