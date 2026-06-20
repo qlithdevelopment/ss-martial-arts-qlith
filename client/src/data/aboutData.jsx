@@ -158,5 +158,45 @@ export const faqData = [
   {
     question: "Is sparring mandatory?",
     answer: "Sparring is entirely optional for beginners. It is only introduced when a student reaches a certain level of proficiency and expresses a desire to participate."
+  },
+  {
+    question: "What is the typical class duration?",
+    answer: "Most of our classes run for 60 minutes, which includes a warm-up, technical instruction, drills, and a cool-down period."
+  },
+  {
+    question: "Do you offer private lessons?",
+    answer: "Yes, we offer one-on-one private training sessions for students looking for personalized instruction or preparing for competitions."
+  },
+  {
+    question: "Is there a belt testing fee?",
+    answer: "Yes, belt promotions involve a nominal testing fee which covers the cost of the examination, the new belt, and the certificate."
+  },
+  {
+    question: "What age can children start training?",
+    answer: "Our youth programs start as early as age 4 with our Little Ninjas class, focusing on basic motor skills, listening, and fun."
+  },
+  {
+    question: "Can I train if I have a pre-existing injury?",
+    answer: "Please consult with your doctor first. If cleared, let our instructors know so they can provide appropriate modifications during training."
+  },
+  {
+    question: "How do I sign up for a membership?",
+    answer: "You can sign up directly at our front desk or through our online member portal. We offer monthly, bi-annual, and annual plans."
+  },
+  {
+    question: "Are there locker rooms and showers available?",
+    answer: "Yes, our facility is equipped with separate locker rooms, clean showers, and changing areas for your convenience."
+  },
+  {
+    question: "Do you participate in tournaments?",
+    answer: "Yes, our academy has an active competition team. While not mandatory, we highly encourage interested students to compete."
+  },
+  {
+    question: "What happens if I miss a class?",
+    answer: "You can make up missed classes by attending another session of the same level within the same week. Check our schedule for alternatives."
+  },
+  {
+    question: "Can family members watch the classes?",
+    answer: "Absolutely! We have a designated viewing area where parents and family members can comfortably watch the classes."
   }
 ];

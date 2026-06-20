@@ -91,10 +91,10 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       {/* SIDEBAR MAIN NAV ASIDE CONTAINER */}
       <aside
         className={`
-          fixed top-0 bottom-0 left-0 z-40 md:relative
+          fixed top-0 bottom-0 left-0 z-40 md:sticky md:top-0
           bg-white border-r border-gray-200 p-4 flex flex-col justify-between transition-all duration-300
           ${isCollapsed ? "-translate-x-full md:translate-x-0 md:w-20" : "translate-x-0 w-66"}
-          min-h-screen pt-16 md:pt-4
+          h-screen pt-16 md:pt-4
         `}
       >
         <div>

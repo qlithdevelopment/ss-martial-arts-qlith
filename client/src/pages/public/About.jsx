@@ -17,7 +17,7 @@ const AboutPage = () => {
       <AboutInstructor />
       <AboutFeatures />
       <AboutHistory />
-      <AboutFAQ />
+      <AboutFAQ limit={5} />
     </div>
   );
 };

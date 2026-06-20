@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
 import Logo from "../../assets/Logo_compress.png";
 
 import silhouetteImg from "../../assets/samurai_shadow.png";
@@ -16,6 +17,7 @@ const Login = () => {
   });
   
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -149,16 +151,25 @@ const Login = () => {
             </div>
 
             {/* Password */}
-            <div className="flex flex-col gap-1.5 mt-2">
+            <div className="flex flex-col gap-1.5 mt-2 relative">
               <label className="text-[#000000] text-[10px] font-bold uppercase tracking-widest pl-1">Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full bg-[#26c0ff]/5 border-2 border-[#26c0ff]/20 rounded-xl px-4 py-3.5 text-[#000000] font-medium text-sm placeholder-gray-300 focus:outline-none focus:bg-white focus:border-[#26c0ff] transition-all"
-              />
+              <div className="relative w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full bg-[#26c0ff]/5 border-2 border-[#26c0ff]/20 rounded-xl px-4 py-3.5 pr-12 text-[#000000] font-medium text-sm placeholder-gray-300 focus:outline-none focus:bg-white focus:border-[#26c0ff] transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#26c0ff] transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             {/* Button */}

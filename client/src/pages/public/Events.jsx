@@ -242,7 +242,7 @@ const Events = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedEventId(null)}
-            className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8 bg-[#26c0ff]/60 backdrop-blur-sm overflow-y-auto custom-scrollbar"
+            className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md overflow-y-auto custom-scrollbar"
           >
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -262,13 +262,13 @@ const Events = () => {
 
               {/* Modal Banner */}
               <div className="w-full h-[100px] md:h-[120px] shrink-0 relative">
-                <div className="absolute inset-0 bg-[#26c0ff]/40 z-10 pointer-events-none"></div>
+                <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none"></div>
                 <img 
                   src={selectedEvent.image} 
                   alt={selectedEvent.title} 
                   className="w-full h-full object-cover object-center"
                 />
-                <div className="absolute bottom-0 left-0 w-full p-4 md:p-6 z-20 bg-gradient-to-t from-[#26c0ff] to-transparent">
+                <div className="absolute bottom-0 left-0 w-full p-4 md:p-6 z-20 bg-gradient-to-t from-black to-transparent">
                   <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
                     {selectedEvent.title}
                   </h2>
@@ -282,22 +282,22 @@ const Events = () => {
                 <div className="flex flex-col gap-4 md:gap-5">
                   
                   {/* Quick Info Bar */}
-                  <div className="flex flex-wrap gap-3 bg-[#26c0ff] p-3 rounded-xl border border-[#26c0ff] text-xs">
+                  <div className="flex flex-wrap gap-3 bg-[#0b1b24] p-3 rounded-xl border border-gray-200 shadow-sm text-xs">
                     <div className="flex items-center gap-1.5">
                       <Calendar size={14} className="text-[#f97316]" />
-                      <span className="text-[#0b1b24] font-bold">{selectedEvent.date}</span>
+                      <span className="text-white font-medium tracking-wide">{selectedEvent.date}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Clock size={14} className="text-[#f97316]" />
-                      <span className="text-[#0b1b24] font-bold">{selectedEvent.time}</span>
+                      <span className="text-white font-medium tracking-wide">{selectedEvent.time}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <MapPin size={14} className="text-[#f97316]" />
-                      <span className="text-[#0b1b24] font-bold">{selectedEvent.location}</span>
+                      <span className="text-white font-medium tracking-wide">{selectedEvent.location}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <User size={14} className="text-[#f97316]" />
-                      <span className="text-[#0b1b24] font-bold">{selectedEvent.speaker}</span>
+                      <span className="text-white font-medium tracking-wide">{selectedEvent.speaker}</span>
                     </div>
                   </div>
 

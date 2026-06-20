@@ -35,8 +35,9 @@ const FAQItem = ({ faq, isOpen, onClick }) => {
   );
 };
 
-const AboutFAQ = () => {
+const AboutFAQ = ({ limit }) => {
   const [openIndex, setOpenIndex] = useState(0);
+  const displayedFaqs = limit ? faqData.slice(0, limit) : faqData;
 
   return (
     <section className="w-full bg-[#081218] py-12 md:py-16 lg:py-24 px-4 md:px-8">
@@ -45,7 +46,7 @@ const AboutFAQ = () => {
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
           
           {/* LEFT: Title & Info */}
-          <div className="w-full lg:w-[40%] flex flex-col items-start pt-4">
+          <div className="w-full lg:w-[40%] flex flex-col items-start pt-4 lg:sticky lg:top-28 h-fit">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -77,7 +78,7 @@ const AboutFAQ = () => {
 
           {/* RIGHT: Accordion */}
           <div className="w-full lg:w-[60%] flex flex-col gap-3">
-            {faqData.map((faq, idx) => (
+            {displayedFaqs.map((faq, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 10 }}
