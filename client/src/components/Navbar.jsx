@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowRight } from 'lucide-react'
 import Logo from '../assets/Full_Logo.png'
+import { useAuth } from '../context/AuthContext'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const { user } = useAuth()
 
   const location = useLocation()
 
@@ -18,8 +20,16 @@ const Navbar = () => {
     { name: 'Blog', path: '/blog' },
     { name: 'FAQ', path: '/faq' },
     { name: 'Contact', path: '/contact' },
-    { name: 'Login', path: '/login' },
   ]
+
+  if (user) {
+    navLinks.push({ 
+      name: 'Dashboard', 
+      path: user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard' 
+    })
+  } else {
+    navLinks.push({ name: 'Login', path: '/login' })
+  }
 
   // SCROLL NAVBAR EFFECT ONLY
   useEffect(() => {
@@ -78,6 +88,20 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-6 xl:gap-10">
             {navLinks.map((item) => {
               const isActive = checkIsActive(item.path)
+
+              if (item.name === 'Dashboard') {
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={handleNavClick}
+                    className="flex items-center gap-1.5 bg-[#f97316] text-white px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black tracking-widest uppercase transition-all duration-300 hover:bg-orange-600 hover:scale-105 shadow-[0_0_15px_rgba(249,115,22,0.4)]"
+                  >
+                    {item.name}
+                    <ArrowRight size={14} className="ml-1" />
+                  </Link>
+                )
+              }
 
               return (
                 <Link
@@ -157,6 +181,20 @@ const Navbar = () => {
             <div className="flex flex-col p-2">
               {navLinks.map((item) => {
                 const isActive = checkIsActive(item.path)
+
+                if (item.name === 'Dashboard') {
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      onClick={handleNavClick}
+                      className="relative flex items-center justify-between px-6 py-4 text-sm md:text-base font-black uppercase tracking-widest transition-all duration-300 rounded-xl group overflow-hidden bg-[#f97316] text-white mt-2 shadow-[0_0_20px_rgba(249,115,22,0.2)]"
+                    >
+                      <span className="relative z-10">{item.name}</span>
+                      <ArrowRight size={18} className="relative z-10" />
+                    </Link>
+                  )
+                }
 
                 return (
                   <Link

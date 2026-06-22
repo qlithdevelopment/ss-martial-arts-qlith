@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import AppRoutes from './routes/AppRoutes'
 import { ReactLenis } from 'lenis/react'
-import WhatsAppButton from './components/WhatsAppButton'
 import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Navbar'
 
@@ -18,7 +17,6 @@ function App() {
     <>
       <ScrollToTop />
       <AppRoutes />
-      <WhatsAppButton />
     </>
     // </ReactLenis>
   )

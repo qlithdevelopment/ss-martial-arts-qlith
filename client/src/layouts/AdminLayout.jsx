@@ -5,12 +5,30 @@ import Sidebar from "../components/Sidebar";
 const AdminLayout = () => {
   const [time, setTime] = useState(new Date());
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Synchronize live clock ticker
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Track window scroll to show/hide the back to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-800">
@@ -48,6 +66,19 @@ const AdminLayout = () => {
         <main className="flex-1 p-4 mt-14 overflow-y-auto">
           <Outlet />
         </main>
+
+        {/* SCROLL TO TOP BUTTON */}
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 bg-[#f97316] text-white p-3.5 rounded-full shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] hover:bg-orange-600 hover:shadow-[0_6px_20px_rgba(249,115,22,0.23)] hover:scale-110 transition-all duration-300 z-50 flex items-center justify-center animate-fadeIn"
+            title="Scroll to Top"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

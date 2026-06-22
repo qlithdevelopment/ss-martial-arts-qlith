@@ -12,52 +12,42 @@ import trainer1Img from "../../assets/group_classes.png";
 import trainer2Img from "../../assets/generated_trainer2.png";
 import trainer3Img from "../../assets/personal_training.png";
 
-const albumsData = [
-  {
-    id: "national-championship-2026",
-    title: "National Championship 2026",
-    subtitle: "State Level Tournament",
-    cover: eventTournamentImg,
-    images: [eventTournamentImg, femaleMmaImg, masterKickImg, eventSeminarImg, trainer2Img],
-    spanClass: "md:col-span-2 md:row-span-2",
-  },
-  {
-    id: "belt-grading-ceremony",
-    title: "Master's Belt Grading Ceremony",
-    subtitle: "Dan Promotions",
-    cover: mastersGroupImg,
-    images: [mastersGroupImg, trainer1Img, trainer2Img, yogaMasterImg],
-    spanClass: "md:col-span-1 md:row-span-2",
-  },
-  {
-    id: "womens-self-defense",
-    title: "Women's Self Defense Seminar",
-    subtitle: "Community Event",
-    cover: femaleMmaImg,
-    images: [femaleMmaImg, eventSeminarImg, trainer2Img],
-    spanClass: "md:col-span-1 md:row-span-1",
-  },
-  {
-    id: "striking-conditioning-camp",
-    title: "Striking & Conditioning Camp",
-    subtitle: "Elite Training",
-    cover: masterKickImg,
-    images: [masterKickImg, trainer1Img, eventTournamentImg, eventSeminarImg],
-    spanClass: "md:col-span-2 md:row-span-1",
-  },
-  {
-    id: "mindfulness-retreat",
-    title: "Mindfulness Retreat",
-    subtitle: "Recovery Workshop",
-    cover: yogaMasterImg,
-    images: [yogaMasterImg, trainer3Img, eventSeminarImg],
-    spanClass: "md:col-span-1 md:row-span-1",
-  }
+import api from '../../api/axios';
+
+const getImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('/storage/')) return `http://127.0.0.1:8000${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
+};
+
+const spanClasses = [
+  "md:col-span-2 md:row-span-2",
+  "md:col-span-1 md:row-span-2",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-2 md:row-span-1",
+  "md:col-span-1 md:row-span-1"
 ];
 
 const GalleryPage = () => {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  const [albumsData, setAlbumsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      try {
+        const res = await api.get('/galleries');
+        setAlbumsData(res.data.data);
+      } catch (error) {
+        console.error('Failed to fetch galleries', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAlbums();
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -139,7 +129,11 @@ const GalleryPage = () => {
 
               {/* Bento Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[250px] md:auto-rows-[300px] gap-6">
-                {albumsData.map((album, idx) => (
+                {loading ? (
+                  <div className="col-span-full flex justify-center py-20">
+                    <div className="w-12 h-12 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin"></div>
+                  </div>
+                ) : albumsData.map((album, idx) => (
                   <motion.div
                     key={album.id}
                     layoutId={`album-container-${album.id}`}
@@ -147,12 +141,12 @@ const GalleryPage = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.1, duration: 0.5 }}
                     onClick={() => setSelectedAlbum(album)}
-                    className={`relative rounded-[32px] overflow-hidden cursor-pointer group shadow-lg hover:shadow-2xl transition-shadow ${album.spanClass}`}
+                    className={`relative rounded-[32px] overflow-hidden cursor-pointer group shadow-lg hover:shadow-2xl transition-shadow ${spanClasses[idx % spanClasses.length]}`}
                   >
                     <motion.img 
                       layoutId={`album-cover-${album.id}`}
-                      src={album.cover} 
-                      alt={album.title}
+                      src={getImageUrl(album.images && album.images[0])} 
+                      alt={album.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     
@@ -165,18 +159,18 @@ const GalleryPage = () => {
                       
                       <div className="flex items-center gap-2 mb-3">
                         <span className="bg-[#f97316] text-black text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full flex items-center gap-1.5 shadow-md">
-                          <ImageIcon size={12} /> {album.images.length} Photos
+                          <ImageIcon size={12} /> {album.images ? album.images.length : 0} Photos
                         </span>
-                        <span className="bg-white/10 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-white/20">
-                          {album.subtitle}
+                        <span className="bg-white/10 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-white/20 line-clamp-1">
+                          {album.description || 'No description'}
                         </span>
                       </div>
                       
                       <motion.h2 
                         layoutId={`album-title-${album.id}`}
-                        className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter leading-tight mb-6 max-w-[90%]"
+                        className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter leading-tight mb-6 max-w-[90%] line-clamp-2"
                       >
-                        {album.title}
+                        {album.name}
                       </motion.h2>
 
                       <button className="self-start px-6 py-3 bg-white/10 backdrop-blur-md border border-white/30 text-white font-bold text-xs uppercase tracking-widest rounded-full flex items-center gap-2 group-hover:bg-[#f97316] group-hover:border-[#f97316] group-hover:text-black transition-all duration-300">
@@ -215,37 +209,37 @@ const GalleryPage = () => {
               >
                 <motion.img 
                   layoutId={`album-cover-${selectedAlbum.id}`}
-                  src={selectedAlbum.cover} 
-                  alt={selectedAlbum.title}
+                  src={getImageUrl(selectedAlbum.images && selectedAlbum.images[0])} 
+                  alt={selectedAlbum.name}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 flex flex-col justify-end p-8 md:p-16">
                   <div className="inline-block bg-[#f97316] text-black text-[10px] font-black tracking-widest uppercase px-3 py-1.5 rounded-full mb-4 w-fit shadow-lg">
-                    {selectedAlbum.subtitle}
+                    {selectedAlbum.description || 'No description'}
                   </div>
                   <motion.h1 
                     layoutId={`album-title-${selectedAlbum.id}`}
-                    className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter max-w-4xl leading-none"
+                    className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tighter max-w-4xl leading-none line-clamp-2"
                   >
-                    {selectedAlbum.title}
+                    {selectedAlbum.name}
                   </motion.h1>
                 </div>
               </motion.div>
 
               {/* Photos Grid inside Album */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {selectedAlbum.images.map((img, idx) => (
+                {(selectedAlbum.images || []).map((img, idx) => (
                   <motion.div 
                     key={idx}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + (idx * 0.1) }}
-                    onClick={() => setLightboxImage(img)}
+                    onClick={() => setLightboxImage(getImageUrl(img))}
                     className="relative group rounded-3xl overflow-hidden aspect-square cursor-zoom-in bg-gray-200 shadow-md border border-gray-100"
                   >
                     <img 
-                      src={img} 
-                      alt={`${selectedAlbum.title} ${idx + 1}`} 
+                      src={getImageUrl(img)} 
+                      alt={`${selectedAlbum.name} ${idx + 1}`} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">

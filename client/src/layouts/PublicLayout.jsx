@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion'
 import WelcomeScreen from '../components/WelcomeScreen'
 import Footer from '../components/public/home/Footer'
 import Navbar from '../components/Navbar'
+import WhatsAppButton from '../components/WhatsAppButton'
 
 const PublicLayout = () => {
   const [showWelcome, setShowWelcome] = useState(false)
@@ -48,6 +49,7 @@ const PublicLayout = () => {
           <Outlet />
         </div>
         {!isLoginPage && <Footer />}
+        {!isLoginPage && <WhatsAppButton />}
       </div>
     </>
   )

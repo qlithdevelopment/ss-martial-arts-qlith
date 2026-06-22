@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from '../assets/Logo_compress.png';
 
@@ -100,30 +100,30 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         <div>
           {/* BRAND LOGO CONSOLE ZONE */}
           <div className="flex items-center justify-between mb-6 px-2 h-12 border-b border-primary2/20 pb-4">
-            <div className="flex items-center gap-3 overflow-hidden">
+            <Link to="/" className="flex items-center gap-3 overflow-hidden group">
               {/* Dynamic Compressed Image Wrap Box */}
-              <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center text-white shadow-sm shrink-0 p-1.5 overflow-hidden border border-gray-100">
+              <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center text-white shadow-sm shrink-0 p-1.5 overflow-hidden border border-gray-100 group-hover:border-[#f97316] transition-colors">
                 <img src={Logo} alt="SSMA Logo" className="w-full h-full object-contain" />
               </div>
               {!isCollapsed && (
-                <div className="flex flex-col tracking-tight animate-fadeIn whitespace-nowrap">
-                  <span className="text-sm font-extrabold text-gray-800 leading-tight">SS Martial Arts</span>
+                <div className="flex flex-col tracking-tight animate-fadeIn whitespace-nowrap group-hover:text-[#f97316] transition-colors">
+                  <span className="text-sm font-extrabold text-gray-800 leading-tight group-hover:text-[#f97316] transition-colors">SS Martial Arts</span>
                   <span className="text-[10px] font-semibold uppercase text-secondary tracking-widest">School</span>
                 </div>
               )}
-            </div>
+            </Link>
 
             {/* Desktop-only internal dynamic compression chevron arrow button toggle */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden md:flex p-1.5 rounded-lg bg-gray-50 border border-gray-100 text-secondary hover:text-primary transition-colors ml-auto"
+              className="hidden md:flex p-2 rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-[#f97316] hover:bg-orange-50 hover:border-orange-200 transition-all shadow-sm hover:shadow ml-auto"
             >
               {isCollapsed ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5M4.5 4.5l7.5 7.5-7.5 7.5" />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7-7 7-7m-14 14l-7-7 7-7" />
                 </svg>
               )}
