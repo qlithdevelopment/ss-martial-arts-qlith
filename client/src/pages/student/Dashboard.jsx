@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext"; // Ensure this import path matches your directory tree
 import {
   User, Phone, Mail, MapPin, Calendar, Shield, BookOpen,
   Award, CreditCard, ChevronRight, LogOut, Sun, Moon,
@@ -112,17 +113,6 @@ const accentMap = {
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-function Avatar({ initials }) {
-  return (
-    <div className="relative w-20 h-20 flex-shrink-0">
-      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-600 flex items-center justify-center text-white text-2xl font-black select-none shadow-lg">
-        {initials}
-      </div>
-      <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full" />
-    </div>
-  );
-}
-
 function Chip({ children, className = "" }) {
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold tracking-wide ${className}`}>
@@ -188,7 +178,6 @@ function CoursesTab() {
 function FeesTab() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      {/* Paid History */}
       <div className="lg:col-span-7 space-y-3">
         <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase px-1">Payment History</p>
         <Card className="divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
@@ -212,7 +201,6 @@ function FeesTab() {
         </Card>
       </div>
 
-      {/* Pending */}
       <div className="lg:col-span-5 space-y-3">
         <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase px-1">Pending Dues</p>
         <Card className="divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden border-red-100 dark:border-red-900/30">
@@ -268,19 +256,16 @@ function BeltTab() {
                       : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
                   }`}
               >
-                {/* Belt swatch */}
                 <div className="relative flex-shrink-0">
                   <div className={`w-8 h-8 rounded-lg ${b.color} shadow-inner ${b.status === "current" ? `ring-2 ${b.ring} ring-offset-2 dark:ring-offset-slate-900` : ""}`} />
                 </div>
 
-                {/* Step number + name */}
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <span className="text-[10px] font-bold text-slate-300 dark:text-slate-600 tabular-nums w-4">{String(idx + 1).padStart(2, "0")}</span>
                   <span className={`text-sm font-bold truncate ${b.status === "current" ? "text-amber-600 dark:text-amber-400" : "text-slate-700 dark:text-slate-300"
                     }`}>{b.name} Belt</span>
                 </div>
 
-                {/* Status */}
                 <div className="flex-shrink-0">
                   {b.status === "cleared" && (
                     <CheckCircle2 size={16} className="text-emerald-500" />
@@ -298,9 +283,7 @@ function BeltTab() {
         </Card>
       </div>
 
-      {/* Side info */}
       <div className="lg:col-span-5 space-y-4">
-        {/* Progress summary */}
         <Card className="p-5">
           <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-3">Overall Belt Progress</p>
           <div className="flex items-end gap-2 mb-3">
@@ -310,7 +293,6 @@ function BeltTab() {
           <ProgressBar value={Math.round((cleared / total) * 100)} color="bg-gradient-to-r from-amber-500 to-amber-700" />
         </Card>
 
-        {/* Next exam */}
         <Card className="p-5">
           <div className="flex items-start justify-between mb-2">
             <div>
@@ -368,6 +350,7 @@ const TAB_COMPONENTS = {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 export default function StudentDashboard() {
+  const { logout } = useAuth(); // Extracted logout handler from auth context
   const [activeTab, setActiveTab] = useState("Courses");
   const [showLogoutConfirm, setShowLogout] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -382,12 +365,21 @@ export default function StudentDashboard() {
     localStorage.setItem("theme", isDark ? "dark" : "light");
   }, [isDark]);
 
+  const handleLogoutAction = async () => {
+    try {
+      await logout();
+      setShowLogout(false);
+    } catch (error) {
+      console.error("Sign out process encountered an error:", error);
+    }
+  };
+
   const TabComponent = TAB_COMPONENTS[activeTab];
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
 
-      {/* ── Logout Confirm ── */}
+      {/* ── Logout Confirm Modal ── */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <Card className="max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
@@ -406,7 +398,7 @@ export default function StudentDashboard() {
                 Cancel
               </button>
               <button
-                onClick={() => setShowLogout(false)}
+                onClick={handleLogoutAction}
                 className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold transition-colors shadow-md"
               >
                 Sign Out
@@ -419,7 +411,6 @@ export default function StudentDashboard() {
       {/* ── Navbar ── */}
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Brand */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md">
               <Dumbbell size={16} className="text-white" />
@@ -430,7 +421,6 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          {/* Right controls */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsDark(!isDark)}
@@ -455,7 +445,6 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Mobile dropdown */}
         {mobileMenuOpen && (
           <div className="sm:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
             <button
@@ -471,11 +460,8 @@ export default function StudentDashboard() {
 
       {/* ── Page Body ── */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-
-        {/* Profile Card */}
         <Card className="p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            {/* <Avatar initials={student.avatar} /> */}
             <img src={student.avatar} alt="Student Avatar" className="w-30 h-30 rounded-2xl object-cover shadow-lg" />
             <div className="flex-1 text-center sm:text-left min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
@@ -499,7 +485,6 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          {/* Contact Grid */}
           <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { icon: <Phone size={14} />, label: "Phone", value: student.phone },
@@ -524,7 +509,6 @@ export default function StudentDashboard() {
           </div>
         </Card>
 
-        {/* Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             {
@@ -558,9 +542,7 @@ export default function StudentDashboard() {
           ))}
         </div>
 
-        {/* Tabs */}
         <div className="space-y-5">
-          {/* Tab bar */}
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {TABS.map((tab) => (
               <button
@@ -577,7 +559,6 @@ export default function StudentDashboard() {
             ))}
           </div>
 
-          {/* Tab content */}
           <TabComponent />
         </div>
       </main>

@@ -45,7 +45,7 @@ const AdminLayout = () => {
         </header>
 
         {/* INJECTED ADMIN MANAGEMENT PANELS */}
-        <main className="flex-1 p-6 mt-16 overflow-y-auto">
+        <main className="flex-1 p-4 mt-14 overflow-y-auto">
           <Outlet />
         </main>
       </div>

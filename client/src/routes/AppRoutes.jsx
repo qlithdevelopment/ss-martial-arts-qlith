@@ -22,12 +22,13 @@ import Testimonials from "../pages/public/Testimonials";
 import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
+import Blog from "../pages/public/Blog";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
-import AdminBlogs from "../pages/admin/Blogs";         // Added
-import AdminEvents from "../pages/admin/Events";       // Added
-import AdminGalleries from "../pages/admin/Galleries"; // Added
+import AdminBlogs from "../pages/admin/Blogs";
+import AdminEvents from "../pages/admin/Events";
+import AdminGalleries from "../pages/admin/Galleries";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
@@ -35,11 +36,25 @@ import StudentDashboard from "../pages/student/Dashboard";
 import Unauthorized from "../pages/errors/Unauthorized";
 import NotFound from "../pages/errors/NotFound";
 import Loader from "../components/Loader";
+import BlogDetail from "../pages/public/BlogDetail";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
 
   if (loading) return <Loader />;
+
+  // Helper component/function to handle logged-in users visiting /login
+  const RedirectIfAuthenticated = () => {
+    if (user) {
+      if (user.role === "admin") {
+        return <Navigate to="/admin/dashboard" replace />;
+      }
+      if (user.role === "student") {
+        return <Navigate to="/student/dashboard" replace />;
+      }
+    }
+    return <Login />;
+  };
 
   return (
     <Routes>
@@ -50,17 +65,16 @@ const AppRoutes = () => {
         <Route path="/trainers" element={<Trainers />} />
         <Route path="/programs" element={<Programs />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/services" element={<Services />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/gallery" element={<Gallery />} />
+        <Route path="/services" element={<Services />} />
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
-        {!user && (
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-        )}
+
+        {/* Always keep the route declared, but handle the redirection logically */}
+        <Route path="/login" element={<RedirectIfAuthenticated />} />
       </Route>
 
       {/* ADMIN ROUTES */}
@@ -71,9 +85,9 @@ const AppRoutes = () => {
               <Outlet />
             </AdminLayout>
           ) : user ? (
-            <Navigate to="/unauthorized" />
+            <Navigate to="/unauthorized" replace />
           ) : (
-            <Navigate to="/login" />
+            <Navigate to="/login" replace />
           )
         }
       >
@@ -92,18 +106,14 @@ const AppRoutes = () => {
               <StudentDashboard />
             </StudentLayout>
           ) : user ? (
-            <Navigate to="/unauthorized" />
+            <Navigate to="/unauthorized" replace />
           ) : (
-            <Navigate to="/login" />
+            <Navigate to="/login" replace />
           )
         }
       />
 
-      <Route
-        path="/unauthorized"
-        element={<Unauthorized />}
-      />
-
+      <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

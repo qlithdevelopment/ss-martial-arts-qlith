@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import api from '../../api/axios';
+import api from '../../api/axios'; 
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -11,32 +11,48 @@ const BlogDetail = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchBlogData();
-  }, [id]);
+    
+    const fetchBlogData = async () => {
+      try {
+        setLoading(true);
+        // 1. Fetch data payload matching the route ID parameter parameter mapping
+        const response = await api.get(`/blogs/${id}`);
+        
+        // Unpack payload data securely if Laravel resource wrappers are present
+        let currentBlog = null;
+        if (response.data) {
+          currentBlog = response.data.data ? response.data.data : response.data;
+        }
+        setBlog(currentBlog);
 
-  const fetchBlogData = async () => {
-    try {
-      setLoading(true);
-      // Fetch specific blog
-      const res = await api.get(`/blogs/${id}`);
-      setBlog(res.data);
-      
-      // Fetch all published blogs to get related ones (in a real app, backend would return related)
-      const allRes = await api.get('/blogs');
-      const published = allRes.data.filter(b => b.is_published && b.id !== parseInt(id));
-      setRelatedBlogs(published.slice(0, 6));
-    } catch (error) {
-      console.error("Failed to fetch blog:", error);
-      setBlog(null);
-    } finally {
-      setLoading(false);
+        // 2. Fetch full global article index to dynamically compute recommendation modules
+        const collectionResponse = await api.get('/blogs');
+        const allBlogs = Array.isArray(collectionResponse.data) 
+          ? collectionResponse.data 
+          : (collectionResponse.data?.data || []);
+        
+        if (currentBlog) {
+          const matchingRelated = allBlogs
+            .filter(b => b.is_published && String(b.id) !== String(currentBlog.id))
+            .slice(0, 6);
+          setRelatedBlogs(matchingRelated);
+        }
+      } catch (error) {
+        console.error("Error retrieving article item payload details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchBlogData();
     }
-  };
+  }, [id]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin"></div>
+        <span className="w-10 h-10 border-4 border-gray-200 border-t-[var(--color-primary)] rounded-full animate-spin"></span>
       </div>
     );
   }
@@ -50,21 +66,32 @@ const BlogDetail = () => {
     );
   }
 
+  // Parse payload array matrices safely
+  let contentBlocks = [];
+  if (blog.content) {
+    if (Array.isArray(blog.content)) {
+      contentBlocks = blog.content;
+    } else if (typeof blog.content === 'string') {
+      try {
+        contentBlocks = JSON.parse(blog.content);
+      } catch (e) {
+        console.error("Content string failed matrix collection translation parse routines", e);
+      }
+    }
+  }
+
   return (
     <div className="w-full min-h-screen bg-[#f8f9fa] text-[#0b1b24] font-sans">
       
       {/* HERO SECTION */}
-      <div className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden bg-[#0b1b24] flex items-center justify-center">
+      <div className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-10" />
-        {blog.featured_image && (
-          <img 
-            src={`http://localhost:8000/storage/${blog.featured_image}`} 
-            alt={blog.title} 
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-        )}
+        <img 
+          src={blog.featured_image} 
+          alt={blog.title} 
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
         <div className="absolute inset-0 z-20 flex flex-col justify-end pb-12 md:pb-24">
-          {/* Aligned with Navbar */}
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
@@ -91,30 +118,85 @@ const BlogDetail = () => {
         </div>
       </div>
 
-      {/* CONTENT SECTION */}
+      {/* DYNAMIC MATRIX CONTENT BLOCKS RENDER SECTION */}
       <div className="w-full py-12 md:py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="w-full text-lg leading-relaxed text-gray-600 flex flex-col gap-12"
+            className="w-full text-lg leading-relaxed text-gray-600 space-y-16"
           >
-            {blog.content && typeof blog.content === 'object' && blog.content.map((block, idx) => (
-              <div key={idx} className="flex flex-col gap-6">
-                {block.heading && (
-                  <h2 className="text-2xl md:text-3xl font-bold text-[#0b1b24] tracking-tight">{block.heading}</h2>
-                )}
-                {block.text && (
-                  <p className="text-gray-700 whitespace-pre-wrap">{block.text}</p>
-                )}
-                {block.image && (
-                  <div className="w-full rounded-2xl overflow-hidden shadow-sm my-4">
-                    <img src={block.image} alt={block.heading || `Blog image ${idx}`} className="w-full h-auto object-cover" />
+            {contentBlocks.map((block, index) => {
+              const hasTitle = block.title && block.title.trim() !== '';
+              const hasDescription = Array.isArray(block.description) 
+                ? block.description.some(p => p && p.trim() !== '') 
+                : (block.description && block.description.trim() !== '');
+              const hasKeypoints = block.keypoints && Array.isArray(block.keypoints) && block.keypoints.length > 0;
+              const hasImage = block.image && block.image.trim() !== '';
+
+              return (
+                <div key={index} className="space-y-6">
+                  {/* Block Title Header */}
+                  {hasTitle && (
+                    <h2 className="text-2xl md:text-4xl font-black tracking-tight text-[#0b1b24] uppercase border-b pb-3 border-gray-200">
+                      {block.title}
+                    </h2>
+                  )}
+
+                  {/* Flexible Responsive Inner Column Layout grids */}
+                  <div className={`grid grid-cols-1 ${hasImage ? 'lg:grid-cols-3' : 'grid-cols-1'} gap-8 items-start`}>
+                    
+                    {/* Descriptions Paragraph stacks and dynamic Bullet points sets items layout maps */}
+                    <div className={hasImage ? 'lg:col-span-2 space-y-4' : 'space-y-4'}>
+                      {Array.isArray(block.description) ? (
+                        block.description.map((paragraph, pIdx) => (
+                          paragraph && paragraph.trim() !== '' && (
+                            <p key={pIdx} className="text-gray-600 text-base md:text-lg leading-relaxed">
+                              {paragraph}
+                            </p>
+                          )
+                        ))
+                      ) : (
+                        block.description && block.description.trim() !== '' && (
+                          <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                            {block.description}
+                          </p>
+                        )
+                      )}
+
+                      {/* Displaying bullet matrices maps if present */}
+                      {hasKeypoints && (
+                        <div className="mt-6 bg-white border border-gray-100 p-6 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {block.keypoints.map((point, kIdx) => (
+                              point && point.trim() !== '' && (
+                                <li key={kIdx} className="flex items-start gap-3 text-sm md:text-base font-bold text-gray-700">
+                                  <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] mt-2 flex-shrink-0" />
+                                  {point}
+                                </li>
+                              )
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Optional inline side block section media attachments image container */}
+                    {hasImage && (
+                      <div className="lg:col-span-1 rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-gray-50 aspect-[4/3] lg:aspect-square">
+                        <img 
+                          src={block.image} 
+                          alt={block.title || "Section visual content component graphic block element element details attachment"} 
+                          className="w-full h-full object-cover transform hover:scale-102 transition-transform duration-500"
+                        />
+                      </div>
+                    )}
+
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </motion.div>
         </div>
       </div>
@@ -129,7 +211,6 @@ const BlogDetail = () => {
             </h3>
           </div>
 
-          {/* Changed to max 6 columns depending on layout, usually 3 is good for a row, so 2 rows of 3 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {relatedBlogs.map((item, idx) => (
               <motion.div 
@@ -141,33 +222,28 @@ const BlogDetail = () => {
                 className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col"
               >
                 <Link to={`/blog/${item.id}`} className="flex flex-col h-full">
-                  {/* Image */}
-                  <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100 flex items-center justify-center">
-                    {item.featured_image ? (
-                      <img src={`http://localhost:8000/storage/${item.featured_image}`} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <div className="text-gray-400 font-bold uppercase tracking-widest text-lg opacity-50">
-                        {item.category}
-                      </div>
-                    )}
+                  <div className="relative h-48 md:h-56 overflow-hidden bg-gray-100">
+                    <img 
+                      src={item.featured_image} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
                     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
                       <span className="text-[10px] font-bold text-[#0b1b24] uppercase tracking-wider">
                         {item.category}
                       </span>
                     </div>
                   </div>
-                  
-                  {/* Content */}
                   <div className="p-6 md:p-8 flex flex-col flex-grow">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                         {item.posted_date}
                       </span>
                     </div>
-                    <h4 className="text-lg font-bold text-[#0b1b24] leading-snug mb-3 group-hover:text-[var(--color-primary)] transition-colors">
+                    <h4 className="text-xl font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
                       {item.title}
                     </h4>
-                    <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed mt-auto">
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
                       {item.short_description}
                     </p>
                   </div>

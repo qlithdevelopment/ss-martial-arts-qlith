@@ -14,11 +14,13 @@ function App() {
   }, [])
 
   return (
-    <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+    // <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
+    <>
       <ScrollToTop />
       <AppRoutes />
       <WhatsAppButton />
-    </ReactLenis>
+    </>
+    // </ReactLenis>
   )
 }
 

@@ -21,6 +21,7 @@ const Blogs = () => {
     try {
       setLoading(true);
       const res = await api.get('/blogs');
+      console.log(res.data);
       setBlogs(res.data);
     } catch (error) {
       console.error(error);
@@ -54,7 +55,7 @@ const Blogs = () => {
   const filteredBlogs = blogs.filter(b => b.title?.toLowerCase().includes(search.toLowerCase()) || b.category?.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto">
+    <div className="">
       {/* Header section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
@@ -105,7 +106,7 @@ const Blogs = () => {
               {/* Image */}
               <div className="relative h-48 bg-gray-100 overflow-hidden">
                 {blog.featured_image ? (
-                  <img src={`http://localhost:8000/storage/${blog.featured_image}`} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={blog?.featured_image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-300">
                     <Globe size={40} />
