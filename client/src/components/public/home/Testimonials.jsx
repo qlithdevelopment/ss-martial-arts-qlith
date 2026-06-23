@@ -92,7 +92,7 @@ const Testimonials = () => {
       <div className="sticky top-0 h-[100svh] overflow-hidden flex flex-col pt-[70px] md:pt-20 pb-4 md:pb-8">
         
         {/* Header */}
-        <div className="global-container mb-2 md:mb-4 shrink-0 flex flex-col md:flex-row justify-between items-end gap-2 md:gap-4 z-10 relative">
+        <div className="global-container mb-2 md:mb-4 shrink-0 right- lg-right-0 flex flex-col md:flex-row justify-center items-center lg:items-end gap-2 md:gap-4 z-10 relative">
           <div>
             <div className="flex flex-col items-start">
               <div className="flex items-center gap-3 md:gap-4 mb-2">

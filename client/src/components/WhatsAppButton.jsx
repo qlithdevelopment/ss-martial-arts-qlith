@@ -7,7 +7,7 @@ const WhatsAppButton = () => {
       href="https://wa.me/1234567890" // Replace with actual WhatsApp number
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-[1000] flex items-center justify-center group w-14 h-14"
+      className="fixed bottom-18  lg:bottom-6 right-2 lg:right-6 z-[1000] flex items-center justify-center group w-14 h-14"
     >
       {/* A solid, hard-edged button with a simple bounce animation */}
       <motion.div

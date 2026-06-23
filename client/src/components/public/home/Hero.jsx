@@ -90,11 +90,11 @@ const Hero = () => {
           min-h-[100svh]
           global-container
           flex
-          items-end lg:items-center
+          items-end lg:items-center lg:pl-8
           pb-12 sm:pb-20 lg:pb-0
         "
       >
-        <div className="max-w-4xl w-full mt-auto lg:mt-0 pt-24 lg:pt-0">
+        <div className="max-w-4xl w-full mt-auto lg:mt-0 pt-24 lg:ml-2 lg:pt-0">
           {/* TAG */}
           <motion.div
             initial={{

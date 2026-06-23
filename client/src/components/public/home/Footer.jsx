@@ -30,7 +30,7 @@ const TwitterIcon = ({ className }) => (
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-black h-auto flex flex-col justify-between pt-8 pb-4 border-t border-white/10 relative z-50 overflow-hidden">
+    <footer className="w-full bg-black h-auto lg:pt-12 flex flex-col justify-between pt-8 pb-4 border-t border-white/10 relative z-50 overflow-hidden">
       {/* MASSIVE BACKGROUND TEXT */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
         CONTACT
@@ -46,8 +46,8 @@ const Footer = () => {
           
           {/* BRANDING */}
           <div className="col-span-2 md:col-span-1 flex flex-col items-start">
-            <Link to="/" className="flex items-center gap-4 mb-2 md:mb-4">
-              <img src={Logo} alt="Logo" className="w-24 md:w-40 object-contain" />
+            <Link to="/" className="flex items-center gap-4  mb-2 md:mb-4">
+              <img src={Logo} alt="Logo" className="w-24 md:-mt-8 md:w-40 object-contain" />
             </Link>
             <p className="text-secondary text-[10px] md:text-sm leading-relaxed mb-2 md:mb-4">
               Forging champions through elite martial arts training, discipline, and unbreakable focus.
@@ -72,7 +72,7 @@ const Footer = () => {
           </div>
 
           {/* PROGRAMS */}
-          <div className="col-span-1">
+          <div className="col-span-1 ml-10 md:ml-0">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Programs</h4>
             <ul className="flex flex-col gap-1.5 md:gap-3">
               {['Adult Martial Arts', 'Youth Classes', 'Private Coaching'].map((link) => (
@@ -111,7 +111,7 @@ const Footer = () => {
 
         {/* BOTTOM COPYRIGHT */}
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-secondary text-[9px] md:text-xs flex-1 text-center md:text-left">
+          <p className="text-secondary text-[9px] md:text-xs flex-1 lg:text-center text-start">
             &copy; {new Date().getFullYear()} SS Martial Arts Schools. All rights reserved. <span className="mx-1 md:mx-2 text-white/20">|</span> Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
           </p>
 

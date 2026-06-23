@@ -38,7 +38,7 @@ const Contact = () => {
         </motion.div>
       </div>
 
-      <div className="global-container grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+      <div className="global-container lg:!px-[95px] grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
         
         {/* Left Side: Contact Info & Map */}
         <motion.div 
@@ -108,7 +108,7 @@ const Contact = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="bg-gradient-to-br from-[#f8fcfd] to-[#dcf2ff] p-5 md:p-6 rounded-3xl border border-[#26c0ff]/20 shadow-2xl relative overflow-hidden h-full">
+          <div className="bg-gradient-to-br from-[#f8fcfd] to-[#dcf2ff] p-5 md:p-6 rounded-3xl lg:-mr-1.5 border border-[#26c0ff]/20 shadow-2xl relative overflow-hidden h-full">
             
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#26c0ff] rounded-full mix-blend-multiply filter blur-[100px] opacity-20 pointer-events-none"></div>
 
