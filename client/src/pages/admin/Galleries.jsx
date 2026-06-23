@@ -36,15 +36,35 @@ const Galleries = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this gallery?')) return;
-    try {
-      await api.delete(`/galleries/${id}`);
-      toast.success('Gallery deleted successfully');
-      fetchAlbums();
-    } catch (error) {
-      toast.error('Failed to delete gallery');
-    }
+  const handleDelete = (id) => {
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="font-medium text-gray-900">Are you sure you want to delete this album?</p>
+        <div className="flex justify-end gap-2">
+          <button 
+            onClick={() => toast.dismiss(t.id)} 
+            className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                await api.delete(`/galleries/${id}`);
+                toast.success('Album deleted successfully');
+                fetchAlbums();
+              } catch (error) {
+                toast.error('Failed to delete album');
+              }
+            }} 
+            className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity });
   };
 
   const openCreateModal = () => {

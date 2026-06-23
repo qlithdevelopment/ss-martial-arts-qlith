@@ -110,9 +110,6 @@ const Events = () => {
                     <div className="flex items-center gap-2 text-[#26c0ff] font-bold text-[10px] uppercase tracking-wider mb-0.5">
                       <Clock size={12} className="text-[#f97316]"/> {event.timing}
                     </div>
-                    <div className="flex items-center gap-2 text-white/60 font-medium text-[10px] uppercase tracking-wider line-clamp-1">
-                      <MapPin size={12} className="text-[#f97316]"/> DOJO HQ
-                    </div>
                   </div>
                   
                   {/* Bottom Right Arrow Box */}
@@ -188,10 +185,6 @@ const Events = () => {
                       <div className="flex items-center gap-1.5">
                         <Clock size={14} className="text-[#f97316]" />
                         <span className="text-white font-medium tracking-wide">{selectedEvent.timing}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <MapPin size={14} className="text-[#f97316]" />
-                        <span className="text-white font-medium tracking-wide">DOJO HQ</span>
                       </div>
                     </div>
 
