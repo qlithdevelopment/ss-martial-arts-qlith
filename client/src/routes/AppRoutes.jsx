@@ -29,6 +29,9 @@ import AdminDashboard from "../pages/admin/Dashboard";
 import AdminBlogs from "../pages/admin/Blogs";
 import AdminEvents from "../pages/admin/Events";
 import AdminGalleries from "../pages/admin/Galleries";
+import AdminTrainers from "../pages/admin/Trainers";
+import AdminFaqs from "../pages/admin/Faqs";
+import AdminServices from "../pages/admin/Services";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
@@ -95,6 +98,9 @@ const AppRoutes = () => {
         <Route path="/admin/blogs" element={<AdminBlogs />} />
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/galleries" element={<AdminGalleries />} />
+        <Route path="/admin/trainers" element={<AdminTrainers />} />
+        <Route path="/admin/faqs" element={<AdminFaqs />} />
+        <Route path="/admin/services" element={<AdminServices />} />
       </Route>
 
       {/* STUDENT */}

@@ -31,15 +31,35 @@ const Blogs = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this blog post?')) return;
-    try {
-      await api.delete(`/blogs/${id}`);
-      toast.success('Blog deleted successfully');
-      fetchBlogs();
-    } catch (error) {
-      toast.error('Failed to delete blog');
-    }
+  const handleDelete = (id) => {
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="font-medium text-gray-900">Are you sure you want to delete this blog post?</p>
+        <div className="flex justify-end gap-2">
+          <button 
+            onClick={() => toast.dismiss(t.id)} 
+            className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                await api.delete(`/blogs/${id}`);
+                toast.success('Blog deleted successfully');
+                fetchBlogs();
+              } catch (error) {
+                toast.error('Failed to delete blog');
+              }
+            }} 
+            className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity });
   };
 
   const openCreateModal = () => {

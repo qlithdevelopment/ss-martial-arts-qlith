@@ -4,7 +4,7 @@ import { X, Upload, AlignLeft, Type, Image as ImageIcon, Save, CopyPlus } from '
 import toast from 'react-hot-toast';
 import api from '../../../api/axios';
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
 const getImageUrl = (path) => {
   if (!path) return '';
@@ -67,7 +67,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
         return false;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`Too large: ${file.name} (Max 2MB)`);
+        toast.error(`Too large: ${file.name} (Max 1MB)`);
         return false;
       }
       return true;
@@ -212,7 +212,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
                 {/* Photo Upload Section */}
                 <div className="flex flex-col gap-1.5 mt-2 border border-gray-100 rounded-xl p-4 bg-gray-50/50">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5 mb-2">
-                    <CopyPlus size={12} className="text-orange-500" /> GALLERY PHOTOS
+                    <CopyPlus size={12} className="text-orange-500" /> GALLERY PHOTOS <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 1MB per photo)</span>
                   </label>
                   
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
@@ -268,7 +268,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
                   </div>
                   
                   <span className="text-[9px] text-gray-400 mt-2 uppercase tracking-widest block text-right">
-                    Max 2MB per image. Format: JPG, PNG, WEBP
+                    Max 1MB per image. Format: JPG, PNG, WEBP
                   </span>
                 </div>
                 

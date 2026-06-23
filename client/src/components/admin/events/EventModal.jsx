@@ -4,7 +4,7 @@ import { X, Upload, Calendar, AlignLeft, Type, Image as ImageIcon, Save } from '
 import toast from 'react-hot-toast';
 import api from '../../../api/axios'; 
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
 const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('Image size must be less than 2MB');
+        toast.error('Image size must be less than 1MB');
       return;
     }
 
@@ -182,7 +182,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                   
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                      <ImageIcon size={12} className="text-orange-500" /> EVENT COVER IMAGE
+                      <ImageIcon size={12} className="text-orange-500" /> EVENT COVER IMAGE <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 1MB)</span>
                     </label>
                     
                     <div className="relative group">

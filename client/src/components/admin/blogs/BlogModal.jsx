@@ -4,7 +4,7 @@ import { X, Upload, Plus, Trash2, Image as ImageIcon, PlusCircle, ArrowRight, Sa
 import toast from 'react-hot-toast';
 import api from '../../../api/axios'; 
 
-const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
 // Pre-defined smart tag suggestions
 const SUGGESTED_TAGS = [
