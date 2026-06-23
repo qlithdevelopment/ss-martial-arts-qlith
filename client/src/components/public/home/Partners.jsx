@@ -37,7 +37,7 @@ const MarqueeRow = ({ logos, direction = "left", speed = 40 }) => {
 
 const Partners = () => {
   return (
-    <section className="w-full bg-[#fcfcfc] py-12 md:py-24 overflow-hidden flex flex-col items-center">
+    <section className="w-full bg-[#fcfcfc] py-12 lg:pl-2 md:py-24 overflow-hidden flex flex-col items-center">
       
       <div className="global-container pt-16 pb-24 md:pt-20 md:pb-32 relative z-10">
         <div className="flex flex-col items-center mb-12">

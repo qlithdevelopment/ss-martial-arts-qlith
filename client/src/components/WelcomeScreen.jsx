@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import CartoonAnimation from "./CartoonAnimation";
-import Logo from "../assets/Logo_low.png"
+import Logo from "../assets/Logo_low.png";
+import Comp_logo from "../assets/Logo_compress.png";
 
 const easing = [0.87, 0, 0.13, 1];
 
@@ -151,7 +152,7 @@ const WelcomeScreen = () => {
         className="absolute inset-0 flex flex-col items-center justify-center z-10 select-none pointer-events-none"
       >
         <motion.img
-          src={Logo}
+          src={Comp_logo}
           alt="Logo"
           className="w-60 h-60 object-contain mb-2"
           animate={{ scale: [1, 1.04, 1] }}
@@ -165,7 +166,7 @@ const WelcomeScreen = () => {
           style={{ height: "1px" }}
         />
         <motion.p
-          className="text-gray-400 text-sm tracking-[6px] uppercase"
+          className="text-gray-400 text-center text-sm tracking-[6px] uppercase"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.7, ease: "easeOut" }}

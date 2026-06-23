@@ -26,7 +26,7 @@ const Gallery = () => {
         </div>
 
         {/* MASONRY GRID LAYOUT */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[250px] md:auto-rows-[220px]">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:pl-2 gap-4 auto-rows-[250px] md:auto-rows-[220px]">
           
           {galleryImages.map((img, index) => (
             <motion.div 
