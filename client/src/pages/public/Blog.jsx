@@ -65,7 +65,7 @@ const BlogPage = () => {
         BLOG
       </div>
       
-      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-[8rem] ">
         
         {/* HEADER */}
         <div className="mb-12 relative z-10">
