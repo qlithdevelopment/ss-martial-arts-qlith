@@ -1,10 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import api from '../../../api/axios';
 
-import { galleryImages } from "../../../data/homeData";
+const getImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('/storage/')) return `http://127.0.0.1:8000${path}`;
+  return `http://127.0.0.1:8000/storage/${path}`;
+};
 
 const Gallery = () => {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await api.get('/galleries');
+        const galleries = res.data?.data || res.data || [];
+        
+        // Flatten all images from all galleries into a single array for the masonry grid
+        const allImages = [];
+        galleries.forEach(gallery => {
+            if (gallery.images && Array.isArray(gallery.images)) {
+                gallery.images.forEach(image => {
+                    allImages.push({
+                        id: `${gallery.id}-${image}`,
+                        image_path: image,
+                        title: gallery.name
+                    });
+                });
+            }
+        });
+        
+        setImages(allImages.slice(0, 6)); 
+      } catch (error) {
+        console.error("Failed to load gallery:", error);
+      }
+    };
+    fetchGallery();
+  }, []);
+
+  const spanPattern = [
+    "md:col-span-2 md:row-span-2",
+    "md:col-span-1 md:row-span-1",
+    "md:col-span-1 md:row-span-1",
+    "md:col-span-2 md:row-span-1",
+    "md:col-span-1 md:row-span-1",
+    "md:col-span-1 md:row-span-1",
+  ];
   return (
     <section id="gallery" className="relative overflow-hidden w-full min-h-screen bg-black flex flex-col justify-center pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24">
       {/* MASSIVE BACKGROUND TEXT */}
@@ -28,18 +72,18 @@ const Gallery = () => {
         {/* MASONRY GRID LAYOUT */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:pl-2 gap-4 auto-rows-[250px] md:auto-rows-[220px]">
           
-          {galleryImages.map((img, index) => (
+          {images.map((img, index) => (
             <motion.div 
-              key={index}
+              key={img.id || index}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className={`relative rounded-2xl overflow-hidden group shadow-md ${img.spanClasses}`}
+              className={`relative rounded-2xl overflow-hidden group shadow-md ${spanPattern[index % spanPattern.length]}`}
             >
               <img 
-                src={img.src} 
-                alt={`Gallery ${index}`} 
+                src={getImageUrl(img.image_path)} 
+                alt={img.title || `Gallery ${index}`} 
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
               />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>

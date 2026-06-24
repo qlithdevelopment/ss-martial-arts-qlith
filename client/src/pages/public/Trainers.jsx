@@ -1,121 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
-import { X, ArrowRight, Award, History, Users } from 'lucide-react';
-import generatedTrainerImg from "../../assets/master_kick_bgrm.png";
-import generatedTrainer2Img from "../../assets/generated_trainer2.png";
-import generatedTrainer3Img from "../../assets/yoga_master_bgrm.png";
-import masterKickImg from "../../assets/master_kick_bgrm.png";
-import femaleMmaImg from "../../assets/female_mma_bgrm.png";
-import yogaMasterImg from "../../assets/yoga_master_bgrm.png";
-import mastersGroupImg from "../../assets/masters_group_bgrm.png";
-
-const instructors = [
-  {
-    id: 'master-himansu',
-    name: "Master Himansu",
-    rank: "Chief Instructor",
-    belt: "8th Dan Black Belt",
-    experience: "25+ Years Experience",
-    disciplines: ["Karate", "Self Defense", "Competition Training"],
-    achievements: ["National Champion", "International Referee", "Trained 500+ Students"],
-    bio: "Master Himansu Das is the visionary founder and driving force behind the academy. With over two decades of elite martial arts expertise, he has dedicated his life to transforming students into disciplined, resilient individuals. His rigorous training methodologies are rooted in traditional values but adapted for modern sports science.",
-    philosophy: "Discipline is the bridge between goals and accomplishment. We don't just build fighters; we build leaders for tomorrow.",
-    image: generatedTrainerImg,
-    blendMode: "", 
-    gridClass: "col-span-1 lg:col-span-2 row-span-2 min-h-[500px] lg:min-h-[600px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  },
-  {
-    id: 'sarah-striking',
-    name: "Sarah Jenkins",
-    rank: "Senior Coach",
-    belt: "Black Belt BJJ",
-    experience: "15+ Years Experience",
-    disciplines: ["MMA", "BJJ", "Striking"],
-    achievements: ["State Champion", "Submission Specialist", "Elite MMA Fighter"],
-    bio: "Sarah is a fierce competitor and dedicated mentor focusing on ground game, submission techniques, and high-intensity striking. A veteran of numerous national tournaments, she brings raw combat experience directly to the training mats.",
-    philosophy: "The ground is my ocean, and I am the shark. Leave no limb un-locked.",
-    image: generatedTrainer2Img,
-    blendMode: "",
-    gridClass: "col-span-1 min-h-[450px] lg:min-h-[500px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  },
-  {
-    id: 'priya-wellness',
-    name: "Priya Sharma",
-    rank: "Yoga & Wellness Expert",
-    belt: "Certified Yogi",
-    experience: "10+ Years Experience",
-    disciplines: ["Vinyasa", "Mobility", "Breathwork"],
-    achievements: ["Mobility Coach", "Mindfulness Guide", "Corporate Wellness"],
-    bio: "Priya brings inner peace to physical warfare. As a master of breath, flexibility, and mental fortitude, she helps fighters recover faster, prevent injuries, and maintain a laser-focused mindset during high-pressure competitions.",
-    philosophy: "Strength without flexibility is fragile. The battle is won in the mind before the mat.",
-    image: generatedTrainer3Img,
-    blendMode: "",
-    gridClass: "col-span-1 min-h-[450px] lg:min-h-[500px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  },
-  {
-    id: 'himansu-action',
-    name: "Himansu Action",
-    rank: "Competition Coach",
-    belt: "8th Dan Black Belt",
-    experience: "International Level",
-    disciplines: ["Kumite", "Kata", "Weapons"],
-    achievements: ["Gold Medalist Coach", "Weapons Master", "Olympic Form Trainer"],
-    bio: "When preparing athletes for the world stage, Master Himansu shifts focus to extreme competitive edge. This program hones reaction times, precise point-scoring techniques, and international tournament preparation strategies.",
-    philosophy: "Victory is reserved for those who are willing to pay its price in sweat.",
-    image: masterKickImg,
-    blendMode: "",
-    gridClass: "col-span-1 min-h-[450px] lg:min-h-[500px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  },
-  {
-    id: 'sarah-grappling',
-    name: "Sarah Grappling",
-    rank: "Grappling Head",
-    belt: "Black Belt BJJ",
-    experience: "ADCC Veteran",
-    disciplines: ["No-Gi BJJ", "Wrestling", "Judo"],
-    achievements: ["ADCC Competitor", "Multiple Time Champ", "Submission Grappling Expert"],
-    bio: "Advanced submission grappling focusing on competitive dominance. Sarah's specialized classes break down the mechanics of leverage, pressure, and positional control required to dismantle larger opponents.",
-    philosophy: "Technique conquers brute strength. Fluidity conquers rigidity.",
-    image: femaleMmaImg,
-    blendMode: "",
-    gridClass: "col-span-1 min-h-[450px] lg:min-h-[500px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  },
-  {
-    id: 'priya-seminar',
-    name: "Priya Seminars",
-    rank: "Mental Coach",
-    belt: "Wellness Director",
-    experience: "High-Performance Coach",
-    disciplines: ["Meditation", "Recovery", "Focus"],
-    achievements: ["Guest Speaker", "Sports Psychologist", "Elite Team Consultant"],
-    bio: "Guiding the mental preparation of elite athletes, Priya conducts seminars on sports psychology, adrenaline control, and flow-state activation. Her methods are utilized by our top-tier competitors.",
-    philosophy: "Conquer yourself, and you conquer the world.",
-    image: yogaMasterImg,
-    blendMode: "",
-    gridClass: "col-span-1 min-h-[450px] lg:min-h-[500px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  },
-  {
-    id: 'himansu-legacy',
-    name: "The Legacy",
-    rank: "Academy Founder",
-    belt: "Since 1999",
-    experience: "Generations Built",
-    disciplines: ["Full Spectrum Arts", "Instructor Certification"],
-    achievements: ["10,000+ Alumni", "Community Leaders", "Lifetime Achievement"],
-    bio: "The academy is more than a gym; it is a legacy. Master Himansu oversees the rigorous certification of new instructors, ensuring the standard of excellence is passed down perfectly to the next generation.",
-    philosophy: "True mastery is not in hoarding knowledge, but in creating new masters.",
-    image: mastersGroupImg,
-    blendMode: "",
-    gridClass: "col-span-1 lg:col-span-3 min-h-[450px] lg:min-h-[500px]",
-    imageLayout: "bottom-0 right-0 w-[70%] md:w-[60%] lg:w-[55%] h-[90%] md:h-[100%] lg:h-[105%] object-contain object-right-bottom md:object-bottom lg:object-right-bottom"
-  }
-];
+import { X, ArrowRight, Award, History, Users, ChevronRight, User as UserIcon } from 'lucide-react';
+import api from '../../api/axios';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -127,64 +13,111 @@ const cardVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 20 } }
 };
 
-const TrainerCard = ({ instructor, setSelectedId }) => {
+const TrainerCard = ({ instructor, setSelectedId, idx }) => {
   return (
     <motion.div 
       layoutId={`card-${instructor.id}`}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: idx * 0.1 }}
       onClick={() => setSelectedId(instructor.id)}
-      className="group relative bg-black rounded-[24px] overflow-hidden border border-white/10 hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(38,192,255,0.4)] hover:border-[#26c0ff]/60 cursor-pointer h-[280px] md:h-[350px] lg:h-[450px] shrink-0 w-[85vw] md:w-[320px] lg:w-[360px] transition-transform duration-300 snap-center"
-      style={{ borderRadius: "24px", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
+      className="group relative bg-black overflow-hidden border border-white/5 h-[340px] md:h-[400px] lg:h-[450px] shrink-0 w-[85vw] md:w-[320px] lg:w-[360px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] flex flex-col snap-center"
+      style={{ borderRadius: "20px", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
     >
-      <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay pointer-events-none z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply z-10 pointer-events-none"></div>
       
-      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10 pointer-events-none"></div>
-
       <motion.img 
         layoutId={`image-${instructor.id}`}
-        src={instructor.image} 
+        src={instructor.image || 'https://via.placeholder.com/400x600?text=Trainer'} 
         alt={instructor.name} 
-        className={`absolute bottom-0 right-0 z-20 transition-transform duration-700 group-hover:scale-105 h-[95%] w-auto object-contain object-right-bottom ${instructor.blendMode || ''}`}
+        className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80"
       />
 
-      <div className="absolute top-0 left-0 w-[60%] md:w-[55%] lg:w-[60%] h-full p-6 md:p-8 z-30 flex flex-col justify-between pointer-events-none">
-        
-        <div>
-          <motion.h2 layoutId={`name-${instructor.id}`} className="text-3xl md:text-4xl font-black text-white tracking-tighter uppercase mb-1 leading-none">
-            {instructor.name}
-          </motion.h2>
-          <motion.p layoutId={`rank-${instructor.id}`} className="text-[#f97316] font-bold text-[10px] md:text-xs tracking-widest uppercase mb-4 leading-tight">
-            {instructor.belt}
-          </motion.p>
-          
-          <div className="space-y-4 max-w-sm mt-4">
-            <div>
-              <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2">Expertise</p>
-              <ul className="text-white/80 text-xs md:text-sm font-medium space-y-1.5">
-                {instructor.disciplines.slice(0, 3).map((d, i) => <li key={i}>• {d}</li>)}
-              </ul>
+      <div className="absolute inset-0 p-5 z-30 flex flex-col justify-end pointer-events-none">
+        <div className="flex justify-between items-end w-full">
+          {/* Bottom Left Text */}
+          <div className="flex flex-col gap-1 pr-2 flex-1">
+            <div className="inline-block px-2 py-0.5 bg-[#f97316] w-fit text-white font-black text-[9px] tracking-widest uppercase rounded shadow-lg mb-1">
+              {instructor.rank}
+            </div>
+            <motion.h2 layoutId={`name-${instructor.id}`} className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter leading-tight mb-1 line-clamp-2">
+              {instructor.name}
+            </motion.h2>
+            <div className="flex items-center gap-2 text-[#26c0ff] font-bold text-[10px] uppercase tracking-wider mb-0.5">
+              <Award size={12} className="text-[#f97316]"/> {instructor.belt}
             </div>
           </div>
-        </div>
-
-        <div className="mt-auto pt-4 flex items-center gap-3 group-hover:gap-5 transition-all duration-300">
-          <div className="w-8 h-8 rounded-full bg-[#f97316]/10 border border-[#f97316]/30 flex items-center justify-center text-[#f97316] shrink-0">
-            <ArrowRight size={16} />
+          
+          {/* Bottom Right Arrow Box */}
+          <div className="shrink-0 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center rounded-xl group-hover:bg-[#f97316] group-hover:border-[#f97316] transition-colors pointer-events-auto mb-1">
+            <ChevronRight className="text-white transform group-hover:-rotate-45 transition-transform" size={16} />
           </div>
-          <span className="text-[#f97316] text-[10px] font-bold tracking-widest uppercase">View Profile</span>
         </div>
       </div>
+
+      {/* Giant Background Text */}
+      <h2 className="absolute -right-4 top-1/4 text-[80px] font-black text-white/[0.03] uppercase tracking-tighter leading-none pointer-events-none z-0 rotate-90 origin-bottom-right">
+        TRAINER
+      </h2>
+
     </motion.div>
   );
 };
 
 const Trainers = () => {
   const [selectedId, setSelectedId] = useState(null);
-  const targetRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [maxScroll, setMaxScroll] = useState(0);
+  const targetRef = useRef(null);
 
+  const [instructors, setInstructors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInstructors = async () => {
+      try {
+        const res = await api.get('/trainers');
+        const data = res.data?.data || res.data || [];
+        
+        const mappedTrainers = data.map(t => {
+          let parsedAchievements = [];
+          let parsedExpertise = [];
+          
+          try {
+            parsedAchievements = typeof t.achievements === 'string' ? JSON.parse(t.achievements) : (Array.isArray(t.achievements) ? t.achievements : [t.achievements]);
+          } catch(e) { parsedAchievements = [t.achievements]; }
+
+          try {
+            parsedExpertise = typeof t.expertise === 'string' ? JSON.parse(t.expertise) : (Array.isArray(t.expertise) ? t.expertise : [t.expertise]);
+          } catch(e) { parsedExpertise = [t.expertise]; }
+
+          return {
+            id: t.id.toString(),
+            name: t.name,
+            rank: t.designation || 'Instructor',
+            belt: parsedExpertise[0] || 'Expert',
+            experience: parsedAchievements[0] || 'Experienced',
+            disciplines: parsedExpertise,
+            achievements: parsedAchievements,
+            bio: t.biography || '',
+            philosophy: t.motivation_line || '',
+            image: t.image_path ? `http://127.0.0.1:8000${t.image_path}` : null,
+          };
+        });
+        
+        setInstructors(mappedTrainers);
+      } catch (error) {
+        console.error("Failed to load trainers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInstructors();
+  }, []);
   const parentRef = useRef(null);
   const childRef = useRef(null);
-  const [maxScroll, setMaxScroll] = useState(0);
 
   useEffect(() => {
     const updateMaxScroll = () => {
@@ -311,11 +244,12 @@ const Trainers = () => {
             style={{ x }}
             className="flex gap-4 lg:gap-8 w-max pl-0 lg:pl-12 relative z-10"
           >
-            {instructors.map((instructor) => (
+            {instructors.map((instructor, idx) => (
               <TrainerCard 
                 key={instructor.id} 
                 instructor={instructor} 
                 setSelectedId={setSelectedId} 
+                idx={idx}
               />
             ))}
           </motion.div>
@@ -331,13 +265,13 @@ const Trainers = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedId(null)}
-            className="fixed inset-0 z-[999] overflow-y-auto p-4 py-8 md:p-10 bg-black/80 backdrop-blur-md flex items-start md:items-center justify-center custom-scrollbar"
+            className="fixed inset-0 z-[999] overflow-hidden p-4 md:p-10 bg-black/80 backdrop-blur-md flex items-center justify-center"
           >
             <motion.div 
               layoutId={`card-${selectedInstructor.id}`}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-[1200px] h-auto bg-black rounded-[32px] overflow-hidden relative flex flex-col md:flex-row shadow-[0_0_50px_rgba(38,192,255,0.2)] border border-gray-800 m-auto shrink-0"
-              style={{ borderRadius: "32px" }}
+              className="w-full max-w-[1000px] h-full max-h-[90vh] bg-black overflow-hidden relative flex flex-col md:flex-row shadow-[0_0_50px_rgba(38,192,255,0.2)] border border-gray-800 m-auto shrink-0"
+              style={{ borderRadius: "32px", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
             >
               
               <button 
@@ -347,12 +281,12 @@ const Trainers = () => {
                 <X size={20} />
               </button>
 
-              <div className="w-full md:w-1/2 h-[350px] md:h-auto md:min-h-[500px] relative bg-gradient-to-t md:bg-gradient-to-r from-black/50 to-black/0 flex justify-center items-end border-b md:border-b-0 md:border-r border-white/10 pt-6 md:pt-10 shrink-0">
+              <div className="w-full md:w-1/2 h-[350px] md:h-full relative bg-gradient-to-t md:bg-gradient-to-r from-black/50 to-black/0 flex justify-center items-end border-b md:border-b-0 md:border-r border-white/10 pt-6 md:pt-10 shrink-0">
                 <motion.img 
                   layoutId={`image-${selectedInstructor.id}`}
                   src={selectedInstructor.image} 
                   alt={selectedInstructor.name} 
-                  className={`h-full w-auto object-contain object-bottom z-10 ${selectedInstructor.blendMode || ''}`}
+                  className={`h-full w-full object-cover object-bottom z-10 ${selectedInstructor.blendMode || ''}`}
                 />
                 
                 <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[80px] md:text-[150px] font-black text-white/5 uppercase tracking-tighter leading-none pointer-events-none z-0 whitespace-nowrap -rotate-90 md:rotate-0">
@@ -360,9 +294,9 @@ const Trainers = () => {
                 </h2>
               </div>
 
-              <div className="w-full md:w-1/2 h-auto bg-black p-6 md:p-8 lg:p-10 relative flex flex-col justify-center shrink-0">
+              <div className="w-full md:w-1/2 h-full bg-black p-6 md:p-8 lg:p-10 relative flex flex-col justify-start shrink-0 overflow-y-auto hide-scrollbar">
                 
-                <div>
+                <div className="mt-6 md:mt-0">
                   <div className="inline-block px-3 py-1 bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black text-[10px] tracking-widest uppercase mb-2 md:mb-3 rounded-full">
                     {selectedInstructor.rank}
                   </div>

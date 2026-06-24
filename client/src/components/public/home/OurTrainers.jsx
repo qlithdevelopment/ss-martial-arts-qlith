@@ -1,10 +1,51 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { trainersData as trainers } from '../../../data/homeData';
+import api from '../../../api/axios';
 
 const OurTrainers = () => {
   const targetRef = useRef(null);
+  const [trainers, setTrainers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      try {
+        const res = await api.get('/trainers');
+        const data = res.data?.data || res.data || [];
+        
+        const mapped = data.map(t => {
+          let parsedAchievements = [];
+          let parsedExpertise = [];
+          
+          try {
+            parsedAchievements = typeof t.achievements === 'string' ? JSON.parse(t.achievements) : (Array.isArray(t.achievements) ? t.achievements : [t.achievements]);
+          } catch(e) { parsedAchievements = [t.achievements]; }
+
+          try {
+            parsedExpertise = typeof t.expertise === 'string' ? JSON.parse(t.expertise) : (Array.isArray(t.expertise) ? t.expertise : [t.expertise]);
+          } catch(e) { parsedExpertise = [t.expertise]; }
+
+          return {
+            id: t.id,
+            title: t.name,
+            subtitle: t.designation || 'Chief Instructor',
+            description: t.biography || t.motivation_line || '',
+            teach: parsedExpertise.join(', ').substring(0, 50) || 'Various Martial Arts',
+            experience: parsedAchievements.join('. ').substring(0, 100) || 'Extensive Experience',
+            image: t.image_path ? `http://127.0.0.1:8000${t.image_path}` : null
+          };
+        });
+        
+        setTrainers(mapped);
+      } catch (error) {
+        console.error("Failed to load trainers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTrainers();
+  }, []);
   
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -20,9 +61,13 @@ const OurTrainers = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
           TRAINERS
         </div>
-        <motion.div style={{ x }} className="flex w-[340vw] md:w-[325vw] h-full">
-          
-          {trainers.map((current, index) => (
+        <motion.div 
+          style={{ x, width: `calc(${trainers.length * 100}vw + 40vw)` }} 
+          className="flex h-full md:!w-[calc(${trainers.length * 100}vw + 25vw)]"
+        >
+          {loading ? (
+            <div className="w-screen h-full flex items-center justify-center text-white">Loading...</div>
+          ) : trainers.map((current, index) => (
             <div key={current.id} className="w-screen h-full flex flex-col md:flex-row items-center relative flex-shrink-0">
               
               {/* SPLIT BACKGROUND */}

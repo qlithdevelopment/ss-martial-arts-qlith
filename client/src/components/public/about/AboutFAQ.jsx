@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { faqData } from '../../../data/aboutData';
+import api from '../../../api/axios';
 
 const FAQItem = ({ faq, isOpen, onClick }) => {
   return (
@@ -37,7 +37,26 @@ const FAQItem = ({ faq, isOpen, onClick }) => {
 
 const AboutFAQ = ({ limit }) => {
   const [openIndex, setOpenIndex] = useState(0);
-  const displayedFaqs = limit ? faqData.slice(0, limit) : faqData;
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const res = await api.get('/faqs');
+        const data = res.data?.data || res.data || [];
+        const publishedFaqs = data.filter(faq => faq.isPublish === 1 || faq.isPublish === true || faq.isPublish === "1");
+        setFaqs(publishedFaqs);
+      } catch (error) {
+        console.error("Failed to load FAQs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
+
+  const displayedFaqs = limit ? faqs.slice(0, limit) : faqs;
 
   return (
     <section className="w-full bg-[#081218] py-12 md:py-16 lg:py-24 px-4 md:px-8">
@@ -78,21 +97,27 @@ const AboutFAQ = ({ limit }) => {
 
           {/* RIGHT: Accordion */}
           <div className="w-full lg:w-[60%] flex flex-col gap-3">
-            {displayedFaqs.map((faq, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <FAQItem 
-                  faq={faq} 
-                  isOpen={openIndex === idx} 
-                  onClick={() => setOpenIndex(openIndex === idx ? -1 : idx)}
-                />
-              </motion.div>
-            ))}
+            {loading ? (
+              <div className="text-gray-400 text-sm animate-pulse">Loading FAQs...</div>
+            ) : displayedFaqs.length === 0 ? (
+              <div className="text-gray-500 text-sm">No FAQs available at the moment.</div>
+            ) : (
+              displayedFaqs.map((faq, idx) => (
+                <motion.div
+                  key={faq.id || idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <FAQItem 
+                    faq={faq} 
+                    isOpen={openIndex === idx} 
+                    onClick={() => setOpenIndex(openIndex === idx ? -1 : idx)}
+                  />
+                </motion.div>
+              ))
+            )}
           </div>
 
         </div>
