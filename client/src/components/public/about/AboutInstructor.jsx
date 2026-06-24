@@ -16,7 +16,7 @@ const AboutInstructor = () => {
     <section className="w-full bg-black flex items-center justify-center px-4 md:px-8 py-12 lg:py-24">
       
       {/* MASTER CONTAINER - Natural height */}
-      <div className="global-container h-auto bg-gray-900 rounded-[30px] p-4 sm:p-6 md:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row gap-8 lg:gap-12 border border-gray-800">
+      <div className="global-container lg:!px-[95px] h-auto bg-gray-900 rounded-[30px] p-4 sm:p-6 md:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row gap-8 lg:gap-12 border border-gray-800">
         
         {/* LEFT COLUMN: Photo & Contact Box (Sticky) */}
         <div className="w-full lg:w-[35%] flex flex-col gap-4 lg:gap-6 shrink-0 lg:sticky lg:top-24 lg:h-[calc(100vh-140px)]">

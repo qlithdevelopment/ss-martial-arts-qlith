@@ -54,7 +54,7 @@ const Events = () => {
       </div>
 
       {/* Header */}
-      <div className="global-container mb-16 relative z-10">
+      <div className="global-container lg:!px-[95px] mb-16 relative z-10">
         <motion.div 
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}

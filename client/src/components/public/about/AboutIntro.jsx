@@ -12,7 +12,7 @@ const AboutIntro = () => {
         ABOUT
       </div>
 
-      <div className="global-container relative z-10 flex flex-col xl:flex-row gap-16 xl:gap-24">
+      <div className="global-container lg:!px-[95px]  relative z-10 flex flex-col xl:flex-row gap-16 xl:gap-24">
         
         {/* LEFT: Text Content */}
         <div className="w-full xl:w-[55%] flex flex-col justify-center">

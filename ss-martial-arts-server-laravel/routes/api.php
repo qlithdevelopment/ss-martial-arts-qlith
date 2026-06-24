@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/trainers', [TrainerController::class, 'store']);
-    Route::post('/trainers/{trainer}', [TrainerController::class, 'update']); 
+    Route::put('/trainers/{trainer}', [TrainerController::class, 'update']); 
     Route::delete('/trainers/{trainer}', [TrainerController::class, 'destroy']);
 
     Route::get('/batches', [BatchController::class, 'index']);
