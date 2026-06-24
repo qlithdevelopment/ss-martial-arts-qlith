@@ -9,7 +9,7 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
   const [formData, setFormData] = useState({
     question: '',
     answer: '',
-    is_published: true,
+    isPublish: true,
     order: 0,
   });
 
@@ -19,11 +19,11 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
         setFormData({
           question: faqData.question || '',
           answer: faqData.answer || '',
-          is_published: faqData.is_published ?? true,
+          isPublish: faqData.isPublish ?? true,
           order: faqData.order || 0,
         });
       } else {
-        setFormData({ question: '', answer: '', is_published: true, order: 0 });
+        setFormData({ question: '', answer: '', isPublish: true, order: 0 });
       }
     }
   }, [isOpen, faqData]);
@@ -42,7 +42,7 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
 
     try {
       if (faqData) {
-        await api.post(`/faqs/${faqData.id}`, formData);
+        await api.put(`/faqs/${faqData.id}`, formData);
         toast.success('FAQ updated successfully!');
       } else {
         await api.post('/faqs', formData);
@@ -151,8 +151,8 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input 
                         type="checkbox" 
-                        name="is_published" 
-                        checked={formData.is_published} 
+                        name="isPublish" 
+                        checked={formData.isPublish} 
                         onChange={handleInputChange} 
                         className="sr-only peer" 
                       />

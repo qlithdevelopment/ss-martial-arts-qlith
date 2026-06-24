@@ -12,7 +12,7 @@ const PublicLayout = () => {
   const isLoginPage = location.pathname === '/login'
 
   useEffect(() => {
-    const SHOW_AFTER_MINUTES = -1
+    const SHOW_AFTER_MINUTES = 7
 
     if (SHOW_AFTER_MINUTES === 0) return
 
