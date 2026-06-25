@@ -97,7 +97,7 @@ const GalleryPage = () => {
         GALLERY
       </div>
 
-      <div className="global-container relative z-10">
+      <div className="global-container lg:!px-[95px] relative z-10">
 
         <AnimatePresence mode="wait">
           {!selectedAlbum ? (
