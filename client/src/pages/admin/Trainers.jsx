@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import api from '../../api/axios';
 import TrainerModal from '../../components/admin/trainers/TrainerModal';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
+
 const Trainers = () => {
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -129,7 +131,7 @@ const Trainers = () => {
               <div className="relative h-52 bg-gray-100 overflow-hidden">
                 {trainer.image_path ? (
                   <img
-                    src={`http://127.0.0.1:8000${trainer.image_path}`}
+                    src={`${BASE_URL}${trainer.image_path}`}
                     alt={trainer.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => { e.target.src = '/default-trainer.png'; }}
