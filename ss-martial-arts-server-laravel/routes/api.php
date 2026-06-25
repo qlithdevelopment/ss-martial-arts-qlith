@@ -9,6 +9,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\ContactController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
@@ -18,6 +19,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/running', function () {
     return "SS Martial Arts Server is Running";
 });
+Route::post('/contacts', [ContactController::class, 'store']);
 Route::get('/trainers', [TrainerController::class, 'index']);
 Route::get('/trainers/{trainer}', [TrainerController::class, 'show']);
 
@@ -37,6 +39,9 @@ Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/contacts', [ContactController::class, 'index']); 
+    Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
 
     Route::post('/trainers', [TrainerController::class, 'store']);
     Route::put('/trainers/{trainer}', [TrainerController::class, 'update']); 
@@ -76,6 +81,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/certificates/{id}', [CertificateController::class, 'update']); 
     Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
 });
-
-
-// Middleware for admin 
