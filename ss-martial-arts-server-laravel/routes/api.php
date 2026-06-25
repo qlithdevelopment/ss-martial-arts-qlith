@@ -11,6 +11,7 @@ use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\FaqController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CertificateController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -29,6 +30,9 @@ Route::get('/galleries', [GalleryController::class, 'index']);
 Route::get('/galleries/{id}', [GalleryController::class, 'show']);
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::get('/blogs/{id}', [BlogController::class, 'show']);
+
+Route::get('/users/{userId}/certificates', [CertificateController::class, 'index']);
+Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -67,6 +71,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/faqs', [FaqController::class, 'store']);
     Route::put('/faqs/{id}', [FaqController::class, 'update']); 
     Route::delete('/faqs/{id}', [FaqController::class, 'destroy']);
+
+    Route::post('/certificates', [CertificateController::class, 'store']);
+    Route::post('/certificates/{id}', [CertificateController::class, 'update']); 
+    Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
 });
 
 
