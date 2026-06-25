@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { MapPin, Clock, Calendar, User, ChevronRight, X, Send } from 'lucide-react';
 import eventSeminarImg from "../../assets/event_seminar.png";
 import eventTournamentImg from "../../assets/event_tournament.png";
@@ -18,6 +19,15 @@ const Events = () => {
   const [modalMode, setModalMode] = useState('details');
   const [eventsData, setEventsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (eventsData.length > 0 && location.state?.openRegisterFor) {
+      setSelectedEventId(location.state.openRegisterFor);
+      setModalMode('register');
+      window.history.replaceState({}, document.title);
+    }
+  }, [eventsData, location.state]);
 
   useEffect(() => {
     const fetchEvents = async () => {
