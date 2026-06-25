@@ -32,6 +32,7 @@ import AdminGalleries from "../pages/admin/Galleries";
 import AdminTrainers from "../pages/admin/Trainers";
 import AdminFaqs from "../pages/admin/Faqs";
 import AdminServices from "../pages/admin/Services";
+import StudentManagement from "../pages/admin/StudentManagement";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
@@ -101,6 +102,7 @@ const AppRoutes = () => {
         <Route path="/admin/trainers" element={<AdminTrainers />} />
         <Route path="/admin/faqs" element={<AdminFaqs />} />
         <Route path="/admin/services" element={<AdminServices />} />
+        <Route path="/admin/students" element={<StudentManagement />} />
       </Route>
 
       {/* STUDENT */}

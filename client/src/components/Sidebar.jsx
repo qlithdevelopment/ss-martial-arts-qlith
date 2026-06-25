@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from '../assets/Logo_compress.png';
@@ -5,6 +6,7 @@ import Logo from '../assets/Logo_compress.png';
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [isStudentsOpen, setIsStudentsOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -86,6 +88,15 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         </svg>
       )
     },
+    {
+      path: "/admin/students",
+      label: "Students",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+        </svg>
+      )
+    },
   ];
 
   const linkStyles = ({ isActive }) =>
@@ -158,17 +169,54 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           </div>
 
           {/* DYNAMIC NAVIGATION LINKS */}
-          <nav className="flex flex-col gap-1.5">
+          <nav className="flex flex-col gap-1.5 overflow-y-auto custom-scrollbar pr-2 pb-20">
             {menuItems.map((item) => (
-              <NavLink 
-                key={item.path} 
-                to={item.path} 
-                className={linkStyles}
-                onClick={handleItemClick}
-              >
-                {item.icon}
-                {!isCollapsed && <span className="truncate">{item.label}</span>}
-              </NavLink>
+              item.children ? (
+                <div key={item.label} className="flex flex-col">
+                  <div 
+                    onClick={() => {
+                       setIsStudentsOpen(!isStudentsOpen);
+                       if (isCollapsed) setIsCollapsed(false);
+                    }}
+                    className={`flex items-center justify-between gap-4 py-3 px-4 rounded-xl font-medium transition-all cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-primary ${isStudentsOpen && !isCollapsed ? 'bg-orange-50/50 text-[#f97316]' : ''}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      {item.icon}
+                      {!isCollapsed && <span className="truncate">{item.label}</span>}
+                    </div>
+                    {!isCollapsed && (
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 transition-transform ${isStudentsOpen ? 'rotate-180 text-[#f97316]' : ''}`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    )}
+                  </div>
+                  
+                  {isStudentsOpen && !isCollapsed && (
+                    <div className="flex flex-col gap-1 mt-1 ml-6 border-l-2 border-orange-100 pl-2">
+                      {item.children.map(child => (
+                        <NavLink 
+                          key={child.path} 
+                          to={child.path} 
+                          className={({ isActive }) => `flex items-center gap-4 py-2 px-3 rounded-lg font-medium transition-all text-sm ${isActive ? "bg-[#f97316] text-white shadow shadow-orange-500/20" : "text-gray-500 hover:bg-orange-50 hover:text-[#f97316]"}`}
+                          onClick={handleItemClick}
+                        >
+                          <span className="truncate">{child.label}</span>
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <NavLink 
+                  key={item.path} 
+                  to={item.path} 
+                  className={linkStyles}
+                  onClick={handleItemClick}
+                >
+                  {item.icon}
+                  {!isCollapsed && <span className="truncate">{item.label}</span>}
+                </NavLink>
+              )
             ))}
           </nav>
         </div>
