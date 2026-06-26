@@ -4,9 +4,10 @@ import {
   User, Phone, Mail, MapPin, Calendar, Shield, BookOpen,
   Award, CreditCard, LogOut, Sun, Moon,
   CheckCircle2, Clock, AlertCircle, Lock, TrendingUp,
-  Download, Star, Dumbbell, Sparkles, Menu, X, GraduationCap,
+  Download, Star, Dumbbell, Sparkles, Menu, X, GraduationCap, FileText,
 } from "lucide-react";
 import axiosInstance from "../../api/axios.js";
+import toast from "react-hot-toast";
 
 // ── API helpers ───────────────────────────────────────────────────────────────
 export const getStudent = async (id) => {
@@ -20,27 +21,29 @@ export const getMyBatch = async () => {
 };
 
 // ─── Static / not-yet-from-API data ──────────────────────────────────────────
-const BELTS = [
-  { name: "White", color: "bg-gray-200 dark:bg-gray-600", ring: "ring-gray-300", status: "cleared" },
-  { name: "Yellow", color: "bg-yellow-400", ring: "ring-yellow-400", status: "cleared" },
-  { name: "Orange", color: "bg-orange-500", ring: "ring-orange-500", status: "cleared" },
-  { name: "Green", color: "bg-green-600", ring: "ring-green-600", status: "cleared" },
-  { name: "Blue", color: "bg-blue-600", ring: "ring-blue-600", status: "cleared" },
-  { name: "Purple", color: "bg-purple-600", ring: "ring-purple-600", status: "cleared" },
-  { name: "Brown", color: "bg-amber-700", ring: "ring-amber-600", status: "current" },
-  { name: "Red", color: "bg-red-600", ring: "ring-red-500", status: "locked" },
-  { name: "Black", color: "bg-gray-900", ring: "ring-gray-700", status: "locked" },
-];
-
 const TABS = [
-  { key: "Batch", label: "Batch Info", icon: <BookOpen size={15} /> },
-  { key: "Courses", label: "Courses", icon: <Dumbbell size={15} /> },
+  { key: "Batch", label: "Batch", icon: <BookOpen size={15} /> },
   { key: "Fees", label: "Fees", icon: <CreditCard size={15} /> },
   { key: "Belt", label: "Belt", icon: <Award size={15} /> },
-  { key: "Certs", label: "Certificates", icon: <Star size={15} /> },
+  { key: "Certs", label: "Certificates", icon: <FileText size={15} /> },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+export const getBeltColor = (belt) => {
+  if (!belt) return { bg: "bg-slate-100 dark:bg-slate-800", text: "text-slate-600 dark:text-slate-400", border: "border-slate-200 dark:border-slate-700" };
+  const b = belt.toLowerCase();
+  if (b.includes("white")) return { bg: "bg-slate-50 dark:bg-slate-800", text: "text-slate-700 dark:text-slate-200", border: "border-slate-200 dark:border-slate-700" };
+  if (b.includes("yellow")) return { bg: "bg-[#FEF3C7] dark:bg-[#451A03]/40", text: "text-[#B45309] dark:text-[#FDE68A]", border: "border-amber-200 dark:border-amber-900/50" };
+  if (b.includes("orange")) return { bg: "bg-[#FFEDD5] dark:bg-[#7C2D12]/40", text: "text-[#C2410C] dark:text-[#FED7AA]", border: "border-orange-200 dark:border-orange-900/50" };
+  if (b.includes("green")) return { bg: "bg-[#D1FAE5] dark:bg-[#064E3B]/40", text: "text-[#047857] dark:text-[#A7F3D0]", border: "border-emerald-200 dark:border-emerald-900/50" };
+  if (b.includes("blue")) return { bg: "bg-[#DBEAFE] dark:bg-[#1E3A8A]/40", text: "text-[#1D4ED8] dark:text-[#BFDBFE]", border: "border-blue-200 dark:border-blue-900/50" };
+  if (b.includes("purple")) return { bg: "bg-[#F3E8FF] dark:bg-[#581C87]/40", text: "text-[#7E22CE] dark:text-[#E9D5FF]", border: "border-purple-200 dark:border-purple-900/50" };
+  if (b.includes("brown")) return { bg: "bg-[#F5E6D3] dark:bg-[#3E2723]/60", text: "text-[#5C4033] dark:text-[#D7CCC8]", border: "border-stone-200 dark:border-stone-800" };
+  if (b.includes("red")) return { bg: "bg-[#FEE2E2] dark:bg-[#7F1D1D]/40", text: "text-[#B91C1C] dark:text-[#FECACA]", border: "border-rose-200 dark:border-rose-900/50" };
+  if (b.includes("black")) return { bg: "bg-[#1E293B] dark:bg-[#020617]", text: "text-white dark:text-slate-200", border: "border-slate-700 dark:border-slate-800" };
+  return { bg: "bg-slate-100 dark:bg-slate-800", text: "text-slate-600 dark:text-slate-400", border: "border-slate-200 dark:border-slate-700" };
+};
+
 const fmt = (dateStr) =>
   dateStr
     ? new Date(dateStr).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
@@ -137,78 +140,36 @@ function BatchTab({ batch }) {
   const endDate = fmt(batch.enddate);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      {/* Main batch card */}
-      <div className="lg:col-span-7">
-        <Card className="p-6 space-y-5">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                <Dumbbell size={20} className="text-indigo-500" />
-              </div>
-              <div>
-                {/* FROM API */}
-                <p className="text-base font-black text-slate-800 dark:text-slate-100">{batch.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Batch ID: #{batch.id}</p>
-              </div>
+    <div className="space-y-6">
+      <Card className="p-6 space-y-5">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+              <BookOpen size={20} className="text-indigo-500" />
             </div>
-            <Chip className={isActive ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-amber-500/10 text-amber-600 dark:text-amber-400"}>
-              <span className={`w-1.5 h-1.5 rounded-full inline-block ${isActive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
-              {/* FROM API */}
-              {batch.status.charAt(0).toUpperCase() + batch.status.slice(1)}
-            </Chip>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <InfoRow icon={<Calendar size={14} />} label="Start Date" value={startDate} />  {/* FROM API */}
-            <InfoRow icon={<Calendar size={14} />} label="End Date" value={endDate} />  {/* FROM API */}
-            <InfoRow icon={<CreditCard size={14} />} label="Batch Fee" value={fmtCurrency(batch.total_fee)} />  {/* FROM API */}
-            {/* <InfoRow icon={<Clock size={14} />} label="Schedule" value={null} />  NO DATA from API — batch.notes has it as free text */}
-            {/* <InfoRow icon={<User size={14} />} label="Instructor" value={null} />  NO DATA from API */}
-            {/* <InfoRow icon={<BookOpen size={14} />} label="Course Type" value={null} />  NO DATA from API */}
-          </div>
-
-          {/* Notes — FROM API */}
-          {batch.notes && (
-            <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-4 border border-slate-100 dark:border-slate-800/50">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Notes</p>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{batch.notes}</p>
-            </div>
-          )}
-        </Card>
-      </div>
-
-      {/* Side stats */}
-      <div className="lg:col-span-5 space-y-4">
-        <Card className="p-5">
-          <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-4">Batch Duration</p>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500 dark:text-slate-400">From</span>
-              {/* FROM API */}
-              <span className="font-bold text-slate-800 dark:text-slate-100">{startDate ?? <NoData />}</span>
-            </div>
-            <div className="h-px bg-slate-100 dark:bg-slate-800" />
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500 dark:text-slate-400">To</span>
-              {/* FROM API */}
-              <span className="font-bold text-slate-800 dark:text-slate-100">{endDate ?? <NoData />}</span>
-            </div>
-            <div className="h-px bg-slate-100 dark:bg-slate-800" />
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-500 dark:text-slate-400">Total Students</span>
-              {/* NO DATA from API */}
-              <NoData />
+            <div>
+              <p className="text-base font-black text-slate-800 dark:text-slate-100">{batch.name}</p>
+              <p className="text-xs text-slate-400 mt-0.5">Batch ID: #{batch.id}</p>
             </div>
           </div>
-        </Card>
+          <Chip className={isActive ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-amber-500/10 text-amber-600 dark:text-amber-400"}>
+            <span className={`w-1.5 h-1.5 rounded-full inline-block ${isActive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
+            {batch.status ? batch.status.charAt(0).toUpperCase() + batch.status.slice(1) : "Unknown"}
+          </Chip>
+        </div>
 
-        <Card className="p-5">
-          <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-3">Attendance</p>
-          {/* NO DATA from API */}
-          <p className="text-xs text-slate-400 italic">No attendance data available.</p>
-        </Card>
-      </div>
+        <div className="grid grid-cols-2 gap-3">
+          <InfoRow icon={<Calendar size={14} />} label="Start Date" value={startDate} />
+          <InfoRow icon={<Calendar size={14} />} label="End Date" value={endDate} />
+        </div>
+
+        {batch.notes && (
+          <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-4 border border-slate-100 dark:border-slate-800/50">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Notes</p>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{batch.notes}</p>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }
@@ -220,167 +181,182 @@ function BatchTab({ batch }) {
 function FeesTab({ student }) {
   const ledger = student?.ledger_summary ?? {};
   const totalFee = fmtCurrency(ledger.total_fee);
-  const totalPaid = fmtCurrency(ledger.total_paid);
-  const pendingAmount = fmtCurrency(ledger.pending_amount);
-  const paymentHistory = student?.payment_history ?? [];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      {/* Payment history */}
-      <div className="lg:col-span-7 space-y-3">
-        <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase px-1">Payment History</p>
-        <Card className="overflow-hidden">
-          {paymentHistory.length === 0 ? (
-            /* FROM API — payment_history is [] */
-            <div className="px-5 py-10 text-center">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3">
-                <CreditCard size={18} className="text-slate-400" />
-              </div>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">No payments recorded yet</p>
-              <p className="text-xs text-slate-400 mt-1">Payments will appear here once processed.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-100 dark:divide-slate-800">
-              {paymentHistory.map((p, i) => (
-                <div key={i} className="flex items-center justify-between px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 size={16} className="text-emerald-500" />
-                    </div>
-                    <div className="min-w-0">
-                      {/* map actual API fields from payment_history once populated */}
-                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">
-                        {p.month ?? fmt(p.paid_at) ?? <NoData />}
-                      </p>
-                      <p className="text-xs text-slate-400 truncate">{p.description ?? p.desc ?? <NoData />}</p>
-                    </div>
-                  </div>
-                  <div className="text-right flex-shrink-0 ml-4">
-                    <p className="text-sm font-black text-slate-800 dark:text-slate-100">
-                      {fmtCurrency(p.amount) ?? <NoData />}
-                    </p>
-                    <p className="text-[10px] font-semibold text-emerald-500 uppercase tracking-wide">Paid</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
-      </div>
-
-      {/* Ledger summary */}
-      <div className="lg:col-span-5 space-y-4">
-        <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase px-1">Ledger Summary</p>
-
-        <Card className="divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
-          {[
-            { label: "Total Batch Fee", value: totalFee, icon: <CreditCard size={15} />, cls: "text-slate-700 dark:text-slate-200" },
-            { label: "Total Paid", value: totalPaid, icon: <CheckCircle2 size={15} />, cls: "text-emerald-600 dark:text-emerald-400" },
-            { label: "Pending Amount", value: pendingAmount, icon: <AlertCircle size={15} />, cls: "text-red-500" },
-          ].map((row) => (
-            <div key={row.label} className="flex items-center justify-between px-5 py-4">
-              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                {row.icon}
-                <span className="text-sm">{row.label}</span>
-              </div>
-              {/* FROM API — ledger_summary */}
-              <p className={`text-sm font-black ${row.cls}`}>{row.value ?? <NoData />}</p>
-            </div>
-          ))}
-        </Card>
-
-        {/* Pending dues callout */}
-        <div className="bg-red-500/8 dark:bg-red-500/10 border border-red-200 dark:border-red-900/40 rounded-2xl p-4 flex items-center justify-between">
-          <div>
-            <p className="text-[11px] text-red-400 font-bold uppercase tracking-widest">Total Pending</p>
-            {/* FROM API */}
-            <p className="text-2xl font-black text-red-500 mt-0.5">{pendingAmount ?? <NoData />}</p>
+    <div className="space-y-6">
+      <Card className="p-6 border-l-4 border-l-emerald-500">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 flex-shrink-0">
+            <CreditCard size={24} strokeWidth={2.5} />
           </div>
-          {ledger.pending_amount > 0 && (
-            <button className="bg-red-500 hover:bg-red-600 active:scale-95 transition-all text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2">
-              <CreditCard size={15} /> Pay Now
-            </button>
-          )}
+          <div>
+            <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-0.5">Student Fee</p>
+            <p className="text-2xl font-black text-slate-800 dark:text-slate-100">Monthly Fee: {totalFee ?? <NoData />}</p>
+          </div>
         </div>
-
-        {/* Due date — NO DATA from API */}
-        <Card className="p-4">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Next Due Date</p>
-          <NoData />
-        </Card>
-      </div>
+      </Card>
     </div>
   );
 }
 
-// ─── Tab: Belt Progress ───────────────────────────────────────────────────────
-// No data from API — belt/rank info not in student response
-function BeltTab() {
-  const cleared = BELTS.filter((b) => b.status === "cleared").length;
-  const total = BELTS.length;
+// ─── Tab: Belt ────────────────────────────────────────────────────────────────
+function BeltTab({ student }) {
+  const beltInfo = getBeltColor(student?.belt);
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2 px-1">
-        <AlertCircle size={13} className="text-amber-500 flex-shrink-0" />
-        <p className="text-[11px] text-amber-500 font-semibold">
-          Belt progress is not yet available from the API — showing placeholder data.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7">
-          <Card className="p-2 overflow-hidden">
-            <div className="space-y-1">
-              {BELTS.map((b, idx) => (
-                <div key={b.name} className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${b.status === "current" ? "bg-amber-50 dark:bg-amber-500/10" : b.status === "locked" ? "opacity-40" : "hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}>
-                  <div className={`w-8 h-8 rounded-lg ${b.color} shadow-inner flex-shrink-0 ${b.status === "current" ? `ring-2 ${b.ring} ring-offset-2 dark:ring-offset-slate-900` : ""}`} />
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="text-[10px] font-bold text-slate-300 dark:text-slate-600 tabular-nums w-4">{String(idx + 1).padStart(2, "0")}</span>
-                    <span className={`text-sm font-bold truncate ${b.status === "current" ? "text-amber-600 dark:text-amber-400" : "text-slate-700 dark:text-slate-300"}`}>{b.name} Belt</span>
-                  </div>
-                  <div className="flex-shrink-0">
-                    {b.status === "cleared" && <CheckCircle2 size={16} className="text-emerald-500" />}
-                    {b.status === "current" && <Chip className="bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">Current</Chip>}
-                    {b.status === "locked" && <Lock size={14} className="text-slate-400" />}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
+    <div className="space-y-6">
+      <Card className={`p-6 border-l-4 ${beltInfo.border}`}>
+        <div className="flex items-center gap-4 mb-4">
+          <div className={`w-12 h-12 rounded-xl ${beltInfo.bg} ${beltInfo.text} ${beltInfo.border} border flex items-center justify-center flex-shrink-0 shadow-sm`}>
+            <Award size={24} strokeWidth={2.5} />
+          </div>
+          <div>
+            <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-0.5">Belt Details</p>
+            <p className="text-2xl font-black text-slate-800 dark:text-slate-100">{student?.belt || 'Unranked'}</p>
+          </div>
         </div>
-
-        <div className="lg:col-span-5 space-y-4">
-          <Card className="p-5">
-            <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-3">Overall Belt Progress</p>
-            <div className="flex items-end gap-2 mb-3">
-              <span className="text-4xl font-black text-slate-800 dark:text-slate-100">{cleared}</span>
-              <span className="text-lg text-slate-400 mb-1">/ {total}</span>
-            </div>
-            <ProgressBar value={Math.round((cleared / total) * 100)} color="bg-gradient-to-r from-amber-500 to-amber-700" />
-          </Card>
-          <Card className="p-5">
-            <p className="text-[11px] font-bold tracking-widest text-slate-400 uppercase mb-2">Next Exam</p>
-            {/* NO DATA from API */}
-            <NoData />
-          </Card>
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50">
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            Assigned by Dojo Admin. This is your officially recognized rank within the martial arts academy.
+          </p>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
+
 
 // ─── Tab: Certificates ────────────────────────────────────────────────────────
-// No data from API — certificates not in student response
 function CertsTab() {
+  const { user } = useAuth();
+  const [certs, setCerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedCertUrl, setSelectedCertUrl] = useState(null);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const fetchCerts = async () => {
+      try {
+        setLoading(true);
+        const res = await axiosInstance.get(`/users/${user.id}/certificates`);
+        const data = res.data?.data || res.data || [];
+        setCerts(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setError("Failed to load certificates.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCerts();
+  }, [user?.id]);
+
+  if (loading) {
+    return (
+      <Card className="p-8 text-center flex justify-center items-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin"></div>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="p-8 text-center">
+        <p className="text-red-500 text-sm font-semibold">{error}</p>
+      </Card>
+    );
+  }
+
+  if (certs.length === 0) {
+    return (
+      <Card className="p-8 text-center">
+        <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-3">
+          <Award size={22} className="text-indigo-400" />
+        </div>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">No certificates available</p>
+        <p className="text-xs text-slate-400 mt-1">You haven't been awarded any certificates yet.</p>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="p-8 text-center">
-      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-3">
-        <Award size={22} className="text-indigo-400" />
-      </div>
-      <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">No certificates available</p>
-      <p className="text-xs text-slate-400 mt-1">Certificate data is not yet provided by the API.</p>
-    </Card>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {certs.map(cert => {
+        // Fix relative image paths to load from Laravel backend if needed
+        let fileUrl = null;
+        if (cert.certificated && cert.certificated.length > 0) {
+            fileUrl = cert.certificated[0];
+            if (typeof fileUrl === 'string' && !fileUrl.startsWith('http')) {
+                // Ensure we hit the Laravel server
+                fileUrl = `http://127.0.0.1:8000${fileUrl.startsWith('/') ? '' : '/'}${fileUrl}`;
+            }
+        } else if (cert.file_url) {
+            fileUrl = cert.file_url;
+        }
+          
+        return (
+          <div key={cert.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm group">
+            <div className="aspect-[4/3] bg-slate-50 dark:bg-slate-800 relative flex justify-center items-center overflow-hidden">
+              {fileUrl ? (
+                fileUrl.toLowerCase().endsWith('.pdf') ? (
+                  <div className="w-full h-full flex flex-col gap-2 items-center justify-center bg-slate-200 dark:bg-slate-700 group-hover:scale-105 transition-transform cursor-pointer" onClick={() => setSelectedCertUrl(fileUrl)}>
+                    <Award size={24} className="text-red-500" />
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400">PDF</span>
+                  </div>
+                ) : (
+                  <img src={fileUrl} alt={cert.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform cursor-pointer" onClick={() => setSelectedCertUrl(fileUrl)} />
+                )
+              ) : (
+                <Award size={32} className="text-slate-300 dark:text-slate-700" />
+              )}
+            </div>
+            <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2" title={cert.title}>{cert.title}</p>
+              {fileUrl && (
+                <button onClick={() => setSelectedCertUrl(fileUrl)} className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[11px] font-bold rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors shrink-0">
+                  View
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Certificate Modal */}
+      {selectedCertUrl && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onClick={() => setSelectedCertUrl(null)}>
+          <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="absolute top-4 right-4 z-10">
+              <button onClick={() => setSelectedCertUrl(null)} className="p-2 bg-white/80 dark:bg-black/50 text-slate-800 dark:text-slate-200 hover:bg-white dark:hover:bg-black rounded-full transition-colors backdrop-blur-md">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto flex justify-center items-center bg-slate-100/50 dark:bg-slate-900/50 p-2 sm:p-6 min-h-[50vh]">
+              {selectedCertUrl?.toLowerCase().endsWith('.pdf') ? (
+                <div className="w-full h-full flex flex-col bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm">
+                  <div className="bg-slate-50 dark:bg-slate-800/80 p-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 shrink-0">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                      <Download size={14} /> PDF Document
+                    </span>
+                    <a 
+                      href={selectedCertUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm"
+                    >
+                      Open / Download PDF
+                    </a>
+                  </div>
+                  <iframe src={selectedCertUrl} className="w-full flex-1 min-h-[70vh] bg-gray-100" title="Certificate PDF" />
+                </div>
+              ) : (
+                <img src={selectedCertUrl} alt="Certificate Full View" className="max-w-full max-h-[80vh] object-contain shadow-sm rounded-lg" />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -390,103 +366,8 @@ const TAB_COMPONENTS = {
   Belt: BeltTab,
   Certs: CertsTab,
 };
-// ─── Tab: Courses ─────────────────────────────────────────────────────────────
-const DUMMY_COURSES = [
-  {
-    id: 1,
-    title: "Karate — Advanced",
-    instructor: "Sensei Mohan Das",
-    schedule: "Mon, Wed, Fri · 6:00 AM",
-    progress: 72,
-    status: "Ongoing",
-    accent: "indigo",
-    icon: <BookOpen size={18} />,
-  },
- 
-];
 
-const COURSE_ACCENT_MAP = {
-  indigo: {
-    bg: "bg-indigo-500/10 dark:bg-indigo-500/15",
-    text: "text-indigo-600 dark:text-indigo-400",
-    bar: "bg-indigo-500",
-  },
-  violet: {
-    bg: "bg-violet-500/10 dark:bg-violet-500/15",
-    text: "text-violet-600 dark:text-violet-400",
-    bar: "bg-violet-500",
-  },
-  amber: {
-    bg: "bg-amber-500/10 dark:bg-amber-500/15",
-    text: "text-amber-600 dark:text-amber-400",
-    bar: "bg-amber-500",
-  },
-};
 
-function CoursesTab({ student }) {
-  // When API is ready, swap DUMMY_COURSES with:
-  // const courses = student?.courses ?? student?.enrollments ?? [];
-  const courses = DUMMY_COURSES;
-
-  return (
-    <div className="space-y-3">
-      {/* Remove this banner once real API data is wired in */}
-      <div className="flex items-center gap-2 px-1">
-        <AlertCircle size={13} className="text-amber-500 flex-shrink-0" />
-        <p className="text-[11px] text-amber-500 font-semibold">
-          Showing placeholder data — course endpoint not yet available.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {courses.map((c) => {
-          const a = COURSE_ACCENT_MAP[c.accent];
-          const isOnHold = c.status === "On Hold";
-
-          return (
-            <Card key={c.id} className="p-5 hover:shadow-md transition-shadow duration-200">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${a.bg} ${a.text}`}>
-                  {c.icon}
-                </div>
-                <Chip className={isOnHold
-                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                }>
-                  {isOnHold ? <Clock size={10} /> : <CheckCircle2 size={10} />}
-                  {c.status}
-                </Chip>
-              </div>
-
-              <p className="text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug">
-                {c.title}
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {c.instructor}
-              </p>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
-                <Clock size={10} className="flex-shrink-0" />
-                {c.schedule}
-              </p>
-
-              <div className="flex items-center gap-3 mt-3">
-                <div className="flex-1 bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-700 ease-out ${a.bar}`}
-                    style={{ width: `${c.progress}%` }}
-                  />
-                </div>
-                <span className="text-[11px] font-bold text-slate-400 tabular-nums min-w-[30px] text-right">
-                  {c.progress}%
-                </span>
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 export default function StudentDashboard() {
@@ -560,10 +441,19 @@ export default function StudentDashboard() {
   // FROM API ✅
   const displayName = student?.name ?? null;
   const displayEmail = student?.email ?? null;
-  const displayStatus = student?.status === 1 ? "Active" : student?.status === 0 ? "Inactive" : null;
+  const displayStatus = student ? ((String(student.status) === '1' || student.status === true || String(student.status).toLowerCase() === 'active' || student.status === 'true') ? "Active" : "Inactive") : null;
   const displayJoined = fmt(student?.created_at);
   const displayId = student?.id ?? null;
   const displayNotes = student?.notes ?? null;
+
+  // FROM API ✅
+  const ledger = student?.ledger_summary ?? {};
+  const displayPaid = fmtCurrency(ledger.total_paid);
+  const displayPending = fmtCurrency(ledger.pending_amount);
+  const displayFee = fmtCurrency(ledger.total_fee);
+  const displayBelt = student?.belt || 'Unranked';
+
+  const TabComponent = TAB_COMPONENTS[activeTab];
 
   // NOT IN API ❌ — these fields don't come from /students/{id}
   const displayPhone = null;   // no phone field in API response
@@ -573,17 +463,7 @@ export default function StudentDashboard() {
   const displayGuardian = null;   // no guardian/parent field
   const displayAvatar = null;   // no photo/avatar field
 
-  // FROM API ✅ — ledger_summary
-  const ledger = student?.ledger_summary ?? {};
-  const displayPaid = fmtCurrency(ledger.total_paid);
-  const displayPending = fmtCurrency(ledger.pending_amount);
-  const displayFee = fmtCurrency(ledger.total_fee);
 
-  // NOT IN API ❌
-  const displayBelt = null;   // no belt/rank field
-  const displayCerts = null;   // no certificates field
-
-  const TabComponent = TAB_COMPONENTS[activeTab];
 
 
   return (
@@ -616,7 +496,7 @@ export default function StudentDashboard() {
               <Dumbbell size={16} className="text-white" />
             </div>
             <div className="hidden sm:block">
-              <p className="text-sm font-black tracking-tight text-slate-800 dark:text-slate-100 leading-none">Dojo Portal</p>
+              <p className="text-sm font-black tracking-tight text-slate-800 dark:text-slate-100 leading-none">{displayName || "Student Portal"}</p>
               <p className="text-[10px] text-slate-400 tracking-wide">Student Management System</p>
             </div>
           </div>
@@ -667,8 +547,16 @@ export default function StudentDashboard() {
                     {displayName ?? <NoData />}
                   </h1>
                   {displayStatus && (
-                    <Chip className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mx-auto sm:mx-0">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                    <Chip className={`mx-auto sm:mx-0 ${
+                      displayStatus === "Active" 
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" 
+                        : "bg-red-500/10 text-red-600 dark:text-red-400"
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full inline-block ${
+                        displayStatus === "Active" 
+                          ? "bg-emerald-500 animate-pulse" 
+                          : "bg-red-500"
+                      }`} />
                       {displayStatus}
                     </Chip>
                   )}
@@ -694,48 +582,28 @@ export default function StudentDashboard() {
                 )} */}
 
                 <div className="flex flex-wrap justify-center sm:justify-start gap-2">
-                  <Chip className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-3 py-1.5 text-xs">
+                  <Chip className={`${getBeltColor(student?.belt).bg} ${getBeltColor(student?.belt).text} px-3 py-1.5 text-xs shadow-sm`}>
                     <Award size={12} />
-                    {/* NO DATA from API */}
-                    Belt: <NoData />
+                    {student?.belt || 'Unranked'}
                   </Chip>
-                  <Chip className="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 text-xs">
+                  <Chip className="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 text-xs shadow-sm">
                     <BookOpen size={12} />
-                    {/* batch from API */}
                     {batch?.name ?? "No batch"}
                   </Chip>
-                  {DUMMY_COURSES.map((c) => (
-                    <Chip
-                      key={c.id}
-                      className={`px-3 py-1.5 text-xs ${c.status === "On Hold"
-                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        }`}
-                    >
-                      <GraduationCap size={12} />
-                      {c.title}
-                    </Chip>
-                  ))}
                 </div>
               </div>
             </div>
 
             {/* Info grid */}
-            <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {/* FROM API  */}
+            <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-3 max-w-lg">
               <InfoRow icon={<Mail size={14} />} label="Email" value={displayEmail} valueClass="text-indigo-500 dark:text-indigo-400" />
               <InfoRow icon={<Calendar size={14} />} label="Joined" value={displayJoined} />
-              {/* NOT IN API  */}
-              <InfoRow icon={<Phone size={14} />} label="Phone" value={displayPhone} />
-              <InfoRow icon={<MapPin size={14} />} label="City" value={displayCity} />
-              <InfoRow icon={<Calendar size={14} />} label="DOB" value={displayDob} />
-              <InfoRow icon={<User size={14} />} label="Guardian" value={displayGuardian} />
             </div>
           </Card>
         )}
 
         {/* ── Stats Row ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             {
               label: "Total Batch Fee", value: displayFee,     // FROM API ✅
@@ -751,11 +619,6 @@ export default function StudentDashboard() {
               label: "Pending Dues", value: displayPending,  // FROM API ✅
               valueClass: "text-red-500",
               icon: <AlertCircle size={18} />, iconClass: "bg-red-500/10 text-red-500",
-            },
-            {
-              label: "Current Belt", value: displayBelt,     // NOT IN API ❌
-              valueClass: "text-amber-700 dark:text-amber-500",
-              icon: <Shield size={18} />, iconClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
             },
           ].map((s) => (
             <Card key={s.label} className="p-5 hover:shadow-md transition-shadow">
@@ -787,9 +650,8 @@ export default function StudentDashboard() {
 
           {/* Pass real data down into each tab */}
           {activeTab === "Batch" && <BatchTab batch={batch} />}
-          {activeTab === "Courses" && <CoursesTab student={student} />}
           {activeTab === "Fees" && <FeesTab student={student} />}
-          {activeTab === "Belt" && <BeltTab />}
+          {activeTab === "Belt" && <BeltTab student={student} />}
           {activeTab === "Certs" && <CertsTab />}
         </div>
       </main>

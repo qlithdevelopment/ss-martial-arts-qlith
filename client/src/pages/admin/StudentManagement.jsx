@@ -3,7 +3,7 @@ import Students from './Students';
 import Batches from './Batches';
 
 const StudentManagement = () => {
-  const [activeTab, setActiveTab] = useState('batches');
+  const [activeTab, setActiveTab] = useState('students');
 
   return (
     <div className="">

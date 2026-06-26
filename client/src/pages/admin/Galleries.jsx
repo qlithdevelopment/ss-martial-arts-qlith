@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Image as ImageIcon, Search, CopyPlus, Edit2 } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, Search, CopyPlus, Edit2, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
 import AlbumModal from '../../components/admin/galleries/AlbumModal';
@@ -18,6 +19,7 @@ const Galleries = () => {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [viewAlbum, setViewAlbum] = useState(null);
 
   useEffect(() => {
     fetchAlbums();
@@ -106,7 +108,7 @@ const Galleries = () => {
             onClick={openCreateModal}
             className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
           >
-            <Plus size={18} /> <span className="hidden sm:inline">Create Album</span>
+            <Plus size={18} /> <span className="hidden lg:inline">Create Album</span>
           </button>
         </div>
       </div>
@@ -134,17 +136,22 @@ const Galleries = () => {
               {/* Cover Image */}
               <div className="relative h-48 bg-gray-100 overflow-hidden">
                 {album.images && album.images.length > 0 ? (
-                  <img src={getImageUrl(album.images[0])} alt={album.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <>
+                    <img src={getImageUrl(album.images[0])} alt={album.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button onClick={() => setViewAlbum(album)} className="text-white text-xs font-bold px-4 py-2 bg-black/60 rounded-full backdrop-blur-sm hover:bg-black/80 transition-colors">
+                        View All Photos
+                      </button>
+                    </div>
+                  </>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-300">
                     <ImageIcon size={40} />
                   </div>
                 )}
                 {/* Status badge */}
-                <div className="absolute top-3 right-3">
-                  <span className="backdrop-blur-sm bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-md tracking-wider flex items-center gap-1 shadow-sm">
-                    <CopyPlus size={10} /> {album.images ? album.images.length : 0} Photos
-                  </span>
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-bold text-gray-900 shadow-sm flex items-center gap-1.5">
+                  <CopyPlus size={10} /> {album.images ? album.images.length : 0} Photos
                 </div>
               </div>
 
@@ -178,12 +185,47 @@ const Galleries = () => {
         </div>
       )}
 
+      {/* Create/Edit Album Modal */}
       <AlbumModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         albumData={selectedAlbum} 
         fetchAlbums={fetchAlbums}
       />
+
+      {/* View Album Modal */}
+      <AnimatePresence>
+        {viewAlbum && (
+          <>
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setViewAlbum(null)} className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40" />
+            <motion.div initial={{opacity:0, scale:0.95}} animate={{opacity:1, scale:1}} exit={{opacity:0, scale:0.95}} className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl bg-white rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]">
+              <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+                <div>
+                  <h3 className="text-xl font-black text-gray-900">{viewAlbum.name}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{viewAlbum.description || 'No description'}</p>
+                </div>
+                <button onClick={() => setViewAlbum(null)} className="text-gray-400 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors"><X size={20} /></button>
+              </div>
+              <div className="p-6 overflow-auto flex-1 bg-gray-50 custom-scrollbar">
+                {viewAlbum.images && viewAlbum.images.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {viewAlbum.images.map((img, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-xl overflow-hidden bg-gray-200 shadow-sm group">
+                        <img src={getImageUrl(img)} alt={`${viewAlbum.name} ${idx+1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20 text-gray-400">
+                    <ImageIcon size={64} className="mx-auto mb-4 opacity-30" />
+                    <p className="font-bold text-lg">No photos in this album</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

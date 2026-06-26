@@ -64,6 +64,7 @@ const Trainers = () => {
 
   const openCreateModal = () => {
     setSelectedTrainer(null);
+    setSearch('');
     setIsModalOpen(true);
   };
 
@@ -102,7 +103,7 @@ const Trainers = () => {
             onClick={openCreateModal}
             className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
           >
-            <Plus size={18} /> <span className="hidden sm:inline">Add Trainer</span>
+            <Plus size={18} /> <span className="hidden lg:inline">Add Trainer</span>
           </button>
         </div>
       </div>
@@ -218,7 +219,10 @@ const Trainers = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         trainerData={selectedTrainer}
-        fetchTrainers={fetchTrainers}
+        fetchTrainers={() => {
+          setSearch('');
+          fetchTrainers();
+        }}
       />
     </div>
   );

@@ -20,6 +20,7 @@ const Navbar = () => {
     { name: 'Blog', path: '/blog' },
     { name: 'FAQ', path: '/faq' },
     { name: 'Contact', path: '/contact' },
+    { name: 'Find Student', path: '/find-student' },
   ]
 
   if (user) {

@@ -62,6 +62,7 @@ const Events = () => {
 
   const openCreateModal = () => {
     setSelectedEvent(null);
+    setSearch('');
     setIsModalOpen(true);
   };
 
@@ -99,7 +100,7 @@ const Events = () => {
             onClick={openCreateModal}
             className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
           >
-            <Plus size={18} /> <span className="hidden sm:inline">Create Event</span>
+            <Plus size={18} /> <span className="hidden lg:inline">Create Event</span>
           </button>
         </div>
       </div>
@@ -179,7 +180,10 @@ const Events = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         eventData={selectedEvent} 
-        fetchEvents={fetchEvents}
+        fetchEvents={() => {
+          setSearch('');
+          fetchEvents();
+        }}
       />
     </div>
   );

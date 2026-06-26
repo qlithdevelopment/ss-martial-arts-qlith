@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, Calendar, Users, X, Save, Type, IndianRupee, Activity, FileText } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Calendar, Users, X, Save, Type, IndianRupee, Activity, FileText , RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
@@ -24,6 +24,7 @@ const Batches = () => {
 
   const openCreateModal = () => {
     setSelectedBatch(null);
+    setSearch('');
     setFormData({ name: '', date: '', enddate: '', total_fee: '', status: 'active', notes: '' });
     setIsModalOpen(true);
   };
@@ -61,6 +62,7 @@ const Batches = () => {
         toast.success('Batch created successfully');
       }
       setIsModalOpen(false);
+      setSearch('');
       fetchBatches();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to save batch');
@@ -112,19 +114,30 @@ const Batches = () => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input 
             type="text" 
+            name="batch_search_query"
+            autoComplete="off"
             placeholder="Search batches..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 shadow-sm"
           />
         </div>
-        <button 
-          onClick={() => { setSelectedBatch(null); setIsModalOpen(true); }}
-          className="w-full sm:w-auto px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
-        >
-          <Plus size={18} strokeWidth={2.5} />
-          Add Batch
-        </button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <button 
+            onClick={fetchBatches} 
+            className="p-3 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-xl transition-colors hidden lg:flex items-center justify-center shrink-0"
+            title="Refresh Batches"
+          >
+            <RefreshCw size={20} />
+          </button>
+          <button 
+            onClick={openCreateModal}
+            className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
+          >
+            <Plus size={18} strokeWidth={2.5} />
+            <span className="hidden lg:inline">Add Batch</span>
+          </button>
+        </div>
       </div>
 
       {/* Content */}
@@ -276,8 +289,10 @@ const Batches = () => {
                       </label>
                       <input 
                         type="text" 
+                        name="batch_name_entry"
+                        autoComplete="off"
                         required
-                        placeholder="e.g. Morning Warriors"
+                        placeholder="e.g. Morning Warrior Batch"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
