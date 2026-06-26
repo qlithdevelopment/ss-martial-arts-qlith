@@ -23,6 +23,7 @@ import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
 import Blog from "../pages/public/Blog";
+import FindStudent from "../pages/public/FindStudent";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -33,6 +34,8 @@ import AdminTrainers from "../pages/admin/Trainers";
 import AdminFaqs from "../pages/admin/Faqs";
 import AdminServices from "../pages/admin/Services";
 import StudentManagement from "../pages/admin/StudentManagement";
+import StudentView from "../pages/admin/StudentView";
+import AdminContacts from "../pages/admin/Contacts";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
@@ -81,6 +84,9 @@ const AppRoutes = () => {
         <Route path="/login" element={<RedirectIfAuthenticated />} />
       </Route>
 
+      {/* STANDALONE PUBLIC PAGES */}
+      <Route path="/find-student" element={<FindStudent />} />
+
       {/* ADMIN ROUTES */}
       <Route
         element={
@@ -103,6 +109,8 @@ const AppRoutes = () => {
         <Route path="/admin/faqs" element={<AdminFaqs />} />
         <Route path="/admin/services" element={<AdminServices />} />
         <Route path="/admin/students" element={<StudentManagement />} />
+        <Route path="/admin/students/:id" element={<StudentView />} />
+        <Route path="/admin/contacts" element={<AdminContacts />} />
       </Route>
 
       {/* STUDENT */}

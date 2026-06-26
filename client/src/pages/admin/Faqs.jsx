@@ -43,6 +43,7 @@ const Faqs = () => {
 
   const openCreateModal = () => {
     setSelectedFaq(null);
+    setSearch('');
     setIsModalOpen(true);
   };
 
@@ -80,7 +81,7 @@ const Faqs = () => {
             onClick={openCreateModal}
             className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
           >
-            <Plus size={18} /> <span className="hidden sm:inline">Add FAQ</span>
+            <Plus size={18} /> <span className="hidden lg:inline">Add FAQ</span>
           </button>
         </div>
       </div>
@@ -141,8 +142,11 @@ const Faqs = () => {
       <FaqModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-        faqData={selectedFaq}
-        fetchFaqs={fetchFaqs}
+        faqData={selectedFaq} 
+        fetchFaqs={() => {
+          setSearch('');
+          fetchFaqs();
+        }}
       />
     </div>
   );

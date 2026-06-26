@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, User, Mail, IndianRupee, X, Save, Type, Lock, Activity, FileText } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, User, Mail, IndianRupee, X, Save, Type, Lock, Activity, FileText, Eye, Award , RefreshCw } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
@@ -10,6 +11,7 @@ const Students = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -19,20 +21,22 @@ const Students = () => {
     email: '',
     password: '',
     batch_id: '',
+    belt: '',
     total_fee: '',
-    status: true,
+    status: 1,
     notes: ''
   });
 
   const openCreateModal = () => {
     setSelectedStudent(null);
-    setFormData({ name: '', email: '', password: '', batch_id: '', total_fee: '', status: true, notes: '' });
+    setSearch(''); // Clear search bar so it doesn't hold old values
+    setFormData({ name: '', email: '', password: '', batch_id: '', belt: '', total_fee: '', status: 1, notes: '' });
     setIsModalOpen(true);
   };
 
   const openEditModal = (student) => {
     setSelectedStudent(student);
-    setFormData({ ...student, password: '' });
+    setFormData({ ...student, password: '', status: (student.status == '1' || student.status === true || student.status === 'true' || student.status === 'active') ? 1 : 0 });
     setIsModalOpen(true);
   };
 
@@ -42,12 +46,17 @@ const Students = () => {
 
   const fetchData = async () => {
     try {
+      setIsLoadingData(true);
       const [studentsRes, batchesRes] = await Promise.all([
-        api.get('/students'),
-        api.get('/batches')
+        api.get('/students?per_page=1000'),
+        api.get('/batches?per_page=1000')
       ]);
-      setStudents(studentsRes.data.data || studentsRes.data || []);
-      setBatches(batchesRes.data.data || batchesRes.data || []);
+      const rawStudents = studentsRes.data?.data || studentsRes.data;
+      const rawBatches = batchesRes.data?.data || batchesRes.data;
+      const fetchedStudents = Array.isArray(rawStudents) ? rawStudents : [];
+      const fetchedBatches = Array.isArray(rawBatches) ? rawBatches : [];
+      setStudents([...fetchedStudents].sort((a, b) => b.id - a.id));
+      setBatches([...fetchedBatches].sort((a, b) => b.id - a.id));
     } catch (err) {
       toast.error('Failed to load data');
     } finally {
@@ -67,6 +76,7 @@ const Students = () => {
         toast.success('Student registered successfully');
       }
       setIsModalOpen(false);
+      setSearch(''); // Fix: Clear search bar after saving a student
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to save student');
@@ -106,10 +116,17 @@ const Students = () => {
     ), { duration: Infinity });
   };
 
-  const filteredStudents = students.filter(s =>
-    s.name.toLowerCase().includes(search.toLowerCase()) || 
-    s.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredStudents = students.filter(s => {
+    const query = search.toLowerCase();
+    const batchName = batches.find(b => b.id === s.batch_id)?.name?.toLowerCase() || '';
+    
+    return (
+      s.name?.toLowerCase().includes(query) || 
+      s.email?.toLowerCase().includes(query) ||
+      String(s.id) === query || // Strict exact match for ID
+      batchName.includes(query)
+    );
+  });
 
   return (
     <div className="w-full">
@@ -118,20 +135,31 @@ const Students = () => {
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input 
-            type="text" 
-            placeholder="Search students by name or email..." 
+            type="text"
+            name="student_search_query"
+            autoComplete="off"
+            placeholder="Search students by name, email, ID, or batch..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 shadow-sm"
           />
         </div>
-        <button 
-          onClick={() => { setSelectedStudent(null); setIsModalOpen(true); }}
-          className="w-full sm:w-auto px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
-        >
-          <Plus size={18} strokeWidth={2.5} />
-          Add Student
-        </button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <button 
+            onClick={fetchData} 
+            className="p-3 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-xl transition-colors hidden lg:flex items-center justify-center shrink-0"
+            title="Refresh Students"
+          >
+            <RefreshCw size={20} />
+          </button>
+          <button 
+            onClick={openCreateModal}
+            className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
+          >
+            <Plus size={18} strokeWidth={2.5} />
+            <span className="hidden lg:inline">Add Student</span>
+          </button>
+        </div>
       </div>
 
       {/* Content */}
@@ -186,7 +214,14 @@ const Students = () => {
                           {student.name.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">{student.name}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-gray-400">#{student.id}</span>
+                            <p className="font-bold text-gray-900" title={student.name}>
+                              {student.name?.split(' ').length > 4 
+                                ? student.name.split(' ').slice(0, 4).join(' ') + '...' 
+                                : student.name}
+                            </p>
+                          </div>
                           <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
                             <Mail size={12} />
                             {student.email}
@@ -207,15 +242,24 @@ const Students = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
-                        student.status 
+                        String(student.status) === '1' || student.status === true || student.status === 'true' || student.status === 'active'
                           ? 'bg-green-100 text-green-700' 
                           : 'bg-red-100 text-red-700'
                       }`}>
-                        {student.status ? 'ACTIVE' : 'INACTIVE'}
+                        {String(student.status) === '1' || student.status === true || student.status === 'true' || student.status === 'active' ? 'ACTIVE' : 'INACTIVE'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <button 
+                          onClick={() => {
+                            navigate(`/admin/students/${student.id}`);
+                          }} 
+                          className="p-2 text-gray-400 hover:text-orange-500 bg-gray-50 hover:bg-orange-50 rounded-lg transition-colors"
+                          title="View Details"
+                        >
+                          <Eye size={16} />
+                        </button>
                         <button onClick={() => openEditModal(student)} className="p-2 text-gray-400 hover:text-[#26c0ff] bg-gray-50 hover:bg-[#26c0ff]/10 rounded-lg transition-colors">
                           <Edit2 size={16} />
                         </button>
@@ -282,6 +326,8 @@ const Students = () => {
                       </label>
                       <input 
                         type="text" 
+                        name="student_full_name_entry"
+                        autoComplete="off"
                         required
                         placeholder="e.g. John Doe"
                         value={formData.name}
@@ -337,6 +383,28 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Award size={12} className="text-[#f97316]" /> CURRENT BELT
+                      </label>
+                      <select 
+                        value={formData.belt || ''}
+                        onChange={(e) => setFormData({...formData, belt: e.target.value})}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
+                      >
+                        <option value="">Select a Belt</option>
+                        <option value="White Belt">White Belt</option>
+                        <option value="Yellow Belt">Yellow Belt</option>
+                        <option value="Orange Belt">Orange Belt</option>
+                        <option value="Green Belt">Green Belt</option>
+                        <option value="Blue Belt">Blue Belt</option>
+                        <option value="Purple Belt">Purple Belt</option>
+                        <option value="Brown Belt">Brown Belt</option>
+                        <option value="Red Belt">Red Belt</option>
+                        <option value="Black Belt">Black Belt</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                         <IndianRupee size={12} className="text-[#f97316]" /> TOTAL FEE *
                       </label>
                       <input 
@@ -356,12 +424,12 @@ const Students = () => {
                         <Activity size={12} className="text-[#f97316]" /> STATUS *
                       </label>
                       <select 
-                        value={formData.status.toString()}
-                        onChange={(e) => setFormData({...formData, status: e.target.value === 'true'})}
+                        value={String(formData.status)}
+                        onChange={(e) => setFormData({...formData, status: parseInt(e.target.value)})}
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none"
                       >
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                       </select>
                     </div>
 

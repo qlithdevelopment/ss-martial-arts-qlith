@@ -23,8 +23,13 @@ const Events = () => {
     fetchEvents();
   }, []);
 
-  const featuredEvents = events.slice(0, 3);
-  const eventsList = events.slice(0, 4);
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayEvents = events.filter(e => e.date === todayStr);
+  const upcomingEvents = events.filter(e => e.date && e.date > todayStr).sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  // If there's a today event, feature it. Otherwise feature upcoming.
+  const featuredEvents = todayEvents.length > 0 ? todayEvents : upcomingEvents.slice(0, 3);
+  const eventsList = [...todayEvents, ...upcomingEvents].slice(0, 5);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -83,8 +88,10 @@ const Events = () => {
                 {/* Top Row: Pill */}
                 <div className="hidden md:flex justify-between items-start w-full relative z-20 shrink-0 mt-2">
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
-                    <span className="text-sm">🔥</span>
-                    <span className="text-[10px] md:text-xs font-bold tracking-wider uppercase text-white">Featured</span>
+                    <span className="text-sm">{featuredEvents.length > 0 && featuredEvents[0]?.date === todayStr ? '🔴' : '🔥'}</span>
+                    <span className="text-[10px] md:text-xs font-bold tracking-wider uppercase text-white">
+                      {featuredEvents.length > 0 && featuredEvents[0]?.date === todayStr ? "Today's Event" : 'Upcoming'}
+                    </span>
                   </div>
                 </div>
 

@@ -1,9 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import toast from 'react-hot-toast';
+import api from '../../api/axios';
 import silhouetteImg from '../../assets/samurai_shadow.png';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    mobile_number: '',
+    programs: 'Adult Martial Arts',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.first_name || !formData.last_name || !formData.mobile_number || !formData.message) {
+      return toast.error("Please fill in all required fields.");
+    }
+
+    try {
+      setIsSubmitting(true);
+      toast.loading("Sending message...", { id: "contact" });
+      
+      await api.post('/contacts', formData);
+      
+      toast.success("Message sent successfully! We will reach out soon.", { id: "contact" });
+      setFormData({
+        first_name: '',
+        last_name: '',
+        mobile_number: '',
+        programs: 'Adult Martial Arts',
+        message: ''
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to send message.", { id: "contact" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -123,26 +161,56 @@ const Contact = () => {
 
             <h3 className="text-xl md:text-2xl font-black text-[#26c0ff] uppercase tracking-tighter mb-5 relative z-10">Send a Message</h3>
             
-            <form className="flex flex-col gap-5 relative z-10">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">First Name</label>
-                  <input type="text" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" placeholder="John" />
+                  <input 
+                    type="text" 
+                    value={formData.first_name}
+                    onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+                    className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" 
+                    placeholder="Rahul" 
+                    required
+                  />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Last Name</label>
-                  <input type="text" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" placeholder="Doe" />
+                  <input 
+                    type="text" 
+                    value={formData.last_name}
+                    onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+                    className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" 
+                    placeholder="Sharma" 
+                    required
+                  />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Email Address</label>
-                <input type="email" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" placeholder="john@example.com" />
+                <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Mobile Number</label>
+                <input 
+                  type="tel" 
+                  value={formData.mobile_number}
+                  onChange={(e) => {
+                    const onlyNums = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                    setFormData({...formData, mobile_number: onlyNums});
+                  }}
+                  className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all text-sm" 
+                  placeholder="+91 98765 43210" 
+                  pattern="[0-9]{10}"
+                  title="Please enter exactly 10 digits"
+                  required
+                />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Program of Interest</label>
-                <select className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all appearance-none cursor-pointer text-sm">
+                <select 
+                  value={formData.programs}
+                  onChange={(e) => setFormData({...formData, programs: e.target.value})}
+                  className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all appearance-none cursor-pointer text-sm"
+                >
                   <option className="text-black">Adult Martial Arts</option>
                   <option className="text-black">Youth Classes</option>
                   <option className="text-black">Private Coaching</option>
@@ -152,11 +220,22 @@ const Contact = () => {
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-[#26c0ff] text-[10px] font-bold uppercase tracking-widest">Message</label>
-                <textarea rows="3" className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-colors resize-none custom-scrollbar shadow-inner text-sm" placeholder="How can we help you?"></textarea>
+                <textarea 
+                  rows="3" 
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black placeholder-gray-400 focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-colors resize-none custom-scrollbar shadow-inner text-sm" 
+                  placeholder="How can we help you?"
+                  required
+                ></textarea>
               </div>
 
-              <button type="button" className="mt-2 w-full bg-black hover:bg-[#26c0ff] text-white font-black uppercase tracking-widest py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg text-sm">
-                Send Message <Send size={16} />
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="mt-2 w-full bg-black hover:bg-[#26c0ff] text-white font-black uppercase tracking-widest py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Sending..." : "Send Message"} <Send size={16} />
               </button>
             </form>
 
