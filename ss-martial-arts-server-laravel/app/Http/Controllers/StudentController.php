@@ -7,9 +7,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Exception;
 
 class StudentController extends Controller
 {
+    /**
+     * Display a listing of students (Paginator list).
+     */
     public function index(Request $request)
     {
         try {
@@ -26,7 +30,7 @@ class StudentController extends Controller
                 'current_page' => $paginator->currentPage(),
                 'last_page' => $paginator->lastPage(),
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while fetching the students list.',
@@ -35,6 +39,9 @@ class StudentController extends Controller
         }
     }
 
+    /**
+     * Store a newly registered student.
+     */
     public function register(Request $request)
     {
         try {
@@ -43,6 +50,7 @@ class StudentController extends Controller
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:6',
                 'batch_id' => 'required|exists:batches,id',
+                'belt' => 'nullable|string|max:50', // Completely optional field
                 'total_fee' => 'required|numeric|min:0',
                 'notes' => 'nullable|string',
             ]);
@@ -52,6 +60,7 @@ class StudentController extends Controller
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'batch_id' => $validated['batch_id'],
+                'belt' => $validated['belt'] ?? '', // Saves empty string if omitted
                 'total_fee' => $validated['total_fee'],
                 'notes' => $validated['notes'] ?? null,
                 'role' => 'student',
@@ -63,7 +72,6 @@ class StudentController extends Controller
                 $student->toArray()
             ), 201);
         } catch (ValidationException $e) {
-            // Grab the very first specific validation message that failed
             $actualErrorMessage = $e->validator->errors()->first();
 
             return response()->json([
@@ -71,7 +79,7 @@ class StudentController extends Controller
                 'message' => $actualErrorMessage,
                 'errors' => $e->errors()
             ], 422);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while registering the student.',
@@ -80,6 +88,9 @@ class StudentController extends Controller
         }
     }
 
+    /**
+     * Get specific current student's batch profile.
+     */
     public function myBatch(Request $request)
     {
         try {
@@ -101,12 +112,11 @@ class StudentController extends Controller
                 ], 404);
             }
 
-            // Merge the success key with the batch object fields
             return response()->json(array_merge(
                 ['success' => true],
                 $batch->toArray()
             ), 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while fetching your batch data.',
@@ -115,6 +125,9 @@ class StudentController extends Controller
         }
     }
 
+    /**
+     * Display a single student ledger profile record detail.
+     */
     public function show($id)
     {
         try {
@@ -149,10 +162,89 @@ class StudentController extends Controller
             );
 
             return response()->json($responseData, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while retrieving student profile.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update specified student row attributes directly (Edit).
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            $student = User::where('role', 'student')->findOrFail($id);
+            
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+                'password' => 'nullable|string|min:6', 
+                'batch_id' => 'required|exists:batches,id',
+                'belt' => 'nullable|string|max:50', // Optional field rule configurations
+                'total_fee' => 'required|numeric|min:0',
+                'notes' => 'nullable|string',
+                'status' => 'required|in:0,1'
+            ]);
+
+            $updateData = [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'batch_id' => $validated['batch_id'],
+                'belt' => $validated['belt'] ?? '', // Keeps standard empty string default assignment
+                'total_fee' => $validated['total_fee'],
+                'notes' => $validated['notes'] ?? null,
+                'status' => $validated['status'],
+            ];
+
+            if (!empty($validated['password'])) {
+                $updateData['password'] = Hash::make($validated['password']);
+            }
+
+            $student->update($updateData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Student profile updated successfully.',
+                'data' => $student
+            ], 200);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first(),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to apply modifications onto student record entries.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove the specified student resource permanently (Delete).
+     */
+    public function destroy($id)
+    {
+        try {
+            $student = User::where('role', 'student')->findOrFail($id);
+            $student->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Student account entry dropped from server memory successfully.'
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Could not delete student record. Element might not exist.',
                 'error' => $e->getMessage()
             ], 500);
         }
