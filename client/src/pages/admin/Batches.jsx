@@ -228,11 +228,7 @@ const Batches = () => {
                   </tr>
                 ))
               ) } 
-                <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
-                    No batches found. Try adjusting your search.
-                  </td>
-                </tr>
+                
               
             </tbody>
           </table>
