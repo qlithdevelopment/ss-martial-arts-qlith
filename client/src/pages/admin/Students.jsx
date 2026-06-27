@@ -424,9 +424,11 @@ const Students = () => {
                         <Activity size={12} className="text-[#f97316]" /> STATUS *
                       </label>
                       <select 
+                        disabled={!selectedStudent}
                         value={String(formData.status)}
                         onChange={(e) => setFormData({...formData, status: parseInt(e.target.value)})}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none"
+                        className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none ${!selectedStudent ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        title={!selectedStudent ? "Status can be changed later after the student is added." : ""}
                       >
                         <option value="1">Active</option>
                         <option value="0">Inactive</option>
