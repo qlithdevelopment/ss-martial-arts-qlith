@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\Blog;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -30,7 +34,7 @@ class AuthController extends Controller
                     'email' => ['The provided credentials do not match our records.'],
                 ]);
             }
-           
+
 
             // Generate token with the user's role embedded in the abilities
             $token = $user->createToken('auth_token', [$user->role])->plainTextToken;
@@ -96,14 +100,76 @@ class AuthController extends Controller
     public function dashboard(Request $request)
     {
         try {
+
+            // Dashboard Counts
+            $totalStudents = User::where('role', 'student')->count();
+            $totalBatches = Batch::count();
+            $totalEvents = Event::count();
+
+            // Total Income
+            $totalIncome = User::where('role', 'student')
+                ->sum('total_fee');
+
+            // Last 6 Months Revenue
+            $revenue = [];
+
+            for ($i = 5; $i >= 0; $i--) {
+
+                $month = Carbon::now()->subMonths($i);
+
+                $amount = User::where('role', 'student')
+                    ->whereYear('created_at', $month->year)
+                    ->whereMonth('created_at', $month->month)
+                    ->sum('total_fee');
+
+                $revenue[] = [
+                    'month' => $month->format('M'),
+                    'amount' => (float) $amount,
+                ];
+            }
+
+            // Recent Data
+            $recentStudents = User::where('role', 'student')
+                ->latest()
+                ->take(5)
+                ->get();
+
+            $recentBatches = Batch::latest()
+                ->take(5)
+                ->get();
+
+            $recentBlogs = Blog::latest()
+                ->take(5)
+                ->get();
+
+            $recentEvents = Event::latest()
+                ->take(5)
+                ->get();
+
             return response()->json([
-                'message' => 'Dashboard data fetched successfully',
-                'user' => $request->user(),
+                'success' => true,
+                'message' => 'Dashboard data fetched successfully.',
+
+                'statistics' => [
+                    'total_income' => (float) $totalIncome,
+                    'total_students' => $totalStudents,
+                    'total_batches' => $totalBatches,
+                    'total_events' => $totalEvents,
+                ],
+
+                'revenue' => $revenue,
+
+                'recent_students' => $recentStudents,
+                'recent_batches' => $recentBatches,
+                'recent_blogs' => $recentBlogs,
+                'recent_events' => $recentEvents,
             ], 200);
         } catch (\Exception $e) {
+
             return response()->json([
+                'success' => false,
                 'message' => 'An error occurred while fetching dashboard data.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

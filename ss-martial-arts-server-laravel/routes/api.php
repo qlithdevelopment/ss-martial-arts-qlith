@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/dashboard', [AuthController::class, 'dashboard']);
 
 Route::get('/running', function () {
     return "SS Martial Arts Server is Running";
@@ -40,6 +39,8 @@ Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/dashboard', [AuthController::class, 'dashboard']);
+
 
     Route::get('/contacts', [ContactController::class, 'index']); 
     Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
