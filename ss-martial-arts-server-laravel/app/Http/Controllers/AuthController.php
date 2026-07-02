@@ -92,4 +92,19 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function dashboard(Request $request)
+    {
+        try {
+            return response()->json([
+                'message' => 'Dashboard data fetched successfully',
+                'user' => $request->user(),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while fetching dashboard data.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

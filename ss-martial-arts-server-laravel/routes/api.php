@@ -10,11 +10,11 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\TrainerController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
-use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/dashboard', [AuthController::class, 'dashboard']);
 
 Route::get('/running', function () {
     return "SS Martial Arts Server is Running";
