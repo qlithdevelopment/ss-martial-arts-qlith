@@ -19,6 +19,7 @@ Route::get('/dashboard', [AuthController::class, 'dashboard']);
 Route::get('/running', function () {
     return "SS Martial Arts Server is Running";
 });
+
 Route::post('/contacts', [ContactController::class, 'store']);
 Route::get('/trainers', [TrainerController::class, 'index']);
 Route::get('/trainers/{trainer}', [TrainerController::class, 'show']);
@@ -45,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/trainers', [TrainerController::class, 'store']);
     Route::put('/trainers/{trainer}', [TrainerController::class, 'update']); 
+    Route::get('/trainers/{id}', [TrainerController::class, 'show']); 
     Route::delete('/trainers/{trainer}', [TrainerController::class, 'destroy']);
 
     Route::get('/batches', [BatchController::class, 'index']);
