@@ -12,22 +12,30 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $contacts = Contact::latest()->get();
-            
+
+            $perPage = $request->get('per_page', 10);
+
+            $contacts = Contact::latest()->paginate($perPage);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Contact logs retrieved successfully.',
-                'data' => $contacts
+                'message' => 'Contacts fetched successfully.',
+                'data' => $contacts->items(),
+                'pagination' => [
+                    'current_page' => $contacts->currentPage(),
+                    'last_page' => $contacts->lastPage(),
+                    'per_page' => $contacts->perPage(),
+                    'total' => $contacts->total(),
+                ]
             ], 200);
-            
-        } catch (Exception $e) {
-            Log::error('Error fetching contacts data matrix: ' . $e->getMessage());
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve submitted contact logs due to an internal server error.'
+                'message' => 'Failed to fetch contacts.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -69,7 +77,6 @@ class ContactController extends Controller
                 'message' => 'Thank you! Your contact request has been sent successfully.',
                 'data' => $contact
             ], 201);
-
         } catch (Exception $e) {
             Log::error('Failed to preserve contact element instance: ' . $e->getMessage());
             return response()->json([
@@ -85,7 +92,7 @@ class ContactController extends Controller
      */
     public function show($id)
     {
-       //
+        //
     }
 
     /**
@@ -109,7 +116,6 @@ class ContactController extends Controller
                 'success' => true,
                 'message' => 'The contact log entry has been deleted successfully.'
             ], 200);
-            
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

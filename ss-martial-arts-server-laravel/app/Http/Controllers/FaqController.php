@@ -12,18 +12,41 @@ class FaqController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            // Retrieve published FAQs sorted by the customized order value
-            $faqs = Faq::orderBy('order', 'asc')->get();
-            
+
+            $perPage = $request->get('per_page', 10);
+            $search = $request->get('search');
+
+            $query = Faq::query();
+
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('question', 'LIKE', "%{$search}%")
+                        ->orWhere('answer', 'LIKE', "%{$search}%");
+                });
+            }
+
+            $faqs = $query
+                ->orderBy('order', 'asc')
+                ->paginate($perPage);
+
             return response()->json([
                 'success' => true,
-                'data' => $faqs
+                'message' => 'FAQs fetched successfully.',
+                'data' => $faqs->items(),
+                'pagination' => [
+                    'current_page' => $faqs->currentPage(),
+                    'last_page' => $faqs->lastPage(),
+                    'per_page' => $faqs->perPage(),
+                    'total' => $faqs->total(),
+                ]
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+
             Log::error('Error fetching FAQs: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve FAQs.'
@@ -56,7 +79,6 @@ class FaqController extends Controller
                 'message' => 'FAQ created successfully!',
                 'data'    => $faq
             ], 201);
-
         } catch (Exception $e) {
             Log::error('Error storing FAQ: ' . $e->getMessage());
             return response()->json([
@@ -120,7 +142,6 @@ class FaqController extends Controller
                 'message' => 'FAQ updated successfully!',
                 'data'    => $faq
             ], 200);
-
         } catch (Exception $e) {
             Log::error('Error updating FAQ: ' . $e->getMessage());
             return response()->json([

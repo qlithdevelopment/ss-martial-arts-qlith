@@ -14,13 +14,43 @@ class BlogController extends Controller
     /**
      * Display all blogs latest first.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $blogs = Blog::latest()->get();
-            return response()->json($blogs, 200);
-        } catch (Exception $e) {
-            return response()->json([ 'success' => false, 'error' => $e->getMessage() ], 500);
+            $perPage = $request->get('per_page', 10);
+            $search = $request->get('search');
+
+            $query = Blog::query();
+
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'LIKE', "%{$search}%")
+                        ->orWhere('category', 'LIKE', "%{$search}%")
+                        ->orWhere('short_description', 'LIKE', "%{$search}%");
+                });
+            }
+
+            $blogs = $query
+                ->latest()
+                ->paginate($perPage);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Blogs fetched successfully.',
+                'data' => $blogs->items(),
+                'pagination' => [
+                    'current_page' => $blogs->currentPage(),
+                    'last_page' => $blogs->lastPage(),
+                    'per_page' => $blogs->perPage(),
+                    'total' => $blogs->total(),
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch blogs.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -37,7 +67,7 @@ class BlogController extends Controller
                 'posted_date'       => 'required|date',
                 'short_description' => 'required|string',
                 'featured_image'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
-                'content'           => 'required', 
+                'content'           => 'required',
             ];
 
             // Scan request structure to attach dynamic validation constraints onto multi-block keys
@@ -53,7 +83,7 @@ class BlogController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json([ 'success' => false, 'errors' => $validator->errors() ], 422);
+                return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
             // Create clean distinct slug
@@ -108,10 +138,9 @@ class BlogController extends Controller
                 'is_published'      => filter_var($request->is_published, FILTER_VALIDATE_BOOLEAN),
             ]);
 
-            return response()->json([ 'success' => true, 'data' => $blog ], 201);
-
+            return response()->json(['success' => true, 'data' => $blog], 201);
         } catch (Exception $e) {
-            return response()->json([ 'success' => false, 'error' => $e->getMessage() ], 500);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -122,10 +151,10 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::find($id);
-            if (!$blog) return response()->json([ 'success' => false, 'message' => 'Blog not found.' ], 404);
-            return response()->json([ 'success' => true, 'data' => $blog ], 200);
+            if (!$blog) return response()->json(['success' => false, 'message' => 'Blog not found.'], 404);
+            return response()->json(['success' => true, 'data' => $blog], 200);
         } catch (Exception $e) {
-            return response()->json([ 'success' => false, 'error' => $e->getMessage() ], 500);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -136,7 +165,7 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::find($id);
-            if (!$blog) return response()->json([ 'success' => false, 'message' => 'Blog not found.' ], 404);
+            if (!$blog) return response()->json(['success' => false, 'message' => 'Blog not found.'], 404);
 
             $rules = [
                 'title'             => 'sometimes|string|max:255',
@@ -153,7 +182,7 @@ class BlogController extends Controller
 
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
-                return response()->json([ 'success' => false, 'errors' => $validator->errors() ], 422);
+                return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
             }
 
             $data = $request->all();
@@ -179,7 +208,7 @@ class BlogController extends Controller
                 if (is_array($content)) {
                     foreach ($content as $idx => $block) {
                         $fileKey = "block_image_" . $idx;
-                        
+
                         if ($request->hasFile($fileKey)) {
                             // Purge existing local disk image asset if present inside that index loop matching context
                             if (isset($oldContent[$idx]['image']) && !empty($oldContent[$idx]['image'])) {
@@ -187,13 +216,13 @@ class BlogController extends Controller
                                 if (str_contains($imageField, asset('storage/'))) {
                                     $parsedUrl = parse_url($imageField, PHP_URL_PATH);
                                     $oldRelativePath = str_replace('/storage/', '', $parsedUrl);
-                                    
+
                                     if (Storage::disk('public')->exists($oldRelativePath)) {
                                         Storage::disk('public')->delete($oldRelativePath);
                                     }
                                 }
                             }
-                            
+
                             $storedPath = $request->file($fileKey)->store('blogs/sections', 'public');
                             $content[$idx]['image'] = asset('storage/' . $storedPath);
                         } else {
@@ -212,10 +241,9 @@ class BlogController extends Controller
             }
 
             $blog->update($data);
-            return response()->json([ 'success' => true, 'data' => $blog->fresh() ], 200);
-
+            return response()->json(['success' => true, 'data' => $blog->fresh()], 200);
         } catch (Exception $e) {
-            return response()->json([ 'success' => false, 'error' => $e->getMessage() ], 500);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -226,7 +254,7 @@ class BlogController extends Controller
     {
         try {
             $blog = Blog::find($id);
-            if (!$blog) return response()->json([ 'success' => false, 'message' => 'Blog not found.' ], 404);
+            if (!$blog) return response()->json(['success' => false, 'message' => 'Blog not found.'], 404);
 
             // 1. Wipe local main banner file
             $rawFeatured = $blog->getRawOriginal('featured_image');
@@ -243,7 +271,7 @@ class BlogController extends Controller
                         if (str_contains($imageField, asset('storage/'))) {
                             $parsedUrl = parse_url($imageField, PHP_URL_PATH);
                             $relativePath = str_replace('/storage/', '', $parsedUrl);
-                            
+
                             if (Storage::disk('public')->exists($relativePath)) {
                                 Storage::disk('public')->delete($relativePath);
                             }
@@ -253,10 +281,9 @@ class BlogController extends Controller
             }
 
             $blog->delete();
-            return response()->json([ 'success' => true, 'message' => 'Blog and related images deleted completely from storage.' ], 200);
-
+            return response()->json(['success' => true, 'message' => 'Blog and related images deleted completely from storage.'], 200);
         } catch (Exception $e) {
-            return response()->json([ 'success' => false, 'error' => $e->getMessage() ], 500);
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 }

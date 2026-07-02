@@ -40,8 +40,6 @@ class TrainerController extends Controller
                     'last_page' => $trainers->lastPage(),
                     'per_page' => $trainers->perPage(),
                     'total' => $trainers->total(),
-                    'next_page_url' => $trainers->nextPageUrl(),
-                    'prev_page_url' => $trainers->previousPageUrl(),
                 ]
             ], 200);
         } catch (\Exception $e) {
