@@ -13,19 +13,41 @@ class TrainerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $trainers = Trainer::latest()->get();
+
+            $perPage = $request->get('per_page', 10);
+            $search = $request->get('search');
+
+            $query = Trainer::query();
+
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('designation', 'LIKE', "%{$search}%");
+                });
+            }
+
+            $trainers = $query->latest()->paginate($perPage);
+
             return response()->json([
                 'success' => true,
-                'data' => $trainers
+                'message' => 'Trainer list fetched successfully.',
+                'data' => $trainers->items(),
+                'pagination' => [
+                    'current_page' => $trainers->currentPage(),
+                    'last_page' => $trainers->lastPage(),
+                    'per_page' => $trainers->perPage(),
+                    'total' => $trainers->total(),
+                    'next_page_url' => $trainers->nextPageUrl(),
+                    'prev_page_url' => $trainers->previousPageUrl(),
+                ]
             ], 200);
-        } catch (Exception $e) {
-            Log::error('Error fetching trainers: ' . $e->getMessage());
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve trainers profile list.'
+                'message' => 'Failed to retrieve trainer list.',
             ], 500);
         }
     }
@@ -35,39 +57,26 @@ class TrainerController extends Controller
      */
     public function store(Request $request)
     {
-        // Custom explicit error strings
-        $messages = [
-            'image.mimes' => 'The trainer image must be a file of type: png.',
-            'image.max' => 'The trainer image size must not exceed 2MB.',
-        ];
-
         $request->validate([
             'name' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
             'biography' => 'required|string',
-            'motivation_line' => [
-                'required',
-                'string',
-                function ($attribute, $value, $fail) {
-                    if (str_word_count($value) > 10) {
-                        $fail('The motivation line must not exceed 10 words.');
-                    }
-                },
-            ],
+            'motivation_line' => 'required|string|max:255',
             'achievements' => 'required|array|min:1',
             'achievements.*' => 'required|string',
             'expertise' => 'required|array|min:1',
             'expertise.*' => 'required|string',
-            'image' => 'required|image|mimes:png|max:2048', // Mandatory on creation
-        ], $messages);
+            'image' => 'required|image|mimes:png,jpg,jpeg,webp|max:2048',
+        ], [
+            'image.required' => 'Please upload a trainer image.',
+            'image.image' => 'The uploaded file must be an image.',
+            'image.mimes' => 'The image must be a PNG, JPG, JPEG, or WEBP file.',
+            'image.max' => 'The image size must not exceed 2 MB.',
+        ]);
 
         try {
-            if ($request->hasFile('image')) {
-                // Upload image locally into storage/app/public/trainers
-                $imageLocalPath = $request->file('image')->store('trainers', 'public');
-            } else {
-                throw new Exception("Physical trainer image payload is missing.");
-            }
+
+            $imagePath = $request->file('image')->store('trainers', 'public');
 
             $trainer = Trainer::create([
                 'name' => $request->name,
@@ -76,26 +85,24 @@ class TrainerController extends Controller
                 'motivation_line' => $request->motivation_line,
                 'achievements' => $request->achievements,
                 'expertise' => $request->expertise,
-                'image_path' => Storage::url($imageLocalPath), // Exposes file as an asset url
+                'image_path' => Storage::url($imagePath),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Trainer profile generated successfully!',
-                'data' => $trainer
+                'message' => 'Trainer created successfully.',
+                'data' => $trainer,
             ], 201);
+        } catch (\Exception $e) {
 
-        } catch (Exception $e) {
-            // Rollback uploaded image asset if database insertion crashes
-            if (isset($imageLocalPath) && Storage::disk('public')->exists($imageLocalPath)) {
-                Storage::disk('public')->delete($imageLocalPath);
+            if (isset($imagePath) && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
             }
 
-            Log::error('Error storing trainer context: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong inside the server.',
-                'debug_error' => $e->getMessage()
+                'message' => 'Something went wrong.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -165,7 +172,7 @@ class TrainerController extends Controller
             if ($request->hasFile('image')) {
                 // Convert "/storage/trainers/filename.png" -> "trainers/filename.png"
                 $cleanOldPath = str_replace('/storage/', '', $trainer->image_path);
-                
+
                 if (Storage::disk('public')->exists($cleanOldPath)) {
                     Storage::disk('public')->delete($cleanOldPath); // Deletes old picture
                 }
@@ -182,7 +189,6 @@ class TrainerController extends Controller
                 'message' => 'Trainer profile updated and old file replaced successfully!',
                 'data' => $trainer
             ], 200);
-
         } catch (Exception $e) {
             Log::error('Error updating trainer context: ' . $e->getMessage());
             return response()->json([
@@ -200,7 +206,7 @@ class TrainerController extends Controller
     {
         try {
             $trainer = Trainer::findOrFail($id);
-            
+
             // REMOVE OLD PICTURE FROM LOCAL MEMORY
             $cleanDiskPath = str_replace('/storage/', '', $trainer->image_path);
             if (Storage::disk('public')->exists($cleanDiskPath)) {
@@ -214,7 +220,6 @@ class TrainerController extends Controller
                 'success' => true,
                 'message' => 'Trainer and associated image file permanently deleted.'
             ], 200);
-
         } catch (Exception $e) {
             Log::error('Error executing trainer drop routine: ' . $e->getMessage());
             return response()->json([
