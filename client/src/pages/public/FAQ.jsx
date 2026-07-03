@@ -15,7 +15,7 @@ const FAQPage = () => {
         </div>
       </div>
       <div className="relative z-10">
-        <AboutFAQ />
+        <AboutFAQ limit={10} paginate={true} />
       </div>
     </div>
   );

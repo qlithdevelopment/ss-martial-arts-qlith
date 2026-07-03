@@ -160,7 +160,7 @@ class TrainerController extends Controller
             'achievements.*' => 'required|string',
             'expertise' => 'required|array|min:1',
             'expertise.*' => 'required|string',
-            'image' => 'nullable|image|mimes:png|max:2048', // Nullable on update if keeping the old one
+            'image' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048', // Nullable on update if keeping the old one
         ], $messages);
 
         try {

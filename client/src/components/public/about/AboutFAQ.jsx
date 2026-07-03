@@ -1,22 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../../api/axios';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import api from "../../../api/axios";
+import Button from "../../ui/Button";
+import { Link, useNavigate } from "react-router-dom";
+import PaginationComponent from "../../PaginationComponent";
 
 const FAQItem = ({ faq, isOpen, onClick }) => {
   return (
     <div className="bg-[#15232d] rounded-xl overflow-hidden border border-gray-800 transition-colors hover:border-gray-700">
-      <button 
+      <button
         onClick={onClick}
         className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
       >
-        <span className="text-sm md:text-base font-bold text-white pr-4">{faq.question}</span>
-        <div className={`shrink-0 w-6 h-6 rounded-full bg-[#2a3a46] flex items-center justify-center transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <span className="text-sm md:text-base font-bold text-white pr-4">
+          {faq.question}
+        </span>
+        <div
+          className={`shrink-0 w-6 h-6 rounded-full bg-[#2a3a46] flex items-center justify-center transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+        >
+          <svg
+            className="w-3 h-3 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </div>
       </button>
-      
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -35,18 +52,39 @@ const FAQItem = ({ faq, isOpen, onClick }) => {
   );
 };
 
-const AboutFAQ = ({ limit }) => {
+const AboutFAQ = ({ limit = 10, paginate = false }) => {
   const [openIndex, setOpenIndex] = useState(0);
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const navigate=useNavigate();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    per_page: limit,
+    total: 0,
+  });
+
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const res = await api.get('/faqs');
-        const data = res.data?.data || res.data || [];
-        const publishedFaqs = data.filter(faq => faq.isPublish === 1 || faq.isPublish === true || faq.isPublish === "1");
-        setFaqs(publishedFaqs);
+        setLoading(true);
+
+        const res = await api.get("/faqs", {
+          params: {
+            page: currentPage,
+            per_page: limit,
+            isPublished: 1,
+          },
+        });
+
+        setFaqs(res.data.data || []);
+
+        if (res.data.pagination) {
+          setPagination(res.data.pagination);
+        }
       } catch (error) {
         console.error("Failed to load FAQs:", error);
       } finally {
@@ -54,28 +92,17 @@ const AboutFAQ = ({ limit }) => {
       }
     };
     fetchFaqs();
-  }, []);
+  }, [currentPage]);
 
   const displayedFaqs = limit ? faqs.slice(0, limit) : faqs;
 
   return (
     <section className="w-full bg-[#081218] py-12 md:py-16 lg:py-24 px-4 md:px-8">
       <div className="global-container lg:!px-[90px]">
-        
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
-          
           {/* LEFT: Title & Info */}
           <div className="w-full lg:w-[40%] flex flex-col items-start pt-4 lg:sticky lg:top-28 h-fit">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-[#15232d] px-3 py-1 rounded-md mb-6"
-            >
-              <span className="text-[11px] font-black tracking-widest text-gray-300 uppercase">FAQs</span>
-            </motion.div>
-
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, delay: 0.1 }}
@@ -85,24 +112,42 @@ const AboutFAQ = ({ limit }) => {
               <span className="text-[#ffffff]">questions</span>
             </motion.h2>
 
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, delay: 0.2 }}
               className="text-gray-400 text-sm md:text-base font-medium leading-relaxed max-w-[350px]"
             >
-              Make smarter decisions and train effectively with all the answers you need before stepping onto the mat.
+              Make smarter decisions and train effectively with all the answers
+              you need before stepping onto the mat.
             </motion.p>
+            {limit < 10 && (
+              <Button variant="primary" className="mt-6" onClick={()=> navigate('/faq')} >
+                View All FAQs
+              </Button>
+            )}
           </div>
 
           {/* RIGHT: Accordion */}
           <div className="w-full lg:w-[60%] flex flex-col gap-3">
             {loading ? (
-              <div className="text-gray-400 text-sm animate-pulse">Loading FAQs...</div>
+              Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-[#15232d] rounded-xl border border-gray-800 p-5 animate-pulse"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="h-5 w-3/4 bg-gray-700 rounded"></div>
+                    <div className="w-6 h-6 rounded-full bg-gray-700"></div>
+                  </div>
+                </div>
+              ))
             ) : displayedFaqs.length === 0 ? (
-              <div className="text-gray-500 text-sm">No FAQs available at the moment.</div>
+              <div className="text-gray-500 text-sm">
+                No FAQs available at the moment.
+              </div>
             ) : (
-              displayedFaqs.map((faq, idx) => (
+              displayedFaqs?.map((faq, idx) => (
                 <motion.div
                   key={faq.id || idx}
                   initial={{ opacity: 0, y: 10 }}
@@ -110,18 +155,25 @@ const AboutFAQ = ({ limit }) => {
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
                 >
-                  <FAQItem 
-                    faq={faq} 
-                    isOpen={openIndex === idx} 
+                  <FAQItem
+                    faq={faq}
+                    isOpen={openIndex === idx}
                     onClick={() => setOpenIndex(openIndex === idx ? -1 : idx)}
                   />
                 </motion.div>
               ))
             )}
           </div>
-
         </div>
-
+        <div>
+          {paginate && pagination.last_page > 1 && (
+            <PaginationComponent
+              pagination={pagination}
+              theme="dark"
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </div>
       </div>
     </section>
   );

@@ -16,8 +16,9 @@ class FaqController extends Controller
     {
         try {
 
-            $perPage = $request->get('per_page', 10);
-            $search = $request->get('search');
+            $perPage = $request->input('per_page', 10);
+            $search = $request->input('search');
+            $isPublished = $request->input('isPublished');
 
             $query = Faq::query();
 
@@ -26,6 +27,11 @@ class FaqController extends Controller
                     $q->where('question', 'LIKE', "%{$search}%")
                         ->orWhere('answer', 'LIKE', "%{$search}%");
                 });
+            }
+
+            // Filter only when isPublished is passed
+            if ($request->has('isPublished')) {
+                $query->where('isPublish', $isPublished);
             }
 
             $faqs = $query
@@ -44,8 +50,6 @@ class FaqController extends Controller
                 ]
             ], 200);
         } catch (\Exception $e) {
-
-            Log::error('Error fetching FAQs: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
