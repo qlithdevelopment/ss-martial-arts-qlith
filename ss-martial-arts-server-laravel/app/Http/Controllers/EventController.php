@@ -15,30 +15,40 @@ class EventController extends Controller
         try {
 
             $today = Carbon::today();
-            $perPage = $request->get('per_page', 10);
+            $search = $request->search;
+            $perPage = $request->per_page ?? 10;
 
             $events = Event::select('*')
                 ->selectRaw("
-                    CASE
-                        WHEN date = ? THEN 1
-                        WHEN date > ? THEN 2
-                        ELSE 3
-                    END AS sort_order
-                ", [$today, $today])
+                CASE
+                    WHEN date = ? THEN 1
+                    WHEN date > ? THEN 2
+                    ELSE 3
+                END AS sort_order
+            ", [$today, $today]);
 
+            // Search
+            if (!empty($search)) {
+                $events->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('description', 'LIKE', "%{$search}%");
+                });
+            }
+
+            $events = $events
                 ->orderBy('sort_order')
 
                 ->orderByRaw("
-                    CASE
-                        WHEN date > ? THEN date
-                    END ASC
-                ", [$today])
+                CASE
+                    WHEN date > ? THEN date
+                END ASC
+            ", [$today])
 
                 ->orderByRaw("
-                    CASE
-                        WHEN date < ? THEN date
-                    END DESC
-                ", [$today])
+                CASE
+                    WHEN date < ? THEN date
+                END DESC
+            ", [$today])
 
                 ->paginate($perPage);
 
@@ -69,7 +79,6 @@ class EventController extends Controller
                     'total' => $events->total(),
                 ],
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -109,7 +118,6 @@ class EventController extends Controller
                 'message' => 'Event created successfully',
                 'data' => $event,
             ], 201);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -130,7 +138,6 @@ class EventController extends Controller
                 'success' => true,
                 'data' => $event,
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -176,7 +183,6 @@ class EventController extends Controller
                 'message' => 'Event updated successfully',
                 'data' => $event,
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -206,7 +212,6 @@ class EventController extends Controller
                 'success' => true,
                 'message' => 'Event deleted successfully',
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
