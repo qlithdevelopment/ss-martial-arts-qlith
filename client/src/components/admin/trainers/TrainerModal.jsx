@@ -4,11 +4,13 @@ import { X, Upload, AlignLeft, Type, Star, Zap, Quote, User as UserIcon } from '
 import toast from 'react-hot-toast';
 import api from '../../../api/axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
+
 // ── Moved OUTSIDE to prevent remount on every render (fixes input focus loss) ──
-const ArrayField = ({ label, icon: Icon, items, placeholder, onArrayChange, onAdd, onRemove }) => (
+const ArrayField = ({ label, icon: Icon, items, placeholder, onArrayChange, onAdd, onRemove, required = false, }) => (
   <div className="flex flex-col gap-1.5">
     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-      <Icon size={12} className="text-orange-500" /> {label}
+      <Icon size={12} className="text-orange-500" /> {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div className="flex flex-col gap-2">
       {items.map((item, index) => (
@@ -17,6 +19,7 @@ const ArrayField = ({ label, icon: Icon, items, placeholder, onArrayChange, onAd
             type="text"
             value={item}
             onChange={(e) => onArrayChange(index, e.target.value)}
+            required={required && index === 0}
             className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
             placeholder={`${placeholder} ${index + 1}`}
           />
@@ -39,10 +42,15 @@ const ArrayField = ({ label, icon: Icon, items, placeholder, onArrayChange, onAd
     </div>
   </div>
 );
+
 // ─────────────────────────────────────────────────────────────────────────────
-const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) => {
-  const isEditMode = !!trainerData;
+
+// trainerId: pass an id to edit that trainer (fetched fresh from API).
+// Pass null/undefined to open in "create" mode.
+const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
+  const isEditMode = !!trainerId;
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(false);      // initial data fetch loading
   const [formData, setFormData] = useState({
     name: '',
     designation: '',
@@ -54,6 +62,7 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
   const [expertise, setExpertise] = useState(['']);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [existingTrainerId, setExistingTrainerId] = useState(null); // used for the PUT url
 
   // ── Parse array from API (handles array or JSON string) ──────────────────────
   const parseArray = (val) => {
@@ -67,8 +76,8 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
     return [''];
   };
 
-  // ── Populate form from trainerData directly ──────────────────────────────────
-  const populateFromTrainerData = (trainer) => {
+  // ── Populate form from a fetched trainer object ───────────────────────────────
+  const populateFromTrainer = (trainer) => {
     setFormData({
       name: trainer.name || '',
       designation: trainer.designation || '',
@@ -77,8 +86,9 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
     });
     setAchievements(parseArray(trainer.achievements));
     setExpertise(parseArray(trainer.expertise));
-    setImagePreview(trainer.image ? `http://127.0.0.1:8000/storage/${trainer.image}` : null);
+    setImagePreview(trainer.image_path ? `${BASE_URL}${trainer.image_path}` : null);
     setImage(null);
+    setExistingTrainerId(trainer.id);
   };
 
   const resetForm = () => {
@@ -87,17 +97,35 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
     setExpertise(['']);
     setImage(null);
     setImagePreview(null);
+    setExistingTrainerId(null);
   };
 
-  // ── On open: populate from trainerData if editing, reset if creating ─────────
+  // ── Fetch trainer by id ────────────────────────────────────────────────────────
+  const fetchTrainerDetails = async (id) => {
+    try {
+      setFetching(true);
+      const res = await api.get(`/trainers/${id}`);
+      const trainer = res.data.data || res.data;
+      populateFromTrainer(trainer);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to load trainer details');
+      onClose();
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  // ── On open: fetch from API if editing, reset if creating ────────────────────
   useEffect(() => {
     if (!isOpen) return;
-    if (isEditMode && trainerData) {
-      populateFromTrainerData(trainerData);
+    if (isEditMode) {
+      fetchTrainerDetails(trainerId);
     } else {
       resetForm();
     }
-  }, [isOpen, trainerData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, trainerId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -175,7 +203,7 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
   const updateTrainer = async () => {
     const payload = buildPayload();
     payload.append('_method', 'PUT');
-    await api.post(`/trainers/${trainerData.id}`, payload , {
+    await api.post(`/trainers/${existingTrainerId}`, payload, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     toast.success('Trainer updated successfully!');
@@ -193,9 +221,16 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
       toast.error('Designation is required');
       return;
     }
+    if (!achievements.some((a) => a.trim() !== '')) {
+      toast.error('At least one achievement is required');
+      return;
+    }
+    if (!expertise.some((e) => e.trim() !== '')) {
+      toast.error('At least one expertise is required');
+      return;
+    }
 
     setLoading(true);
-
 
     try {
       if (isEditMode) {
@@ -204,7 +239,13 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
         await createTrainer();
       }
 
-      await fetchTrainers();
+
+      try {
+        await fetchTrainers();
+      } catch (refreshError) {
+        console.error('Failed to refresh trainer list:', refreshError);
+      }
+
       onClose();
     } catch (error) {
       console.error(error);
@@ -213,6 +254,7 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
       setLoading(false);
     }
   };
+
   const handleClose = () => {
     if (loading) return;
     onClose();
@@ -262,149 +304,160 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
               </div>
 
               {/* Body */}
-              <form id="trainer-form" onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
-
-                {/* Name & Designation */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                      <Type size={12} className="text-orange-500" /> NAME *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. John Doe"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                      <Type size={12} className="text-orange-500" /> DESIGNATION *
-                    </label>
-                    <input
-                      type="text"
-                      name="designation"
-                      value={formData.designation}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. Head Sensei"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
-                    />
-                  </div>
+              {fetching ? (
+                <div className="flex-1 flex justify-center items-center py-20">
+                  <div className="w-8 h-8 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin" />
                 </div>
+              ) : (
+                <form id="trainer-form" onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
 
-                {/* Image Upload */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                    <Upload size={12} className="text-orange-500" /> PROFILE PHOTO
-                    <span className="text-gray-400 normal-case tracking-normal font-medium">(Max 2MB · JPG, PNG, WEBP)</span>
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <div className="relative group w-24 h-24 shrink-0">
+                  {/* Name & Designation */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Type size={12} className="text-orange-500" /> NAME *
+                      </label>
                       <input
-                        type="file"
-                        accept="image/jpeg,image/png,image/jpg,image/webp"
-                        onChange={handleImageSelect}
-                        className="hidden"
-                        id="trainer-image-upload"
+                        type="text"
+                        name="name"
+                        required
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. John Doe"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
                       />
-                      <label
-                        htmlFor="trainer-image-upload"
-                        className={`flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${
-                          imagePreview
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Type size={12} className="text-orange-500" /> DESIGNATION *
+                      </label>
+                      <input
+                        type="text"
+                        name="designation"
+                        required
+                        value={formData.designation}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="e.g. Head Sensei"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Image Upload */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <Upload size={12} className="text-orange-500" /> PROFILE PHOTO
+                      <span className="text-gray-400 normal-case tracking-normal font-medium">(Max 2MB · JPG, PNG, WEBP)</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <div className="relative group w-24 h-24 shrink-0">
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/jpg,image/webp"
+                          onChange={handleImageSelect}
+                          className="hidden"
+                          id="trainer-image-upload"
+                        />
+                        <label
+                          htmlFor="trainer-image-upload"
+                          className={`flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${imagePreview
                             ? 'border-gray-200 bg-gray-50'
                             : 'border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-500'
-                        }`}
-                      >
-                        {imagePreview ? (
-                          <>
-                            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <span className="text-white text-[10px] font-bold flex items-center gap-1">
-                                <Upload size={12} /> Change
-                              </span>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="flex flex-col items-center gap-1 font-bold text-[10px]">
-                            <UserIcon size={20} />
-                            <span>UPLOAD</span>
-                          </div>
-                        )}
-                      </label>
-                      {imagePreview && (
-                        <button
-                          type="button"
-                          onClick={(e) => { e.preventDefault(); removeImage(); }}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors z-10"
+                            }`}
                         >
-                          <X size={12} strokeWidth={3} />
-                        </button>
-                      )}
+                          {imagePreview ? (
+                            <>
+                              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="text-white text-[10px] font-bold flex items-center gap-1">
+                                  <Upload size={12} /> Change
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="flex flex-col items-center gap-1 font-bold text-[10px]">
+                              <UserIcon size={20} />
+                              <span>UPLOAD</span>
+                            </div>
+                          )}
+                        </label>
+                        {imagePreview && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); removeImage(); }}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors z-10"
+                          >
+                            <X size={12} strokeWidth={3} />
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-400 leading-relaxed">
+                        Click the box to upload a profile photo.<br />
+                        Recommended: square image, at least 300×300px.
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-400 leading-relaxed">
-                      Click the box to upload a profile photo.<br />
-                      Recommended: square image, at least 300×300px.
-                    </p>
                   </div>
-                </div>
 
-                {/* Biography */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                    <AlignLeft size={12} className="text-orange-500" /> BIOGRAPHY
-                  </label>
-                  <textarea
-                    name="biography"
-                    value={formData.biography}
-                    onChange={handleInputChange}
-                    rows="3"
-                    placeholder="Brief background and experience of the trainer..."
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium resize-y placeholder:text-gray-400"
-                  />
-                </div>
+                  {/* Biography */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <AlignLeft size={12} className="text-orange-500" /> BIOGRAPHY
+                    </label>
+                    <textarea
+                      name="biography"
+                      required
+                      value={formData.biography}
+                      onChange={handleInputChange}
+                      rows="3"
+                      placeholder="Brief background and experience of the trainer..."
+                      className="w-full scrollbar-thin bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium resize-y placeholder:text-gray-400"
+                    />
+                  </div>
 
-                {/* Motivation Line */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                    <Quote size={12} className="text-orange-500" /> MOTIVATION LINE
-                  </label>
-                  <input
-                    type="text"
-                    name="motivation_line"
-                    value={formData.motivation_line}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Push harder every single day"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
-                  />
-                </div>
+                  {/* Motivation Line */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <Quote size={12} className="text-orange-500" /> MOTIVATION LINE
+                    </label>
+                    <input
+                      type="text"
+                      name="motivation_line"
+                      required
+                      value={formData.motivation_line}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Push harder every single day"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
+                    />
+                  </div>
 
-                {/* Achievements & Expertise */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <ArrayField
-                    label="Achievements"
-                    icon={Star}
-                    items={achievements}
-                    placeholder="Achievement"
-                    onArrayChange={handleAchievementChange}
-                    onAdd={addAchievement}
-                    onRemove={removeAchievement}
-                  />
-                  <ArrayField
-                    label="Expertise"
-                    icon={Zap}
-                    items={expertise}
-                    placeholder="Expertise"
-                    onArrayChange={handleExpertiseChange}
-                    onAdd={addExpertise}
-                    onRemove={removeExpertise}
-                  />
-                </div>
+                  {/* Achievements & Expertise */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <ArrayField
+                      label="Achievements"
+                      icon={Star}
+                      items={achievements}
+                      placeholder="Achievement"
+                      onArrayChange={handleAchievementChange}
+                      onAdd={addAchievement}
+                      onRemove={removeAchievement}
+                      required
+                    />
+                    <ArrayField
+                      label="Expertise"
+                      icon={Zap}
+                      items={expertise}
+                      placeholder="Expertise"
+                      onArrayChange={handleExpertiseChange}
+                      onAdd={addExpertise}
+                      onRemove={removeExpertise}
+                      required
+                    />
+                  </div>
 
-              </form>
+                </form>
+              )}
 
               {/* Footer */}
               <div className="flex justify-end gap-3 p-4 sm:p-5 border-t border-gray-100 shrink-0">
@@ -419,7 +472,7 @@ const TrainerModal = ({ isOpen, onClose, trainerData = null, fetchTrainers }) =>
                 <button
                   type="submit"
                   form="trainer-form"
-                  disabled={loading}
+                  disabled={loading || fetching}
                   className="px-5 py-2.5 text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-xl shadow-md shadow-orange-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {loading ? (
