@@ -3,15 +3,21 @@ import {
   Plus,
   Edit2,
   Trash2,
+  Eye,
   User as UserIcon,
   Search,
   Zap,
   Star,
+  Briefcase,
+  Award,
+  Quote,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import TrainerModal from "../../components/admin/trainers/TrainerModal";
 import PaginationComponent from "../../components/PaginationComponent";
+import ViewTrainerModal from "../../components/admin/trainers/ViewTrainerModal";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
@@ -21,20 +27,36 @@ const Trainers = () => {
   const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [editTrainerId, setEditTrainerId] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [trainerToDelete, setTrainerToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewTrainerId, setViewTrainerId] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   useEffect(() => {
     fetchTrainers();
-  }, [page, search]);
+  }, [page, debouncedSearch]);
 
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/trainers?page=${page}&search=${search}`);
-      setTrainers(res.data.data);
-      setPagination(res.data.pagination);
+      const res = await api.get(`/trainers?page=${page}&search=${debouncedSearch}`);
+      setTrainers(res?.data?.data);
+      setPagination(res?.data?.pagination);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load trainers");
@@ -44,39 +66,25 @@ const Trainers = () => {
   };
 
   const handleDelete = (id) => {
-    toast(
-      (t) => (
-        <div className="flex flex-col gap-3">
-          <p className="font-medium text-gray-900">
-            Are you sure you want to delete this trainer?
-          </p>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={async () => {
-                toast.dismiss(t.id);
-                try {
-                  await api.delete(`/trainers/${id}`);
-                  toast.success("Trainer deleted successfully");
-                  fetchTrainers();
-                } catch (error) {
-                  toast.error("Failed to delete trainer");
-                }
-              }}
-              className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ),
-      { duration: Infinity },
-    );
+    setTrainerToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!trainerToDelete) return;
+    try {
+      setIsDeleting(true);
+      await api.delete(`/trainers/${trainerToDelete}`);
+      toast.success('Trainer deleted successfully');
+      fetchTrainers();
+      setIsDeleteModalOpen(false);
+      setTrainerToDelete(null);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete trainer');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const openCreateModal = () => {
@@ -85,24 +93,29 @@ const Trainers = () => {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (trainer) => {
-    setSelectedTrainer(trainer);
+  const openEditModal = (id) => {
+    setEditTrainerId(id);
     setIsModalOpen(true);
+  };
+
+  const openViewModal = (id) => {
+    setViewTrainerId(id);
+    setIsViewModalOpen(true);
+  };
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setViewTrainerId(null);
+  };
+  const closeTrainerModal = () => {
+    setIsModalOpen(false)
+    setEditTrainerId(null);
+    // fetchTrainers(); // Refresh the list after closing the modal
   };
 
   return (
     <div className="">
       {/* Header section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">
-            Trainer Management
-          </h1>
-          <p className="text-gray-500 mt-1">
-            Manage your dojo's instructors, senseis, and coaches.
-          </p>
-        </div>
-
         <div className="flex w-full md:w-auto items-center gap-4">
           <div className="relative w-full md:w-64">
             <Search
@@ -174,14 +187,6 @@ const Trainers = () => {
                     <UserIcon size={40} />
                   </div>
                 )}
-                {/* Motivation line overlay */}
-                {trainer.motivation_line && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
-                    <p className="text-white text-xs italic line-clamp-1">
-                      "{trainer.motivation_line}"
-                    </p>
-                  </div>
-                )}
               </div>
 
               {/* Body */}
@@ -197,53 +202,19 @@ const Trainers = () => {
                   {trainer.name}
                 </h3>
 
-                <p className="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">
-                  {trainer.biography || "No biography provided."}
-                </p>
-                {/* Expertise tags */}
-                {trainer.expertise?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {(Array.isArray(trainer.expertise)
-                      ? trainer.expertise
-                      : JSON.parse(trainer.expertise || "[]")
-                    )
-                      .slice(0, 3)
-                      .map((exp, i) => (
-                        <span
-                          key={i}
-                          className="inline-flex items-center gap-0.5 text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded"
-                        >
-                          <Zap size={9} /> {exp}
-                        </span>
-                      ))}
-                  </div>
-                )}
-
-                {/* Achievements */}
-                {trainer.achievements?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {(Array.isArray(trainer.achievements)
-                      ? trainer.achievements
-                      : JSON.parse(trainer.achievements || "[]")
-                    )
-                      .slice(0, 2)
-                      .map((ach, i) => (
-                        <span
-                          key={i}
-                          className="inline-flex items-center gap-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded"
-                        >
-                          <Star size={9} /> {ach}
-                        </span>
-                      ))}
-                  </div>
-                )}
-
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <button
-                    onClick={() => openEditModal(trainer)}
+                    onClick={() => openEditModal(trainer.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
                   >
-                    <Edit2 size={14} /> Edit
+                    <Edit2 size={14} />
+                  </button>
+
+                  <button
+                    onClick={() => openViewModal(trainer.id)}
+                    className="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg"
+                  >
+                    <Eye size={14} />
                   </button>
 
                   <button
@@ -260,19 +231,36 @@ const Trainers = () => {
       )}
 
       <div className="mt-8">
-        <PaginationComponent
-          pagination={pagination}
-          onPageChange={(newPage) => setPage(newPage)}
-        />
-      </div>
+        {!loading && trainers.length > 0 && pagination?.total > 0 && (
+          <PaginationComponent
+            pagination={pagination}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
+      </div>    
 
       <TrainerModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        trainerData={selectedTrainer}
-        fetchTrainers={() => {
-          setSearch("");
-          fetchTrainers();
+        onClose={closeTrainerModal}
+        trainerId={editTrainerId}
+        fetchTrainers={fetchTrainers}
+      />
+      < ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Trainer?"
+        message="Are you sure you want to delete this Trainer? This action cannot be undone."
+        type="delete"
+        isLoading={isDeleting}
+      />
+      <ViewTrainerModal
+        isOpen={isViewModalOpen}
+        onClose={closeViewModal}
+        trainerId={viewTrainerId}
+        onEdit={(trainer) => {
+          closeViewModal();
+          openEditModal(trainer.id);
         }}
       />
     </div>
