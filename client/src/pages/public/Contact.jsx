@@ -50,7 +50,7 @@ const Contact = () => {
     <div className="relative overflow-hidden w-full min-h-screen bg-black pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 font-sans selection:bg-[#26c0ff] selection:text-white">
       
       {/* MASSIVE BACKGROUND TEXT */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
         CONTACT
       </div>
 
