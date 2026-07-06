@@ -97,6 +97,7 @@ class EventController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'date' => 'required|date',
+                'location' => 'required|string|max:255',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
 
@@ -156,6 +157,7 @@ class EventController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
+                'location' => 'nullable|string|max:255',
                 'date' => 'required|date',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             ]);
