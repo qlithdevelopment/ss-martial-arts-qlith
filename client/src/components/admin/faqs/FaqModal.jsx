@@ -4,7 +4,7 @@ import { X, Type, AlignLeft, Hash } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../../api/axios';
 
-const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
+const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs, faqsLength }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     question: '',
@@ -12,7 +12,7 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
     isPublish: true,
     order: 0,
   });
-
+const maxOrder = faqData ? faqsLength : faqsLength + 1;
   useEffect(() => {
     if (isOpen) {
       if (faqData) {
@@ -141,6 +141,7 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs }) => {
                       type="number"
                       name="order"
                       value={formData.order}
+                      max={faqsLength + 1}                      
                       onChange={handleInputChange}
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium"
                       placeholder="0"

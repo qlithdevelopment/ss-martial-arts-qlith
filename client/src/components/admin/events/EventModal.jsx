@@ -1,32 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Calendar, AlignLeft, Type, Image as ImageIcon, Save } from 'lucide-react';
+import { X, Upload, Calendar, AlignLeft, Type, Image as ImageIcon, Save, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '../../../api/axios'; 
+import api from '../../../api/axios';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
 const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
+    location: '',
     description: '',
     date: new Date().toISOString().split('T')[0],
   });
 
-  const [featuredImage, setFeaturedImage] = useState(null); 
-  const [featuredImagePreview, setFeaturedImagePreview] = useState(null); 
+  const [featuredImage, setFeaturedImage] = useState(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
       if (eventData) {
         setFormData({
           name: eventData.name || '',
+          location: eventData.location || '',
           description: eventData.description || '',
           date: eventData.date || new Date().toISOString().split('T')[0],
         });
-        setFeaturedImagePreview(eventData.image ? `http://127.0.0.1:8000/storage/${eventData.image}` : null);
+        setFeaturedImagePreview(eventData.image ? `${BASE_URL}/storage/${eventData.image}` : null);
       } else {
         resetForm();
       }
@@ -35,7 +39,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
 
   const resetForm = () => {
     setFormData({
-      name: '', description: '', date: new Date().toISOString().split('T')[0]
+      name: '', location: '', description: '', date: new Date().toISOString().split('T')[0]
     });
     setFeaturedImage(null);
     setFeaturedImagePreview(null);
@@ -56,7 +60,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-        toast.error('Image size must be less than 1MB');
+      toast.error('Image size must be less than 1MB');
       return;
     }
 
@@ -71,15 +75,16 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.date) {
+    if (!formData.name || !formData.date || !formData.location) {
       toast.error('Please fill required fields: Name and Date');
       return;
     }
 
     setLoading(true);
     const payload = new FormData();
-    
+
     payload.append('name', formData.name);
+    if (formData.location) payload.append('location', formData.location);
     if (formData.description) payload.append('description', formData.description);
     payload.append('date', formData.date);
 
@@ -128,7 +133,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
           >
             <div className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-2xl flex flex-col max-h-[85dvh] pointer-events-auto overflow-hidden">
-              
+
               {/* Header */}
               <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-50 shrink-0 bg-white">
                 <div>
@@ -148,8 +153,8 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
               </div>
 
               {/* Form Body */}
-              <form id="event-form" onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto flex-1 custom-scrollbar">
-                
+              <form id="event-form" onSubmit={handleSubmit} className="p-4 sm:p-5 scrollbar-thin overflow-y-auto flex-1 custom-scrollbar">
+
                 {/* Event Name */}
                 <div className="flex flex-col gap-1.5 mb-4">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
@@ -179,56 +184,68 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium"
                     />
                   </div>
-                  
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                      <ImageIcon size={12} className="text-orange-500" /> EVENT COVER IMAGE <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 1MB)</span>
+                      <MapPin size={12} className="text-orange-500" /> LOCATION
                     </label>
-                    
-                    <div className="relative group">
-                      <input
-                        type="file"
-                        accept="image/jpeg, image/png, image/jpg, image/webp"
-                        onChange={handleImageSelect}
-                        className="hidden"
-                        id="event-image-upload"
-                      />
-                      <label 
-                        htmlFor="event-image-upload"
-                        className={`flex items-center justify-center w-full h-11 border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${
-                          featuredImagePreview 
-                            ? 'border-gray-200 bg-gray-50' 
-                            : 'border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600'
-                        }`}
-                      >
-                        {featuredImagePreview ? (
-                          <>
-                            <img src={featuredImagePreview} alt="Preview" className="w-full h-full object-cover opacity-60" />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <span className="text-white text-xs font-bold flex items-center gap-1.5">
-                                <Upload size={14} /> Change Image
-                              </span>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="flex items-center gap-2 font-bold text-xs">
-                            <Upload size={14} /> 
-                            <span>UPLOAD IMAGE</span>
-                          </div>
-                        )}
-                      </label>
-                      {featuredImagePreview && (
-                        <button
-                          type="button"
-                          onClick={(e) => { e.preventDefault(); removeImage(); }}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors z-10"
-                        >
-                          <X size={12} strokeWidth={3} />
-                        </button>
-                      )}
-                    </div>
+                    <input
+                      type="text"
+                      required
+                      name="location"
+                      value={formData.location || ''}
+                      onChange={handleInputChange}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium"
+                    />
                   </div>
                 </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                    <ImageIcon size={12} className="text-orange-500" /> EVENT COVER IMAGE <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 1MB)</span>
+                  </label>
+
+                  <div className="relative group">
+                    <input
+                      type="file"
+                      accept="image/jpeg, image/png, image/jpg, image/webp"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                      id="event-image-upload"
+                    />
+                    <label
+                      htmlFor="event-image-upload"
+                      className={`flex items-center justify-center w-full h-18 mb-2 border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${featuredImagePreview
+                          ? 'border-gray-200 bg-gray-50'
+                          : 'border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600'
+                        }`}
+                    >
+                      {featuredImagePreview ? (
+                        <>
+                          <img src={featuredImagePreview} alt="Preview" className="w-full h-full object-cover opacity-60" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-white text-xs font-bold flex items-center gap-1.5">
+                              <Upload size={14} /> Change Image
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-2 font-bold text-xs">
+                          <Upload size={14} />
+                          <span>UPLOAD IMAGE</span>
+                        </div>
+                      )}
+                    </label>
+                    {featuredImagePreview && (
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); removeImage(); }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors z-10"
+                      >
+                        <X size={12} strokeWidth={3} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
 
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">
@@ -240,7 +257,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows="4"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium resize-y placeholder:text-gray-400"
+                    className="w-full bg-gray-50 border scrollbar-thin border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium resize-y placeholder:text-gray-400"
                     placeholder="Enter detailed information about the event..."
                   ></textarea>
                 </div>
