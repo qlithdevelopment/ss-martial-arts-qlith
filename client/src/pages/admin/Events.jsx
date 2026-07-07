@@ -5,25 +5,39 @@ import {
   Trash2,
   Calendar as CalendarIcon,
   Search,
+  Eye,
+  AlignLeft,
+  Tag,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import EventModal from "../../components/admin/events/EventModal";
 import PaginationComponent from "../../components/PaginationComponent";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
+import ViewEventModal from "../../components/admin/events/ViewEventModal";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewEvent, setViewEvent] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({
     current_page: 1,
     last_page: 1,
-    per_page: 2,
+    per_page: 10,
     total: 0,
   });
 
@@ -35,7 +49,7 @@ const Events = () => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
       setCurrentPage(1);
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [search]);
@@ -48,7 +62,7 @@ const Events = () => {
         params: {
           page,
           per_page: pagination.per_page,
-          search:debouncedSearch
+          search: debouncedSearch
         },
       });
 
@@ -63,39 +77,24 @@ const Events = () => {
   };
 
   const handleDelete = (id) => {
-    toast(
-      (t) => (
-        <div className="flex flex-col gap-3">
-          <p className="font-medium text-gray-900">
-            Are you sure you want to delete this event?
-          </p>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={async () => {
-                toast.dismiss(t.id);
-                try {
-                  await api.delete(`/events/${id}`);
-                  toast.success("Event deleted successfully");
-                  fetchEvents(currentPage);
-                } catch (error) {
-                  toast.error("Failed to delete event");
-                }
-              }}
-              className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ),
-      { duration: Infinity },
-    );
+    setEventToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+  const handleDeleteConfirm = async () => {
+    if (!eventToDelete) return;
+    try {
+      setIsDeleting(true);
+      await api.delete(`/events/${eventToDelete}`);
+      toast.success('Event deleted successfully');
+      fetchEvents();
+      setIsDeleteModalOpen(false);
+      setEventToDelete(null);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete event');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const openCreateModal = () => {
@@ -109,11 +108,16 @@ const Events = () => {
     setIsModalOpen(true);
   };
 
-  const filteredEvents = events.filter(
-    (e) =>
-      e.name?.toLowerCase().includes(search.toLowerCase()) ||
-      e.description?.toLowerCase().includes(search.toLowerCase()),
-  );
+  const openViewModal = (event) => {
+    setIsViewModalOpen(true);
+    setViewEvent(event);
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setViewEvent(null);
+  };
+
 
   return (
     <div className="">
@@ -127,7 +131,7 @@ const Events = () => {
             />
             <input
               type="text"
-              placeholder="Search events by name and description ..."
+              placeholder="Search by name and description ..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -180,7 +184,7 @@ const Events = () => {
               <div className="relative h-48 bg-gray-100 overflow-hidden">
                 {event.image ? (
                   <img
-                    src={`http://127.0.0.1:8000/storage/${event.image}`}
+                    src={`${BASE_URL}/storage/${event.image}`}
                     alt={event.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -192,13 +196,12 @@ const Events = () => {
                 {/* Status badge */}
                 <div className="absolute top-3 right-3">
                   <span
-                    className={`backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider flex items-center gap-1 shadow-sm ${
-                      event.timing === "upcoming"
-                        ? "bg-orange-500/90"
-                        : event.timing === "today"
-                          ? "bg-green-500/90"
-                          : "bg-gray-800/90"
-                    }`}
+                    className={`backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider flex items-center gap-1 shadow-sm ${event.timing === "upcoming"
+                      ? "bg-orange-500/90"
+                      : event.timing === "today"
+                        ? "bg-green-500/90"
+                        : "bg-gray-800/90"
+                      }`}
                   >
                     {event.timing}
                   </span>
@@ -227,7 +230,13 @@ const Events = () => {
                     onClick={() => openEditModal(event)}
                     className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
                   >
-                    <Edit2 size={14} /> Edit
+                    <Edit2 size={14} />
+                  </button>
+                  <button
+                    onClick={() => openViewModal(event)}
+                    className="px-3 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
+                  >
+                    <Eye size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(event.id)}
@@ -240,17 +249,24 @@ const Events = () => {
             </div>
           ))}
         </div>
-      )}
-
+      )}      
       <div className="mt-8">
-        <PaginationComponent
-          pagination={pagination}
-          onPageChange={(page) => {
-            setCurrentPage(page);
-          }}
-        />
-      </div>
-
+        {!loading && events.length > 0 && pagination?.total > 0 && (
+          <PaginationComponent
+            pagination={pagination}
+            onPageChange={(Page) => setCurrentPage(Page)}
+          />
+        )}
+      </div> 
+      < ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Event?"
+        message="Are you sure you want to delete this Event? This action cannot be undone."
+        type="delete"
+        isLoading={isDeleting}
+      />
       <EventModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -260,6 +276,16 @@ const Events = () => {
           fetchEvents(currentPage);
         }}
       />
+      <ViewEventModal
+        isOpen={isViewModalOpen}
+        onClose={closeViewModal}
+        event={viewEvent}
+        onDelete={(event) => {
+          closeViewModal();
+          handleDelete(event.id);
+        }}
+        imageBaseUrl={`${BASE_URL}/storage/`}
+      />      
     </div>
   );
 };
