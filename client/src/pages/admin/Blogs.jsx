@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Globe, EyeOff, Search } from "lucide-react";
+import { Plus, Edit2, Trash2, Globe, EyeOff, Search, Eye } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import BlogModal from "../../components/admin/blogs/BlogModal";
+import ViewBlogModal from "../../components/admin/blogs/ViewBlogModal";
 import PaginationComponent from "../../components/PaginationComponent";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [editBlogId, setEditBlogId] = useState(null);
 
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
 
-  // Modal state
+  // Create/Edit modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBlog, setSelectedBlog] = useState(null);
+
+  // View modal state
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewBlogId, setViewBlogId] = useState(null);
+
+  // Delete modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [blogToDelete, setBlogToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchBlogs();
@@ -27,8 +38,8 @@ const Blogs = () => {
 
       const res = await api.get(`/blogs?page=${page}&search=${search}`);
 
-      setBlogs(res.data.data);
-      setPagination(res.data.pagination);
+      setBlogs(res?.data?.data);
+      setPagination(res?.data?.pagination);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load blogs");
@@ -38,64 +49,64 @@ const Blogs = () => {
   };
 
   const handleDelete = (id) => {
-    toast(
-      (t) => (
-        <div className="flex flex-col gap-3">
-          <p className="font-medium text-gray-900">
-            Are you sure you want to delete this blog post?
-          </p>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={async () => {
-                toast.dismiss(t.id);
-                try {
-                  await api.delete(`/blogs/${id}`);
-                  toast.success("Blog deleted successfully");
-                  fetchBlogs();
-                } catch (error) {
-                  toast.error("Failed to delete blog");
-                }
-              }}
-              className="px-3 py-1.5 text-xs font-bold text-white bg-red-500 rounded-lg hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ),
-      { duration: Infinity },
-    );
+    setBlogToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
+  const handleDeleteConfirm = async () => {
+    if (!blogToDelete) return;
+    try {
+      setIsDeleting(true);
+      await api.delete(`/blogs/${blogToDelete}`);
+      toast.success('Blog deleted successfully');
+      fetchBlogs();
+      setIsDeleteModalOpen(false);
+      setBlogToDelete(null);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete blog');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // ── Create / Edit modal ──────────────────────────────────────────────────
   const openCreateModal = () => {
-    setSelectedBlog(null);
-    setSearch("");
+    setEditBlogId(null);
     setIsModalOpen(true);
   };
 
-  const openEditModal = (blog) => {
-    setSelectedBlog(blog);
+  const openEditModal = (id) => {
+    setEditBlogId(id);
     setIsModalOpen(true);
+  };
+
+  const closeBlogModal = () => {
+    setIsModalOpen(false);
+    setEditBlogId(null);
+  };
+
+  // ── View modal ────────────────────────────────────────────────────────────
+  const openViewModal = (id) => {
+    setViewBlogId(id);
+    setIsViewModalOpen(true);
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setViewBlogId(null);
+  };
+
+  // Called from within ViewBlogModal's "Edit" button
+  const handleEditFromView = (id) => {
+    closeViewModal();
+    openEditModal(id);
   };
 
   return (
     <div className="">
       {/* Header section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">
-            Blog Management
-          </h1>
-          <p className="text-gray-500 mt-1">
-            Create, edit, and manage articles on your website.
-          </p>
-        </div>
 
         <div className="flex w-full md:w-auto items-center gap-4">
           <div className="relative w-full md:w-64">
@@ -126,9 +137,42 @@ const Blogs = () => {
 
       {/* Content Area */}
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl border md:w-full border-gray-100 overflow-hidden shadow-sm flex flex-col animate-pulse"
+            >
+              {/* Image skeleton */}
+              <div className="relative h-48 bg-gray-200 w-full">
+                <div className="absolute top-3 right-3">
+                  <div className="h-5 w-20 bg-gray-300 rounded-md"></div>
+                </div>
+              </div>
+
+              {/* Body skeleton */}
+              <div className="p-5 flex-1 flex flex-col">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                  <div className="h-3 w-14 bg-gray-100 rounded"></div>
+                </div>
+
+                <div className="space-y-2 mb-4 flex-1">
+                  <div className="h-3 bg-gray-100 rounded w-full"></div>
+                  <div className="h-3 bg-gray-100 rounded w-5/6"></div>
+                </div>
+
+                {/* Actions skeleton */}
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
+
       ) : blogs.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -148,14 +192,17 @@ const Blogs = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {blogs.map((blog) => (
             <div
               key={blog.id}
-              className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col group"
+              className="bg-white rounded-2xl border md:w-full border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col group"
             >
               {/* Image */}
-              <div className="relative h-48 bg-gray-100 overflow-hidden">
+              <button
+                onClick={() => openViewModal(blog.id)}
+                className="relative h-48 bg-gray-100 overflow-hidden w-full text-left cursor-pointer"
+              >
                 {blog.featured_image ? (
                   <img
                     src={blog?.featured_image}
@@ -179,20 +226,23 @@ const Blogs = () => {
                     </span>
                   )}
                 </div>
-              </div>
+              </button>
 
               {/* Body */}
               <div className="p-5 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded">
+                  <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded">
                     {blog.category}
                   </span>
-                  <span className="text-xs text-gray-400 font-medium">
+                  <span className="text-[10px] text-gray-400 font-medium">
                     {blog.posted_date}
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2">
+                <h3
+                  onClick={() => openViewModal(blog.id)}
+                  className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2 cursor-pointer hover:text-orange-600 transition-colors"
+                >
                   {blog.title}
                 </h3>
 
@@ -201,18 +251,25 @@ const Blogs = () => {
                 </p>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
+
                   <button
-                    onClick={() => openEditModal(blog)}
+                    onClick={() => openEditModal(blog.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
                   >
-                    <Edit2 size={14} /> Edit
+                    <Edit2 size={14} />
+                  </button>
+                  <button
+                    onClick={() => openViewModal(blog.id)}
+                    className="px-3 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
+                  >
+                    <Eye size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(blog.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-red-600 hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg"
                   >
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
@@ -222,21 +279,38 @@ const Blogs = () => {
       )}
 
       <div className="mt-8">
-        <PaginationComponent
-          pagination={pagination}
-          onPageChange={(newPage) => setPage(newPage)}
-        />
+        {!loading && blogs.length > 0 && pagination?.total > 0 && (
+          <PaginationComponent
+            pagination={pagination}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
       </div>
 
-      {/* Render Modal */}
+      {/* Create/Edit Modal */}
       <BlogModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        blogData={selectedBlog}
-        fetchBlogs={() => {
-          setSearch("");
-          fetchBlogs();
-        }}
+        onClose={closeBlogModal}
+        blogId={editBlogId}
+        fetchBlogs={fetchBlogs}
+      />
+
+      {/* View Modal */}
+      <ViewBlogModal
+        isOpen={isViewModalOpen}
+        onClose={closeViewModal}
+        blogId={viewBlogId}
+        onEdit={handleEditFromView}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Blog?"
+        message="Are you sure you want to delete this Blog? This action cannot be undone."
+        type="delete"
+        isLoading={isDeleting}
       />
     </div>
   );

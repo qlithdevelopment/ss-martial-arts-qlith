@@ -91,7 +91,7 @@ const BlogDetail = () => {
           alt={blog.title} 
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 z-20 flex flex-col justify-end pb-12 md:pb-24">
+        <div className="absolute global-container lg:!px-[95px] inset-0 z-20 flex flex-col justify-end pb-12 md:pb-24">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
@@ -119,7 +119,7 @@ const BlogDetail = () => {
       </div>
 
       {/* DYNAMIC MATRIX CONTENT BLOCKS RENDER SECTION */}
-      <div className="w-full py-12 md:py-20">
+      <div className="w-full global-container lg:!px-[95px] py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0 }}
@@ -202,7 +202,7 @@ const BlogDetail = () => {
       </div>
 
       {/* RELATED BLOGS */}
-      <div className="w-full bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
+      <div className="w-full global-container lg:!px-[95px] bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-10">
             <div className="h-1 w-12 bg-[var(--color-primary)]"></div>
