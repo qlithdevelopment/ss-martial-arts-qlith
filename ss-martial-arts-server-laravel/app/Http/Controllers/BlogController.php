@@ -286,4 +286,31 @@ class BlogController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function getRelatedBlogs(Request $request, $id)
+{
+    try {
+        $currentBlog = Blog::findOrFail($id);
+
+        $limit = $request->get('limit', 4);
+
+        $relatedBlogs = Blog::where('category', $currentBlog->category)
+            ->where('id', '!=', $currentBlog->id)
+            ->latest()
+            ->take($limit)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $relatedBlogs,
+            'total_related' => $relatedBlogs->count()
+        ]);
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to fetch related blogs',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
 }

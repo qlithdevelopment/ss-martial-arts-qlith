@@ -16,7 +16,19 @@ return new class extends Migration
             // Basic Information
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('category');
+            $table->enum('category', [
+                'martial_arts_training',
+                'self_defense',
+                'fitness_conditioning',
+                'nutrition_wellness',
+                'competitions_events',
+                'kids_martial_arts',
+                'womens_martial_arts',
+                'mindset_discipline',
+                'instructor_tips',
+                'academy_news'
+            ]);
+
             $table->date('posted_date');
             $table->text('short_description');
 

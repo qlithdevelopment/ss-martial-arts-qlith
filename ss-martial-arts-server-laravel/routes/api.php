@@ -32,6 +32,7 @@ Route::get('/galleries', [GalleryController::class, 'index']);
 Route::get('/galleries/{id}', [GalleryController::class, 'show']);
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::get('/blogs/{id}', [BlogController::class, 'show']);
+Route::get('/blogs/{id}/related', [BlogController::class, 'getRelatedBlogs']);
 
 Route::get('/users/{userId}/certificates', [CertificateController::class, 'index']);
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
