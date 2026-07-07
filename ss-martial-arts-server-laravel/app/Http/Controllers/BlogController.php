@@ -17,16 +17,38 @@ class BlogController extends Controller
     public function index(Request $request)
     {
         try {
-            $perPage = $request->get('per_page', 10);
-            $search = $request->get('search');
+            $perPage = $request->input('per_page', 10);
+            $search = $request->input('search');
+            $category = $request->input('category');
 
-            $query = Blog::query();
+            $isPublishedParam = $request->input('is_published');
+
+            $query = Blog::query()->select([
+                'id',
+                'title',
+                'category',
+                'posted_date',
+                'short_description',
+                'featured_image',
+                'is_published',
+            ]);
+
+            if ($isPublishedParam !== null) {
+                $status = filter_var($isPublishedParam, FILTER_VALIDATE_BOOLEAN);
+                $query->where('is_published', $status);
+            } else {
+                $query->where('is_published', true);
+            }
+
+            if (!empty($category)) {
+                $query->where('category', $category);
+            }
 
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'LIKE', "%{$search}%")
-                        ->orWhere('category', 'LIKE', "%{$search}%")
-                        ->orWhere('short_description', 'LIKE', "%{$search}%");
+                        ->orWhere('short_description', 'LIKE', "%{$search}%")
+                        ->orWhere('content', 'LIKE', "%{$search}%");
                 });
             }
 
@@ -53,7 +75,6 @@ class BlogController extends Controller
             ], 500);
         }
     }
-
     /**
      * Store a newly created blog in storage.
      */
@@ -288,29 +309,29 @@ class BlogController extends Controller
     }
 
     public function getRelatedBlogs(Request $request, $id)
-{
-    try {
-        $currentBlog = Blog::findOrFail($id);
+    {
+        try {
+            $currentBlog = Blog::findOrFail($id);
 
-        $limit = $request->get('limit', 4);
+            $limit = $request->get('limit', 4);
 
-        $relatedBlogs = Blog::where('category', $currentBlog->category)
-            ->where('id', '!=', $currentBlog->id)
-            ->latest()
-            ->take($limit)
-            ->get();
+            $relatedBlogs = Blog::where('category', $currentBlog->category)
+                ->where('id', '!=', $currentBlog->id)
+                ->latest()
+                ->take($limit)
+                ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $relatedBlogs,
-            'total_related' => $relatedBlogs->count()
-        ]);
-    } catch (Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to fetch related blogs',
-            'error' => $e->getMessage(),
-        ], 500);
+            return response()->json([
+                'success' => true,
+                'data' => $relatedBlogs,
+                'total_related' => $relatedBlogs->count()
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch related blogs',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
 }
