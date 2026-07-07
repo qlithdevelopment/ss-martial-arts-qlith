@@ -18,20 +18,25 @@ class GalleryController extends Controller
             $galleries = Gallery::latest()->paginate($perPage);
 
             $data = collect($galleries->items())->map(function ($gallery) {
+                $images = is_array($gallery->images) ? $gallery->images : [];
+
                 return [
                     'id' => $gallery->id,
                     'name' => $gallery->name,
                     'description' => $gallery->description,
-                    'images' => is_array($gallery->images)
-                        ? array_slice($gallery->images, 0, 3)
-                        : [],
+                    'images' => $images,
+                    'total_images_count' => count($images), // Count for this specific gallery
                     'created_at' => $gallery->created_at,
                 ];
             });
 
+            // Sum up the counts of all images in the current paginated collection
+            $totalAllGalleryImages = $data->sum('total_images_count');
+
             return response()->json([
                 'success' => true,
                 'data' => $data,
+                'total_all_gallery_images' => $totalAllGalleryImages, // Total across all visible galleries
                 'pagination' => [
                     'current_page' => $galleries->currentPage(),
                     'last_page' => $galleries->lastPage(),
@@ -86,7 +91,6 @@ class GalleryController extends Controller
                 'message' => 'Gallery created successfully',
                 'data' => $gallery,
             ], 201);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -107,7 +111,6 @@ class GalleryController extends Controller
                 'success' => true,
                 'data' => $gallery,
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -149,7 +152,6 @@ class GalleryController extends Controller
                 }
 
                 $finalImages = $remainingOldImages;
-
             } else {
 
                 $finalImages = $gallery->images ?? [];
@@ -183,7 +185,6 @@ class GalleryController extends Controller
                 'message' => 'Gallery updated successfully',
                 'data' => $gallery->fresh(),
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -216,7 +217,6 @@ class GalleryController extends Controller
                 'success' => true,
                 'message' => 'Gallery deleted successfully',
             ]);
-
         } catch (Exception $e) {
 
             return response()->json([
