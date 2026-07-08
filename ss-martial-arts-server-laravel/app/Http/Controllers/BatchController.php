@@ -9,29 +9,36 @@ use Illuminate\Validation\ValidationException;
 
 class BatchController extends Controller
 {
- 
+
     public function index(Request $request)
     {
         try {
             $perPage = $request->query('per_page', 10);
+            $perPage = is_numeric($perPage) ? (int)$perPage : 10;
 
             $paginator = Batch::paginate($perPage);
 
             return response()->json([
-                'data' => $paginator->items(),
-                'total' => $paginator->total(),
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
+                'status'  => true,
+                'message' => 'Batches fetched successfully.',
+                'data'    => $paginator->items(),
+                'pagination'    => [
+                    'total'        => $paginator->total(),
+                    'current_page' => $paginator->currentPage(),
+                    'last_page'    => $paginator->lastPage(),
+                    'per_page'     => $paginator->perPage(),
+                ],
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
+                'status'  => false,
                 'message' => 'Something went wrong while fetching batches.',
-                'error' => $e->getMessage()
+                'error'   => $e->getMessage()
             ], 500);
         }
     }
 
-  
+
     public function store(Request $request)
     {
         try {
@@ -41,7 +48,7 @@ class BatchController extends Controller
                 'enddate' => 'required|date|after_or_equal:date',
                 'total_fee' => 'required|numeric|min:0',
                 'status' => 'nullable|in:active,inactive',
-                'notes' => 'nullable|string', 
+                'notes' => 'nullable|string',
             ]);
 
             $batch = Batch::create($validated);

@@ -17,24 +17,44 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         try {
-            $perPage = $request->query('per_page', 10);
+            $perPage = (int) $request->query('per_page', 10);
+            if ($perPage < 1 || $perPage > 100) {
+                $perPage = 10;
+            }
 
-            $paginator = User::where('role', 'student')
-                ->latest()
+            $students = User::leftJoin('batches', 'users.batch_id', '=', 'batches.id')
+                ->where('users.role', 'student')
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.email',
+                    'users.role',
+                    'users.batch_id',
+                    'users.belt',
+                    'users.total_fee',
+                    'users.status',
+                    'users.created_at',
+                    'batches.name as batch_name'
+                )
+                ->latest('users.created_at')
                 ->paginate($perPage);
 
             return response()->json([
-                'success' => true,
-                'data' => $paginator->items(),
-                'total' => $paginator->total(),
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
+                'status' => true,
+                'message' => 'Students fetched successfully.',
+                'data' => $students->items(),
+                'pagination' => [
+                    'total' => $students->total(),
+                    'current_page' => $students->currentPage(),
+                    'last_page' => $students->lastPage(),
+                    'per_page' => $students->perPage(),
+                ],
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'message' => 'An error occurred while fetching the students list.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -178,11 +198,11 @@ class StudentController extends Controller
     {
         try {
             $student = User::where('role', 'student')->findOrFail($id);
-            
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-                'password' => 'nullable|string|min:6', 
+                'password' => 'nullable|string|min:6',
                 'batch_id' => 'required|exists:batches,id',
                 'belt' => 'nullable|string|max:50', // Optional field rule configurations
                 'total_fee' => 'required|numeric|min:0',
@@ -211,7 +231,6 @@ class StudentController extends Controller
                 'message' => 'Student profile updated successfully.',
                 'data' => $student
             ], 200);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -240,7 +259,6 @@ class StudentController extends Controller
                 'success' => true,
                 'message' => 'Student account entry dropped from server memory successfully.'
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
