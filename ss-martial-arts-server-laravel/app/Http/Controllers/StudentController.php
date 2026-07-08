@@ -22,7 +22,9 @@ class StudentController extends Controller
                 $perPage = 10;
             }
 
-            $students = User::leftJoin('batches', 'users.batch_id', '=', 'batches.id')
+            $search = $request->query('search');
+
+            $query = User::leftJoin('batches', 'users.batch_id', '=', 'batches.id')
                 ->where('users.role', 'student')
                 ->select(
                     'users.id',
@@ -35,9 +37,19 @@ class StudentController extends Controller
                     'users.status',
                     'users.created_at',
                     'batches.name as batch_name'
-                )
-                ->latest('users.created_at')
-                ->paginate($perPage);
+                );
+
+            // Apply search filter if search parameter is present
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('users.name', 'LIKE', "%{$search}%")
+                        ->orWhere('users.email', 'LIKE', "%{$search}%")
+                        ->orWhere('users.belt', 'LIKE', "%{$search}%")
+                        ->orWhere('batches.name', 'LIKE', "%{$search}%");
+                });
+            }
+
+            $students = $query->latest('users.created_at')->paginate($perPage);
 
             return response()->json([
                 'status' => true,
@@ -50,7 +62,7 @@ class StudentController extends Controller
                     'per_page' => $students->perPage(),
                 ],
             ], 200);
-        } catch (Exception $e) {
+        } catch (\Exception $e) { // Added backslash to ensure global Exception class is caught
             return response()->json([
                 'status' => false,
                 'message' => 'An error occurred while fetching the students list.',
