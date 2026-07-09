@@ -17,7 +17,9 @@ const AboutPage = () => {
       <AboutInstructor />
       <AboutFeatures />
       <AboutHistory />
+      <div className="bg-black">
       <AboutFAQ limit={5} />
+      </div>  
     </div>
   );
 };

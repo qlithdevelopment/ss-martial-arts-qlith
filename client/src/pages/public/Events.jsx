@@ -4,14 +4,15 @@ import { useLocation } from 'react-router-dom';
 import { MapPin, Clock, Calendar, User, ChevronRight, X, Send } from 'lucide-react';
 import eventSeminarImg from "../../assets/event_seminar.png";
 import eventTournamentImg from "../../assets/event_tournament.png";
-
+import PaginationComponent from '../../components/PaginationComponent';
 import api from '../../api/axios';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
 
 const getImageUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  if (path.startsWith('/storage/')) return `http://127.0.0.1:8000${path}`;
-  return `http://127.0.0.1:8000/storage/${path}`;
+  if (path.startsWith('/storage/')) return `${BASE_URL}${path}`;
+  return `${BASE_URL}/storage/${path}`;
 };
 
 const Events = () => {
@@ -20,6 +21,8 @@ const Events = () => {
   const [eventsData, setEventsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState({})
 
   useEffect(() => {
     if (eventsData.length > 0 && location.state?.openRegisterFor) {
@@ -29,19 +32,21 @@ const Events = () => {
     }
   }, [eventsData, location.state]);
 
+  const fetchEvents = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/events?page=${page}`);
+      setEventsData(res?.data?.data);
+      setPagination(res?.data?.pagination)
+    } catch (error) {
+      console.error('Failed to load events', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await api.get('/events');
-        setEventsData(res.data.data);
-      } catch (error) {
-        console.error('Failed to load events', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchEvents();
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,15 +62,15 @@ const Events = () => {
 
   return (
     <div className="relative overflow-hidden w-full min-h-screen bg-[#f9fafb] pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 font-sans selection:bg-[#f97316] selection:text-white">
-      
+
       {/* MASSIVE BACKGROUND TEXT */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+      <div className="fixed top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
         EVENTS
       </div>
 
       {/* Header */}
       <div className="global-container lg:!px-[95px] mb-16 relative z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -85,11 +90,29 @@ const Events = () => {
       {/* Events List */}
       <div className="global-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {loading ? (
-          <div className="col-span-full flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin"></div>
-          </div>
+          Array.from({ length: 4 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="relative bg-gray-500 rounded-[20px] overflow-hidden border border-white/9 h-[340px] lg:h-[400px] w-full flex flex-col animate-pulse"
+            >
+              <div className="absolute inset-0 bg-gray-600"></div>
+
+              <div className="absolute inset-0 p-5 z-10 flex flex-col justify-end">
+                <div className="flex justify-between items-end w-full">
+                  <div className="flex flex-col gap-2 pr-2 flex-1">
+                    <div className="h-4 w-20 bg-gray-500 rounded"></div>
+                    <div className="h-6 bg-gray-500 rounded w-full"></div>
+                    <div className="h-6 bg-gray-500 rounded w-2/3"></div>
+                    <div className="h-3 w-24 bg-gray-500 rounded mt-1"></div>
+                  </div>
+
+                  <div className="shrink-0 w-10 h-10 bg-white/10 rounded-xl"></div>
+                </div>
+              </div>
+            </div>            
+          ))
         ) : eventsData.map((event, idx) => (
-            <motion.div 
+            <motion.div
               key={event.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -100,10 +123,10 @@ const Events = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none"></div>
               <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply z-10 pointer-events-none"></div>
-              
-              <img 
-                src={getImageUrl(event.image)} 
-                alt={event.name} 
+
+              <img
+                src={getImageUrl(event.image)}
+                alt={event.name}
                 className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80"
               />
 
@@ -118,10 +141,10 @@ const Events = () => {
                       {event.name}
                     </h2>
                     <div className="flex items-center gap-2 text-[#26c0ff] font-bold text-[10px] uppercase tracking-wider mb-0.5">
-                      <Clock size={12} className="text-[#f97316]"/> {event.timing}
+                      <Clock size={12} className="text-[#f97316]" /> {event.timing}
                     </div>
                   </div>
-                  
+
                   {/* Bottom Right Arrow Box */}
                   <div className="shrink-0 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center rounded-xl group-hover:bg-[#f97316] group-hover:border-[#f97316] transition-colors pointer-events-auto mb-1">
                     <ChevronRight className="text-white transform group-hover:-rotate-45 transition-transform" size={16} />
@@ -129,26 +152,34 @@ const Events = () => {
                 </div>
               </div>
 
-            {/* Giant Background Text */}
-            <h2 className="absolute -right-4 top-1/4 text-[80px] font-black text-white/[0.03] uppercase tracking-tighter leading-none pointer-events-none z-0 rotate-90 origin-bottom-right">
-              EVENT
-            </h2>
+              {/* Giant Background Text */}
+              <h2 className="absolute -right-4 top-1/4 text-[80px] font-black text-white/[0.03] uppercase tracking-tighter leading-none pointer-events-none z-0 rotate-90 origin-bottom-right">
+                EVENT
+              </h2>
 
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+      </div>
+      <div className="mt-8 global-container">
+        {!loading && eventsData.length > 0 && pagination?.total > 0 && (
+          <PaginationComponent
+            pagination={pagination}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
+        )}
       </div>
 
       {/* Modal Overlay */}
       <AnimatePresence>
         {selectedEventId && selectedEvent && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedEventId(null)}
             className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md overflow-y-auto custom-scrollbar"
           >
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -156,9 +187,9 @@ const Events = () => {
               onClick={(e) => e.stopPropagation()}
               className={`w-full ${modalMode === 'register' ? 'max-w-[400px]' : 'max-w-[600px]'} max-h-[90vh] bg-white rounded-[24px] overflow-hidden relative shadow-2xl border border-gray-200 my-auto flex flex-col`}
             >
-              
-              <button 
-                onClick={() => setSelectedEventId(null)} 
+
+              <button
+                onClick={() => setSelectedEventId(null)}
                 className="absolute top-4 right-4 z-50 w-8 h-8 bg-white/80 backdrop-blur-sm shadow-md hover:bg-[#f97316] text-[#0b1b24] hover:text-white rounded-full flex items-center justify-center transition-colors"
               >
                 <X size={16} />
@@ -167,9 +198,9 @@ const Events = () => {
               {/* Modal Banner */}
               <div className={`w-full ${modalMode === 'register' ? 'h-[80px]' : 'h-[100px] md:h-[120px]'} shrink-0 relative`}>
                 <div className="absolute inset-0 bg-black/50 z-10 pointer-events-none"></div>
-                <img 
-                  src={getImageUrl(selectedEvent.image)} 
-                  alt={selectedEvent.name} 
+                <img
+                  src={getImageUrl(selectedEvent.image)}
+                  alt={selectedEvent.name}
                   className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute bottom-0 left-0 w-full p-4 md:p-5 z-20 bg-gradient-to-t from-black to-transparent">
@@ -182,10 +213,10 @@ const Events = () => {
               {/* Modal Content */}
               {modalMode === 'details' ? (
                 <div className="p-4 md:p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
-                  
+
                   {/* Event Details */}
                   <div className="flex flex-col gap-5">
-                    
+
                     {/* Quick Info Bar */}
                     <div className="flex flex-wrap gap-3 bg-[#0b1b24] p-3 rounded-xl border border-gray-200 shadow-sm text-xs justify-center md:justify-start">
                       <div className="flex items-center gap-1.5">
@@ -209,7 +240,7 @@ const Events = () => {
 
                     {/* Action Button */}
                     <div className="mt-4 border-t border-gray-100 pt-5">
-                      <button 
+                      <button
                         onClick={() => setModalMode('register')}
                         className="w-full bg-[#f97316] hover:bg-orange-600 text-white font-black uppercase tracking-widest py-3.5 md:py-4 text-sm rounded-xl transition-all shadow-lg shadow-[#f97316]/30 hover:shadow-[#f97316]/50 hover:-translate-y-1 flex items-center justify-center gap-2"
                       >
@@ -225,7 +256,7 @@ const Events = () => {
                     <h3 className="text-xl font-black text-[#26c0ff] uppercase tracking-tighter mb-1">Register Now</h3>
                     <p className="text-gray-500 text-xs font-medium">Secure your spot. Limited availability.</p>
                   </div>
-                  
+
                   <form className="flex flex-col gap-3">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Full Name</label>

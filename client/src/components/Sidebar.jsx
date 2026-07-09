@@ -2,21 +2,37 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from '../assets/Logo_compress.png';
-
+import { toast } from "react-hot-toast";
+import { ArrowLeft, LogOut, ChevronDown, ChevronsRight, ChevronsLeft, Menu, X, House, Newspaper, CalendarDays, Image, Users, CircleHelp, GraduationCap, Mail,Phone } from "lucide-react";
+import ConfirmModal from "../components/admin/reusecomponents/ConfirmationModal";
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [isStudentsOpen, setIsStudentsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  // Runs when the user confirms inside the modal
+  const handleLogoutConfirm = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
     try {
       await logout();
-      navigate("/login");
+      setIsLogoutModalOpen(false);
+      navigate('/login');
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
+      toast.error('Failed to logout');
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
+  
   // Automatically close sidebar panel when navigating on mobile viewports
   const handleItemClick = () => {
     if (window.innerWidth < 768) {
@@ -25,58 +41,67 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   };
 
   const menuItems = [
-    { 
-      path: "/admin/dashboard", 
+    {
+      path: "/admin/dashboard",
       label: "Dashboard",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-        </svg>
+        <House className="w-5 h-5 shrink-0" strokeWidth={1.5} />
+        
       )
     },
-    { 
-      path: "/admin/blogs", 
+    {
+      path: "/admin/blogs",
       label: "Blogs",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
-        </svg>
+        <Newspaper
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+        
       )
     },
-    { 
-      path: "/admin/events", 
+    {
+      path: "/admin/events",
       label: "Events",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
-        </svg>
+        <CalendarDays
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+        
       )
     },
-    { 
-      path: "/admin/galleries", 
+    {
+      path: "/admin/galleries",
       label: "Galleries",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-        </svg>
+        <Image
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+       
       )
     },
-    { 
-      path: "/admin/trainers", 
+    {
+      path: "/admin/trainers",
       label: "Trainers",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-        </svg>
+        <Users
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+        
       )
     },
-    { 
-      path: "/admin/faqs", 
+    {
+      path: "/admin/faqs",
       label: "FAQs",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-        </svg>
+        <CircleHelp
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+        
       )
     },
     // { 
@@ -92,27 +117,31 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       path: "/admin/students",
       label: "Students",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
-        </svg>
+        <GraduationCap
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+
+        
       )
     },
     {
       path: "/admin/contacts",
       label: "Contacts",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.909A2.25 2.25 0 012.25 6.993V6.75m19.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
-        </svg>
+        <Phone
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+       
       )
     },
   ];
 
   const linkStyles = ({ isActive }) =>
-    `flex items-center gap-4 py-3 px-4 rounded-xl font-medium transition-all ${
-      isActive
-        ? "bg-primary text-white shadow-md shadow-primary/20"
-        : "text-gray-600 hover:bg-gray-50 hover:text-primary"
+    `flex items-center gap-4 py-3 px-3.5 rounded-xl font-medium transition-all ${isActive
+      ? "bg-primary text-white shadow-md shadow-primary/20"
+      : "text-gray-600 hover:bg-gray-50 hover:text-primary"
     }`;
 
   return (
@@ -124,13 +153,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           className="p-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:text-primary transition-colors shadow-xs"
         >
           {isCollapsed ? (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
+
+            <Menu className="w-6 h-6" strokeWidth={1.5} />
+
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-6 h-6 " strokeWidth={1.5} />
+
           )}
         </button>
       </div>
@@ -166,26 +194,22 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               className="hidden md:flex p-2 rounded-lg bg-white border border-gray-200 text-gray-500 hover:text-[#f97316] hover:bg-orange-50 hover:border-orange-200 transition-all shadow-sm hover:shadow ml-auto"
             >
               {isCollapsed ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5M4.5 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
+                <ChevronsRight className="w-5 h-4" strokeWidth={2} />
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7-7 7-7m-14 14l-7-7 7-7" />
-                </svg>
+                <ChevronsLeft className="w-5 h-4" strokeWidth={2} />
               )}
             </button>
           </div>
 
           {/* DYNAMIC NAVIGATION LINKS */}
-          <nav className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 flex flex-col gap-1.5">
+          <nav className="flex-1 overflow-y-auto custom-scrollbar pr-0 pb-4 flex flex-col gap-1.5">
             {menuItems.map((item) => (
               item.children ? (
                 <div key={item.label} className="flex flex-col">
-                  <div 
+                  <div
                     onClick={() => {
-                       setIsStudentsOpen(!isStudentsOpen);
-                       if (isCollapsed) setIsCollapsed(false);
+                      setIsStudentsOpen(!isStudentsOpen);
+                      if (isCollapsed) setIsCollapsed(false);
                     }}
                     className={`flex items-center justify-between gap-4 py-3 px-4 rounded-xl font-medium transition-all cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-primary ${isStudentsOpen && !isCollapsed ? 'bg-orange-50/50 text-[#f97316]' : ''}`}
                   >
@@ -194,18 +218,21 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                       {!isCollapsed && <span className="truncate">{item.label}</span>}
                     </div>
                     {!isCollapsed && (
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 transition-transform ${isStudentsOpen ? 'rotate-180 text-[#f97316]' : ''}`}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                      </svg>
+
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${isStudentsOpen ? "rotate-180 text-[#f97316]" : ""
+                          }`}
+                        strokeWidth={2}
+                      />
                     )}
                   </div>
-                  
+
                   {isStudentsOpen && !isCollapsed && (
                     <div className="flex flex-col gap-1 mt-1 ml-6 border-l-2 border-orange-100 pl-2">
                       {item.children.map(child => (
-                        <NavLink 
-                          key={child.path} 
-                          to={child.path} 
+                        <NavLink
+                          key={child.path}
+                          to={child.path}
                           className={({ isActive }) => `flex items-center gap-4 py-2 px-3 rounded-lg font-medium transition-all text-sm ${isActive ? "bg-[#f97316] text-white shadow shadow-orange-500/20" : "text-gray-500 hover:bg-orange-50 hover:text-[#f97316]"}`}
                           onClick={handleItemClick}
                         >
@@ -216,9 +243,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                   )}
                 </div>
               ) : (
-                <NavLink 
-                  key={item.path} 
-                  to={item.path} 
+                <NavLink
+                  key={item.path}
+                  to={item.path}
                   className={linkStyles}
                   onClick={handleItemClick}
                 >
@@ -235,13 +262,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           <button
             onClick={handleLogout}
             className={`
-              w-full flex items-center gap-4 py-3 px-4 rounded-xl font-bold transition-all bg-orange-500 text-white hover:bg-orange-600 shadow-sm
+              w-full flex items-center gap-4 py-3 cursor-pointer px-4 rounded-xl font-bold transition-all bg-orange-500 text-white hover:bg-orange-600 shadow-sm
               ${isCollapsed ? "justify-center px-0" : ""}
             `}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 shrink-0">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>
+
+            <LogOut className="w-5 h-5 shrink-0" strokeWidth={1.5} />
             {!isCollapsed && <span className="truncate">Sign Out</span>}
           </button>
         </div>
@@ -254,6 +280,15 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           className="fixed inset-0 bg-gray-900/20 backdrop-blur-xs z-30 md:hidden"
         />
       )}
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogoutConfirm}
+        title="Sign Out?"
+        message="Are you sure you want to end your session?"
+        type="logout"
+        isLoading={isLoggingOut}
+      />
     </>
   );
 };

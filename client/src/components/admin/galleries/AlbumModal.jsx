@@ -4,24 +4,29 @@ import { X, Upload, AlignLeft, Type, Image as ImageIcon, Save, CopyPlus } from '
 import toast from 'react-hot-toast';
 import api from '../../../api/axios';
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
+
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
+const MAX_FILES = 5;              // per-album limit
+    // global limit across ALL galleries combined
 
 const getImageUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  if (path.startsWith('/storage/')) return `http://127.0.0.1:8000${path}`;
-  return `http://127.0.0.1:8000/storage/${path}`;
+  if (path.startsWith('/storage/')) return `${BASE_URL}${path}`;
+  return `${BASE_URL}/storage/${path}`;
 };
 
-const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
+const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImagesCount = 0, maxImages = 0 }) => {
+  const MAX_TOTAL_IMAGES = maxImages || 100
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
   });
 
-  const [galleryImages, setGalleryImages] = useState([]); 
+  const [galleryImages, setGalleryImages] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [oldImages, setOldImages] = useState([]);
 
@@ -32,7 +37,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
           name: albumData.name || '',
           description: albumData.description || '',
         });
-        
+
         // Load existing images
         if (albumData.images && Array.isArray(albumData.images)) {
           setOldImages(albumData.images);
@@ -44,6 +49,12 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
       }
     }
   }, [isOpen, albumData]);
+
+  useEffect(() => {
+    return () => {
+      galleryPreviews.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
 
   const resetForm = () => {
     setFormData({ name: '', description: '' });
@@ -57,17 +68,89 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // --- Per-album limit (this album only) ---
+  const currentAlbumCount = oldImages.length + galleryImages.length;
+  const albumRemainingSlots = Math.max(0, MAX_FILES - currentAlbumCount);
+  const isAlbumCapReached = albumRemainingSlots <= 0;
+
+  // --- Global limit (across all galleries) ---
+  // Images that already exist in OTHER albums (unaffected by edits made here)
+  const otherAlbumsImageCount = albumData
+    ? totalImagesCount - (albumData.images?.length || 0)
+    : totalImagesCount;
+  const currentGlobalUsage = otherAlbumsImageCount + currentAlbumCount;
+  const globalRemainingSlots = Math.max(0, MAX_TOTAL_IMAGES - otherAlbumsImageCount) - currentAlbumCount;
+  const isGlobalCapReached = currentGlobalUsage >= MAX_TOTAL_IMAGES;
+
+  // Whichever limit is tighter wins
+  const remainingSlots = Math.max(0, Math.min(albumRemainingSlots, globalRemainingSlots));
+  const isCapReached = isAlbumCapReached || isGlobalCapReached;
+
+  
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
-    const validFiles = files.filter(file => {
+    if (isAlbumCapReached) {
+      toast.error(`This album already has the maximum of ${MAX_FILES} images.`);
+      e.target.value = '';
+      return;
+    }
+
+    if (isGlobalCapReached) {
+      toast.error(`Maximum of ${MAX_TOTAL_IMAGES} images reached across all galleries. Remove some images to upload more.`);
+      e.target.value = '';
+      return;
+    }
+
+    // Helper: unique fingerprint for a File object
+    const fileFingerprint = (file) => `${file.name}-${file.size}-${file.lastModified}`;
+
+    // Fingerprints of images already staged for upload in this session
+    const existingFingerprints = new Set(galleryImages.map(fileFingerprint));
+
+    // Separate incoming files into duplicates vs. genuinely new ones
+    const duplicateNames = [];
+    const uniqueFiles = [];
+    const seenInThisBatch = new Set();
+
+    files.forEach((file) => {
+      const fp = fileFingerprint(file);
+      if (existingFingerprints.has(fp) || seenInThisBatch.has(fp)) {
+        duplicateNames.push(file.name);
+      } else {
+        seenInThisBatch.add(fp);
+        uniqueFiles.push(file);
+      }
+    });
+
+    if (duplicateNames.length) {
+      const preview = duplicateNames.slice(0, 3).join(', ');
+      const extra = duplicateNames.length > 3 ? ` (+${duplicateNames.length - 3} more)` : '';
+      toast.error(`Already added: ${preview}${extra}`);
+    }
+
+    if (!uniqueFiles.length) {
+      e.target.value = '';
+      return;
+    }
+
+    if (uniqueFiles.length > remainingSlots) {
+      const reason = albumRemainingSlots < globalRemainingSlots
+        ? `this album can only hold ${MAX_FILES} images total`
+        : `remaining ${globalRemainingSlots} images can be added out of ${MAX_TOTAL_IMAGES} in galleries`;
+      toast.error(`Only ${remainingSlots} images can be added — ${reason}. Extra images are not uploaded.`);
+    }
+
+    const filesToProcess = uniqueFiles.slice(0, remainingSlots);
+
+    const validFiles = filesToProcess.filter(file => {
       if (!['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(file.type)) {
         toast.error(`Invalid format: ${file.name}`);
         return false;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`Too large: ${file.name} (Max 1MB)`);
+        toast.error(`Too large: ${file.name} (Max 2MB)`);
         return false;
       }
       return true;
@@ -77,12 +160,23 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
       setGalleryImages(prev => [...prev, ...validFiles]);
       const newPreviews = validFiles.map(file => URL.createObjectURL(file));
       setGalleryPreviews(prev => [...prev, ...newPreviews]);
+
+      const newAlbumRemaining = albumRemainingSlots - validFiles.length;
+      const newGlobalRemaining = globalRemainingSlots - validFiles.length;
+      toast.success(
+        `${validFiles.length} images added. ${newAlbumRemaining} slots left in this album, total ${newGlobalRemaining} slots left in gallary.`
+      );
     }
+
+    e.target.value = ''; // allows re-selecting the same file after removal
   };
 
   const removeNewImage = (index) => {
+    setGalleryPreviews(prev => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
     setGalleryImages(prev => prev.filter((_, i) => i !== index));
-    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const removeOldImage = (index) => {
@@ -101,9 +195,19 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
       return;
     }
 
+    if (currentAlbumCount > MAX_FILES) {
+      toast.error(`This album cannot exceed ${MAX_FILES} images.`);
+      return;
+    }
+
+    if (currentGlobalUsage > MAX_TOTAL_IMAGES) {
+      toast.error(`This exceeds the maximum of ${MAX_TOTAL_IMAGES} images allowed across all galleries.`);
+      return;
+    }
+
     setLoading(true);
     const payload = new FormData();
-    
+
     payload.append('name', formData.name);
     if (formData.description) payload.append('description', formData.description);
 
@@ -112,22 +216,30 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
     });
 
     try {
+      let res;
       if (albumData) {
-        // Since we are not appending old_images[], the backend might wipe them if we aren't careful. I'll append old_images[] if the backend supports it, but earlier I saw GalleryController only had store(). Let's assume there is an update or we just use it as is.
         oldImages.forEach((img) => {
           payload.append('old_images[]', img);
         });
-        await api.post(`/galleries/${albumData.id}`, payload, {
+        res = await api.post(`/galleries/${albumData.id}`, payload, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        toast.success('Gallery updated successfully!');
       } else {
-        await api.post('/galleries', payload, {
+        res = await api.post('/galleries', payload, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        toast.success('Gallery created successfully!');
       }
+
+      const updatedTotal = res?.data?.total_all_gallery_images ?? currentGlobalUsage;
+      const remainingGlobal = Math.max(0, MAX_TOTAL_IMAGES - updatedTotal);
+
+      toast.success(
+        `Gallery ${albumData ? 'updated' : 'created'} successfully! ${remainingGlobal} more images can be added in total gallary `
+      );
+
       fetchAlbums();
+      setGalleryImages([]);
+      setGalleryPreviews([]);
       onClose();
     } catch (error) {
       console.error(error);
@@ -156,7 +268,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
           >
             <div className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-2xl flex flex-col max-h-[85dvh] pointer-events-auto overflow-hidden">
-              
+
               {/* Header */}
               <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-50 shrink-0 bg-white">
                 <div>
@@ -177,7 +289,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
 
               {/* Form Body */}
               <form id="album-form" onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto flex-1 custom-scrollbar">
-                
+
                 {/* Album Name & Description */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                   <div className="flex flex-col gap-1">
@@ -193,7 +305,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
                       placeholder="e.g. Winter Grading 2026"
                     />
                   </div>
-                  
+
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                       <AlignLeft size={12} className="text-orange-500" /> DESCRIPTION
@@ -211,29 +323,53 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
 
                 {/* Photo Upload Section */}
                 <div className="flex flex-col gap-1.5 mt-2 border border-gray-100 rounded-xl p-4 bg-gray-50/50">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5 mb-2">
-                    <CopyPlus size={12} className="text-orange-500" /> GALLERY PHOTOS <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 1MB per photo)</span>
-                  </label>
-                  
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                    {/* Upload Button */}
-                    <div className="relative group aspect-square">
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/jpeg, image/png, image/jpg, image/webp"
-                        onChange={handleImageChange}
-                        className="hidden"
-                        id="album-image-upload"
-                      />
-                      <label 
-                        htmlFor="album-image-upload"
-                        className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600 rounded-xl cursor-pointer transition-all"
-                      >
-                        <Upload size={18} className="mb-1" /> 
-                        <span className="text-[9px] font-bold">ADD PHOTOS</span>
-                      </label>
+                  <div className="flex items-center justify-between mb-2 flex-wrap gap-y-1">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <CopyPlus size={12} className="text-orange-500" /> GALLERY PHOTOS
+                      <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 2MB per photo)</span>
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <span className={`text-[10px] font-bold whitespace-nowrap ${isAlbumCapReached ? 'text-red-500' : 'text-gray-400'}`}>
+                        {currentAlbumCount}/{MAX_FILES} this album
+                      </span>
+                      <span className={`text-[10px] font-bold whitespace-nowrap ${isGlobalCapReached ? 'text-red-500' : 'text-gray-400'}`}>
+                        {currentGlobalUsage}/{MAX_TOTAL_IMAGES} total
+                      </span>
                     </div>
+                  </div>
+
+                  {isAlbumCapReached && (
+                    <div className="mb-2 px-3 py-2 bg-red-50 border border-red-100 rounded-lg text-xs font-semibold text-red-600">
+                      This album has reached the maximum of {MAX_FILES} images.
+                    </div>
+                  )}
+                  {!isAlbumCapReached && isGlobalCapReached && (
+                    <div className="mb-2 px-3 py-2 bg-red-50 border border-red-100 rounded-lg text-xs font-semibold text-red-600">
+                      Maximum of {MAX_TOTAL_IMAGES} images reached across all galleries. Remove some images to upload more.
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    {/* Upload Button — hidden once either cap is reached */}
+                    {!isCapReached && (
+                      <div className="relative group aspect-square">
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/jpeg, image/png, image/jpg, image/webp"
+                          onChange={handleImageChange}
+                          className="hidden"
+                          id="album-image-upload"
+                        />
+                        <label
+                          htmlFor="album-image-upload"
+                          className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600 rounded-xl cursor-pointer transition-all"
+                        >
+                          <Upload size={18} className="mb-1" />
+                          <span className="text-[9px] font-bold">ADD PHOTOS</span>
+                        </label>
+                      </div>
+                    )}
 
                     {/* Previews of Old Images */}
                     {oldImages.map((img, idx) => (
@@ -266,20 +402,23 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
                       </div>
                     ))}
                   </div>
-                  
+
                   <span className="text-[9px] text-gray-400 mt-2 uppercase tracking-widest block text-right">
-                    Max 1MB per image. Format: JPG, PNG, WEBP
+                    {albumRemainingSlots} slot's left in this album · {globalRemainingSlots} remain to add in total gallary
                   </span>
                 </div>
-                
+
               </form>
 
               {/* Footer */}
               <div className="flex justify-end gap-3 p-4 sm:p-5 border-t border-gray-50 shrink-0 bg-white">
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="px-5 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                  onClick={() => {
+                    resetForm();
+                    onClose();
+                  }}
+                  className="px-5 py-2.5 text-sm font-bold cursor-pointer text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
@@ -287,7 +426,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums }) => {
                   type="submit"
                   form="album-form"
                   disabled={loading}
-                  className="px-5 py-2.5 text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-xl transition-all shadow-md shadow-orange-500/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-5 py-2.5 text-sm cursor-pointer font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-xl transition-all shadow-md shadow-orange-500/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
