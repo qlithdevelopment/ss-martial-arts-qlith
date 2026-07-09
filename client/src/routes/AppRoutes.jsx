@@ -103,6 +103,7 @@ const AppRoutes = () => {
       >
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/blogs" element={<AdminBlogs />} />
+        <Route path="/admin/blog/:id" element={<BlogDetail />} />
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/galleries" element={<AdminGalleries />} />
         <Route path="/admin/trainers" element={<AdminTrainers />} />

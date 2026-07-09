@@ -111,6 +111,7 @@ class EventController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'date' => $request->date,
+                'location' => $request->location,
                 'image' => $imagePath,
             ]);
 
@@ -177,6 +178,7 @@ class EventController extends Controller
             $event->name = $request->name;
             $event->description = $request->description;
             $event->date = $request->date;
+            $event->location = $request->location;
 
             $event->save();
 

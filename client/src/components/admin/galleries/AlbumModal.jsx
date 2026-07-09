@@ -378,7 +378,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
                         <button
                           type="button"
                           onClick={() => removeOldImage(idx)}
-                          className="absolute top-1 right-1 bg-red-500/90 backdrop-blur-sm text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                          className="absolute top-1 right-1 bg-red-500/90 backdrop-blur-sm text-white rounded-full p-1 opacity-100 group-hover:opacity-100 lg:opacity-0 transition-opacity hover:bg-red-600"
                         >
                           <X size={12} strokeWidth={3} />
                         </button>

@@ -8,6 +8,7 @@ import {
   Eye,
   AlignLeft,
   Tag,
+  Users,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
@@ -15,6 +16,9 @@ import EventModal from "../../components/admin/events/EventModal";
 import PaginationComponent from "../../components/PaginationComponent";
 import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
 import ViewEventModal from "../../components/admin/events/ViewEventModal";
+import UserRegisteredEvents from "./UserRegisteredEvents";
+import { formatDate } from "../../components/CommonFormats";
+
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
@@ -40,6 +44,8 @@ const Events = () => {
     per_page: 10,
     total: 0,
   });
+  const [registrationsEventId, setRegistrationsEventId] = useState(null);
+
 
   useEffect(() => {
     fetchEvents(currentPage);
@@ -118,7 +124,6 @@ const Events = () => {
     setViewEvent(null);
   };
 
-
   return (
     <div className="">
       {/* Header section */}
@@ -152,8 +157,41 @@ const Events = () => {
 
       {/* Content Area */}
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl border md:w-full border-gray-100 overflow-hidden shadow-sm flex flex-col animate-pulse"
+            >
+              {/* Image skeleton */}
+              <div className="relative h-48 bg-gray-200 w-full">
+                <div className="absolute top-3 right-3">
+                  <div className="h-5 w-20 bg-gray-300 rounded-md"></div>
+                </div>
+              </div>
+
+              {/* Body skeleton */}
+              <div className="p-5 flex-1 flex flex-col">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                  {/* <div className="h-3 w-14 bg-gray-100 rounded"></div> */}
+                </div>
+
+                <div className="space-y-2 mb-4 flex-1">
+                  <div className="h-3 bg-gray-100 rounded w-full"></div>
+                  <div className="h-3 bg-gray-100 rounded w-5/6"></div>
+                </div>
+
+                {/* Actions skeleton */}
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : events.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
@@ -212,7 +250,7 @@ const Events = () => {
               <div className="p-5 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-black text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded flex items-center gap-1">
-                    <CalendarIcon size={12} /> {event.date}
+                    <CalendarIcon size={12} /> {formatDate(event.date)}
                   </span>
                 </div>
 
@@ -225,7 +263,13 @@ const Events = () => {
                 </p>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
+                  <button
+                 onClick={() => setRegistrationsEventId(event.id)}
+                    className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
+                  >
+                    <Users size={14} />
+                  </button>
                   <button
                     onClick={() => openEditModal(event)}
                     className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
@@ -242,14 +286,14 @@ const Events = () => {
                     onClick={() => handleDelete(event.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-red-600 hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg"
                   >
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-      )}      
+      )}
       <div className="mt-8">
         {!loading && events.length > 0 && pagination?.total > 0 && (
           <PaginationComponent
@@ -257,7 +301,7 @@ const Events = () => {
             onPageChange={(Page) => setCurrentPage(Page)}
           />
         )}
-      </div> 
+      </div>
       < ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -285,7 +329,12 @@ const Events = () => {
           handleDelete(event.id);
         }}
         imageBaseUrl={`${BASE_URL}/storage/`}
-      />      
+      />
+      <UserRegisteredEvents
+        isOpen={!!registrationsEventId}
+        eventId={registrationsEventId}
+        onClose={() => setRegistrationsEventId(null)}
+      />
     </div>
   );
 };

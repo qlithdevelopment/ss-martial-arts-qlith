@@ -415,6 +415,19 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
 
   if (!isOpen) return null;
 
+  const categoryOptions = [
+    { value: 'martial_arts_training', label: 'Martial Arts Training' },
+    { value: 'self_defense', label: 'Self Defense' },
+    { value: 'fitness_conditioning', label: 'Fitness & Conditioning' },
+    { value: 'nutrition_wellness', label: 'Nutrition & Wellness' },
+    { value: 'competitions_events', label: 'Competitions & Events' },
+    { value: 'kids_martial_arts', label: 'Kids Martial Arts' },
+    { value: 'womens_martial_arts', label: "Women's Martial Arts" },
+    { value: 'mindset_discipline', label: 'Mindset & Discipline' },
+    { value: 'instructor_tips', label: 'Instructor Tips' },
+    { value: 'academy_news', label: 'Academy News' },
+  ];
+
   return (
     <AnimatePresence>
       <motion.div
@@ -493,10 +506,23 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
                       <label className="block text-xs font-semibold text-gray-700 mb-1">Blog Title *</label>
                       <input type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Enter title" required />
                     </div>
-
+                                        
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-1">Category *</label>
-                      <input type="text" name="category" value={formData.category} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="e.g. Karate" required />
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        required
+                      >
+                        <option value="" disabled>Select category</option>
+                        {categoryOptions.map((category) => (
+                          <option key={category.value} value={category.value}>
+                            {category.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>
