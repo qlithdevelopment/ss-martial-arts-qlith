@@ -97,7 +97,7 @@ const AboutFAQ = ({ limit = 10, paginate = false }) => {
   const displayedFaqs = limit ? faqs.slice(0, limit) : faqs;
 
   return (
-    <section className="w-full bg-[#081218] py-12 md:py-16 lg:py-24 px-4 md:px-8">
+    <section className="w-full bg-transparent py-12 md:py-16 lg:py-24 px-4 md:px-8">
       <div className="global-container lg:!px-[90px]">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
           {/* LEFT: Title & Info */}
