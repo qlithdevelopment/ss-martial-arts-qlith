@@ -6,6 +6,15 @@ import BlogModal from "../../components/admin/blogs/BlogModal";
 import ViewBlogModal from "../../components/admin/blogs/ViewBlogModal";
 import PaginationComponent from "../../components/PaginationComponent";
 import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
+import { Link } from "react-router-dom";
+import { formatDate } from "../../components/CommonFormats";
+
+const formatCategory = (str) =>
+  str
+    ? str
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase())
+    : '';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -116,7 +125,7 @@ const Blogs = () => {
             />
             <input
               type="text"
-              placeholder="Search blogs..."
+              placeholder="Search by title and description"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -230,12 +239,12 @@ const Blogs = () => {
 
               {/* Body */}
               <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded">
-                    {blog.category}
+                <div className="flex items-center gap-2 mb-2">                 
+                  <span className="text-[10px] font-black text-orange-500 tracking-widest bg-orange-50 px-2 py-0.5 rounded">
+                    {formatCategory(blog.category)}
                   </span>
                   <span className="text-[10px] text-gray-400 font-medium">
-                    {blog.posted_date}
+                    {formatDate(blog.posted_date)}
                   </span>
                 </div>
 
@@ -259,12 +268,14 @@ const Blogs = () => {
                   >
                     <Edit2 size={14} />
                   </button>
-                  <button
-                    onClick={() => openViewModal(blog.id)}
-                    className="px-3 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
-                  >
-                    <Eye size={14} />
-                  </button>
+                  <Link to={`/admin/blog/${blog.id}`} className="flex flex-col h-full">
+                    <button
+                      // onClick={() => openViewModal(blog.id)}
+                      className="px-3 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
+                    >
+                      <Eye size={14} />
+                    </button>
+                  </Link>
                   <button
                     onClick={() => handleDelete(blog.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-red-600 hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg"

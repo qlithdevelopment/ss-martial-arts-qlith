@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, User, Award, BookOpen, ArrowLeft, Users, CheckCircle, Calendar, Phone, Mail } from 'lucide-react';
+import { Search, Award, CheckCircle, Calendar, Users, ArrowLeft, Eye } from 'lucide-react';
 import api from '../../api/axios';
+import bgimage from '../../assets/martial_arts_bg.png';
+import StudentDetailView from '../../components/public/StudentDetailView'
 
 const getBeltColor = (belt) => {
   if (!belt) return { bg: "bg-slate-100", border: "border-slate-200", text: "text-slate-600" };
@@ -21,51 +23,82 @@ const getBeltColor = (belt) => {
 
 const FindStudent = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [students, setStudents] = useState([]);
-  const [batches, setBatches] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  // Debounce raw input -> debouncedQuery
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery.trim());
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
+    setSelectedStudent(null);
+  }, [debouncedQuery]);
+
+  // Fetch students from backend whenever debouncedQuery changes
+  useEffect(() => {
+    if (!debouncedQuery) {
+      setStudents([]);
+      return;
+    }
+
     const fetchStudents = async () => {
       try {
         setLoading(true);
-        const [resStudents, resBatches] = await Promise.all([
-          api.get('/students?per_page=1000').catch(() => ({ data: [] })),
-          api.get('/batches?per_page=1000').catch(() => ({ data: [] }))
-        ]);
-        
-        const rawStudents = resStudents.data?.data || resStudents.data;
-        const rawBatches = resBatches.data?.data || resBatches.data;
-        
-        const fetchedStudents = Array.isArray(rawStudents) ? rawStudents : [];
-        const fetchedBatches = Array.isArray(rawBatches) ? rawBatches : [];
-        
-        setStudents(fetchedStudents);
-        setBatches(fetchedBatches);
+        const response = await api.get(`/students?search=${encodeURIComponent(debouncedQuery)}`);
+        const rawStudents = response?.data?.data || response.data;
+        setStudents(Array.isArray(rawStudents) ? rawStudents : []);
       } catch (error) {
         console.error("Failed to fetch students:", error);
+        setStudents([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchStudents();
-  }, []);
 
-  const filteredStudents = students.filter((student) => {
-    if (!searchQuery.trim()) return false; // Show nothing until they search
-    const query = searchQuery.toLowerCase().trim();
-    
-    return (
-      student.name?.toLowerCase().startsWith(query) || 
-      String(student.id) === query // Strict exact match for ID
-    );
-  });
+    fetchStudents();
+  }, [debouncedQuery]);
+  {/* Student Card Skeleton */ }
+  const StudentCardSkeleton = () => (
+    <div className="bg-gradient-to-br from-orange-50/80 to-white rounded-2xl overflow-hidden shadow-sm border border-orange-100/50 flex flex-col p-6 relative">
+      {/* Top Section with Avatar and Info */}
+      <div className="flex items-center gap-4 mb-5">
+        <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse shrink-0" />
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+            <div className="h-4 w-16 bg-gray-200 rounded-full animate-pulse" />
+          </div>
+          <div className="h-3 w-14 bg-gray-200 rounded animate-pulse" />
+        </div>
+      </div>
+
+      {/* Tags Row */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-4">
+        <div className="flex-1 h-14 bg-gray-100 rounded-xl animate-pulse" />
+        <div className="flex-1 h-14 bg-gray-100 rounded-xl animate-pulse" />
+      </div>
+
+      {/* Bottom Info Row */}
+      <div className="mt-auto pt-4 border-t border-gray-100">
+        <div className="h-3 w-16 bg-gray-200 rounded animate-pulse mb-2" />
+        <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
+      </div>
+    </div>
+  );
+
 
   return (
     <div className="min-h-screen lg:h-screen w-full bg-slate-50 text-gray-900 relative lg:overflow-hidden flex flex-col lg:flex-row">
-      
+
       {/* Back Button */}
-      <Link to="/" className="absolute top-6 left-6 z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
+      <Link to="/" className="absolute top-6 lg:left-16  left-6 z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
         <ArrowLeft size={16} /> Back to Home
       </Link>
 
@@ -74,18 +107,18 @@ const FindStudent = () => {
         <div className="absolute top-[-100px] left-10 w-96 h-96 bg-primary/20 rounded-full blur-[100px] mix-blend-multiply" />
         <div className="absolute top-[-50px] right-10 w-96 h-96 bg-primary2/20 rounded-full blur-[100px] mix-blend-multiply" />
       </div>
-      
+
       {/* LEFT COLUMN - Heading & Info */}
       <div className="w-full lg:w-5/12 flex-none lg:h-full flex flex-col items-start p-8 lg:p-16 pt-24 lg:pt-16 relative z-10 bg-white/40 backdrop-blur-sm overflow-hidden">
         <div className="text-left max-w-lg w-full z-20">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl lg:text-7xl font-black mb-5 tracking-tight uppercase leading-[1.1]"
           >
             <span className="text-black">FIND</span><br className="hidden lg:block" /> <span className="text-[#26c0ff]">STUDENT</span>
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -95,7 +128,7 @@ const FindStudent = () => {
           </motion.p>
 
           {/* Features List */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
@@ -134,9 +167,9 @@ const FindStudent = () => {
         {/* Martial Arts Background Image */}
         <div className="absolute bottom-0 left-0 w-full h-[50vh] lg:h-[60%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/90 z-10"></div>
-          <img 
-            src="/images/martial_arts_bg.png" 
-            alt="Martial Arts Background" 
+          <img
+            src={bgimage}
+            alt="Martial Arts Background"
             className="w-full h-full object-cover object-bottom opacity-90 mix-blend-multiply"
           />
         </div>
@@ -144,10 +177,10 @@ const FindStudent = () => {
 
       {/* RIGHT COLUMN - Search & Results */}
       <div className="w-full lg:w-7/12 flex flex-col lg:h-full relative z-10 pt-4 lg:pt-16 bg-slate-50">
-        
+
         {/* Search Bar */}
         <div className="flex-none px-6 lg:px-12 pb-6 w-full max-w-4xl">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
@@ -159,8 +192,8 @@ const FindStudent = () => {
               </div>
               <input
                 type="text"
-                className="w-full py-2 bg-transparent border-none text-sm focus:outline-none font-medium placeholder:text-gray-400"
-                placeholder="Search by Name, Email, Batch, or ID"
+                className="w-full py-2 bg-transparent border-none text-[10.5px] truncate md:text-sm focus:outline-none font-medium placeholder:text-gray-400"
+                placeholder="Search by Name, Email, Belt, or Batch"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -174,29 +207,37 @@ const FindStudent = () => {
         {/* Scrollable Results Area */}
         <div className="flex-1 overflow-y-auto px-6 lg:px-12 pb-20 w-full max-w-4xl hide-scrollbar">
           <div className="min-h-full">
-          {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <div className="w-10 h-10 border-4 border-gray-100 border-t-primary rounded-full animate-spin"></div>
-            </div>
-          ) : (
-            <>
-              {searchQuery.trim() === '' ? null : filteredStudents.length === 0 ? (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center text-gray-500 mt-10 p-8 rounded-2xl border border-gray-100 bg-gray-50/50"
-                >
-                  <p className="text-lg font-medium text-gray-700">No students found matching "{searchQuery}"</p>
-                  <p className="text-sm mt-2 text-gray-400">Please check the spelling or ID and try again.</p>
-                </motion.div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <AnimatePresence>
-                    {filteredStudents.map((student, index) => {
-                      const previewBelt = student.belt || 'Unranked';
-                      const isActive = String(student.status) === '1' || student.status === true || String(student.status).toLowerCase() === 'active' || student.status === 'true';
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Array.from({ length: 2 }).map((_, idx) => (
+                  <StudentCardSkeleton key={idx} />
+                ))}
+              </div>
+            ) : selectedStudent ? (
+              <AnimatePresence mode="wait">
+                <StudentDetailView
+                  key={selectedStudent.id}
+                  student={selectedStudent}
+                  onBack={() => setSelectedStudent(null)}
+                />
+              </AnimatePresence>
+            ) : debouncedQuery === '' ? null : students.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-gray-500 mt-10 p-8 rounded-2xl border border-gray-100 bg-gray-50/50"
+              >
+                <p className="text-lg font-medium text-gray-700">No students found matching "{debouncedQuery}"</p>
+                <p className="text-sm mt-2 text-gray-400">Please check the spelling or ID and try again.</p>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <AnimatePresence>
+                  {students.map((student, index) => {
+                    const previewBelt = student.belt || 'Unranked';
+                    const isActive = String(student.status) === '1' || student.status === true || String(student.status).toLowerCase() === 'active' || student.status === 'true';
 
-                      return (
+                    return (
                       <motion.div
                         key={student.id}
                         initial={{ opacity: 0, y: 20 }}
@@ -205,16 +246,12 @@ const FindStudent = () => {
                         transition={{ delay: index * 0.05 }}
                         className="bg-gradient-to-br from-orange-50/80 to-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-orange-100/50 flex flex-col p-6 relative"
                       >
-
-
                         {/* Top Section with Avatar and Info */}
                         <div className="flex items-center gap-4 mb-5">
-                          {/* Avatar */}
                           <div className="w-10 h-10 rounded-full border border-blue-100 bg-blue-50 text-blue-500 font-black text-lg flex items-center justify-center shrink-0">
                             {student.name ? student.name.charAt(0).toUpperCase() : 'S'}
                           </div>
-                          
-                          {/* Info Section */}
+
                           <div className="flex-1 min-w-0 flex flex-col justify-center">
                             <div className="flex items-center justify-between gap-2 mb-0.5">
                               <h3 className="text-lg font-black text-gray-900 tracking-tight leading-tight truncate">
@@ -235,7 +272,6 @@ const FindStudent = () => {
 
                         {/* Tags Row */}
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-4">
-                          {/* Belt Pill */}
                           <div className={`flex-1 px-3 py-2 rounded-xl flex items-center gap-2 border ${getBeltColor(previewBelt).bg} ${getBeltColor(previewBelt).text} ${getBeltColor(previewBelt).border} shadow-sm`}>
                             <Award size={16} className="shrink-0" />
                             <div className="min-w-0">
@@ -244,12 +280,11 @@ const FindStudent = () => {
                             </div>
                           </div>
 
-                          {/* Batch Pill */}
                           <div className="flex-1 px-3 py-2 rounded-xl flex items-center gap-2 border border-orange-100 bg-orange-50/50">
                             <Calendar size={16} className="text-orange-500 shrink-0" />
                             <div className="min-w-0">
                               <p className="text-xs font-bold text-gray-900 truncate">
-                                {student.batch?.name || batches.find(b => b.id == student.batch_id)?.name || 'None'}
+                                {student.batch_name || 'None'}
                               </p>
                               <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mt-0.5">
                                 Batch
@@ -259,23 +294,34 @@ const FindStudent = () => {
                         </div>
 
                         {/* Bottom Info Row */}
-                        <div className="mt-auto pt-4 border-t border-gray-100 flex flex-wrap gap-8">
+                        <div className="mt-auto mb-2 pt-4 border-t border-gray-100 flex flex-wrap gap-8">
                           <div>
                             <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Joined</p>
                             <p className="text-xs font-semibold text-gray-900">
-                              {student.created_at ? new Date(student.created_at).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) : 'N/A'}
+                              {student.created_at ? new Date(student.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A'}
                             </p>
                           </div>
                         </div>
+                        <div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); 
+                              setSelectedStudent(student);
+                            }}
+                            className="w-full cursor-pointer flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#0b1b24] hover:bg-[var(--color-primary)] px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+                          >
+                            <Eye size={14} />
+                            View Details
+                          </button>
+                        </div>
                       </motion.div>
-                    )})}
-                  </AnimatePresence>
-                </div>
-              )}
-            </>
-          )}
+                    )
+                  })}
+                </AnimatePresence>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

@@ -144,9 +144,36 @@ const Trainers = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="w-8 h-8 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin" />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl border md:w-full border-gray-100 overflow-hidden shadow-sm flex flex-col animate-pulse"
+            >
+              {/* Image skeleton */}
+              <div className="relative h-48 bg-gray-200 w-full">
+                <div className="absolute top-3 right-3">                  
+                </div>
+              </div>
+
+              {/* Body skeleton */}
+              <div className="p-5 flex-1 flex flex-col">                
+
+                <div className="space-y-2 mb-4 flex-1">
+                  <div className="h-3 bg-gray-100 rounded w-full"></div>
+                  <div className="h-3 bg-gray-100 rounded w-5/6"></div>
+                </div>
+
+                {/* Actions skeleton */}
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                  <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>        
       ) : trainers?.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -202,7 +229,7 @@ const Trainers = () => {
                   {trainer.name}
                 </h3>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <button
                     onClick={() => openEditModal(trainer.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
@@ -212,7 +239,7 @@ const Trainers = () => {
 
                   <button
                     onClick={() => openViewModal(trainer.id)}
-                    className="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg"
+                    className="px-3 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
                   >
                     <Eye size={14} />
                   </button>
@@ -221,7 +248,7 @@ const Trainers = () => {
                     onClick={() => handleDelete(trainer.id)}
                     className="flex items-center gap-1.5 text-sm font-bold text-red-600 hover:text-red-700 transition-colors bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg"
                   >
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
@@ -237,7 +264,7 @@ const Trainers = () => {
             onPageChange={(newPage) => setPage(newPage)}
           />
         )}
-      </div>    
+      </div>
 
       <TrainerModal
         isOpen={isModalOpen}

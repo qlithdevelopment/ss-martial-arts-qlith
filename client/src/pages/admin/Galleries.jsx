@@ -6,6 +6,7 @@ import api from '../../api/axios';
 import AlbumModal from '../../components/admin/galleries/AlbumModal';
 import ConfirmModal from '../../components/admin/reusecomponents/ConfirmationModal';
 import PaginationComponent from '../../components/PaginationComponent.jsx';
+import { formatDate } from '../../components/CommonFormats.js';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
 const MAX_TOTAL_IMAGES = 100; // Global limit across all galleries combined
@@ -100,7 +101,7 @@ const Galleries = () => {
   return (
     <div className="">
       {/* Header section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div className="flex flex-col mb-14 md:mb-8 md:flex-row justify-between items-start md:items-center gap-4 ">
         <div className="flex w-full md:w-auto items-center gap-4">
           <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -118,7 +119,7 @@ const Galleries = () => {
           >
             <Plus size={18} /> <span className="hidden lg:inline">Create Album</span>
           </button>
-          <div className="ml-auto absolute right-7 text-sm text-gray-500 font-medium">
+          <div className="ml-auto top-30  md:top-0  absolute md:top-18 right-7 text-sm text-gray-500 font-medium">
             Total Images: <span className="font-bold text-gray-900">{totalImagesCount}/{MAX_TOTAL_IMAGES}</span>
             <p className="text-xs text-gray-400">Max {MAX_TOTAL_IMAGES} images allowed</p>
           </div>
@@ -209,7 +210,7 @@ const Galleries = () => {
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
                   <div className="text-xs text-gray-400 font-medium">
-                    {new Date(album.created_at).toLocaleDateString()}
+                    {formatDate(new Date(album.created_at).toLocaleDateString())}
                   </div>
                   <div className="flex items-center gap-2">
                     <button onClick={() => openEditModal(album)} className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg">
