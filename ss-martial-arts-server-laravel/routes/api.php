@@ -36,6 +36,8 @@ Route::get('/blogs/{id}/related', [BlogController::class, 'getRelatedBlogs']);
 
 Route::get('/users/{userId}/certificates', [CertificateController::class, 'index']);
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
+Route::get('/students', [StudentController::class, 'index']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -57,7 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/batches/{id}', [BatchController::class, 'update']);
     Route::delete('/batches/{id}', [BatchController::class, 'destroy']);
 
-    Route::get('/students', [StudentController::class, 'index']);
     Route::get('/students/{id}', [StudentController::class, 'show']);
     Route::post('/students/register', [StudentController::class, 'register']);
     Route::get('/student/my-batch', [StudentController::class, 'myBatch']);

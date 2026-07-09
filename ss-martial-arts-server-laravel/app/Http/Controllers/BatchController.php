@@ -16,7 +16,13 @@ class BatchController extends Controller
             $perPage = $request->query('per_page', 10);
             $perPage = is_numeric($perPage) ? (int)$perPage : 10;
 
-            $paginator = Batch::paginate($perPage);
+            $search = $request->query('search');
+
+            $paginator = Batch::query()
+                ->when($search, function ($query, $search) {
+                    return $query->where('name', 'LIKE', '%' . $search . '%');
+                })
+                ->paginate($perPage);
 
             return response()->json([
                 'status'  => true,
