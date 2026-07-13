@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AffiliationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\EventController;
@@ -37,6 +38,8 @@ Route::get('/blogs/{id}/related', [BlogController::class, 'getRelatedBlogs']);
 Route::get('/users/{userId}/certificates', [CertificateController::class, 'index']);
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 Route::get('/students', [StudentController::class, 'index']);
+Route::get('/affiliations', [AffiliationController::class, 'index']);
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -45,12 +48,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
 
 
-    Route::get('/contacts', [ContactController::class, 'index']); 
+    Route::get('/contacts', [ContactController::class, 'index']);
     Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
 
     Route::post('/trainers', [TrainerController::class, 'store']);
-    Route::put('/trainers/{trainer}', [TrainerController::class, 'update']); 
-    Route::get('/trainers/{id}', [TrainerController::class, 'show']); 
+    Route::put('/trainers/{trainer}', [TrainerController::class, 'update']);
+    Route::get('/trainers/{id}', [TrainerController::class, 'show']);
     Route::delete('/trainers/{trainer}', [TrainerController::class, 'destroy']);
 
     Route::get('/batches', [BatchController::class, 'index']);
@@ -81,10 +84,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/blogs/{id}', [BlogController::class, 'destroy']);
 
     Route::post('/faqs', [FaqController::class, 'store']);
-    Route::put('/faqs/{id}', [FaqController::class, 'update']); 
+    Route::put('/faqs/{id}', [FaqController::class, 'update']);
     Route::delete('/faqs/{id}', [FaqController::class, 'destroy']);
 
     Route::post('/certificates', [CertificateController::class, 'store']);
-    Route::post('/certificates/{id}', [CertificateController::class, 'update']); 
+    Route::post('/certificates/{id}', [CertificateController::class, 'update']);
     Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
+
+    Route::post('/affiliations', [AffiliationController::class, 'store']);
+    Route::put('/affiliations/{id}', [AffiliationController::class, 'update']);
+    Route::delete('/affiliations/{id}', [AffiliationController::class, 'destroy']);
 });

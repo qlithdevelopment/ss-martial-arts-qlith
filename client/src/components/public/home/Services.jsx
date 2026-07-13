@@ -51,7 +51,7 @@ const Services = () => {
             <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Choose Your Path</h3>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter mb-10 text-black">
-            OUR  <span className="text-[#26c0ff]">SERVICES</span>
+            OUR  <span className="text-black">SERVICES</span>
           </h2>
 
           <div className="flex flex-row md:flex-col gap-3 md:gap-4 overflow-x-auto md:overflow-visible pb-4 md:pb-0 hide-scrollbar w-full">

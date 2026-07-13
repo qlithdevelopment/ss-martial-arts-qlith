@@ -16,7 +16,7 @@ import EventModal from "../../components/admin/events/EventModal";
 import PaginationComponent from "../../components/PaginationComponent";
 import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
 import ViewEventModal from "../../components/admin/events/ViewEventModal";
-import UserRegisteredEvents from "./UserRegisteredEvents";
+// import UserRegisteredEvents from "./UserRegisteredEvents";
 import { formatDate } from "../../components/CommonFormats";
 
 
@@ -330,11 +330,11 @@ const Events = () => {
         }}
         imageBaseUrl={`${BASE_URL}/storage/`}
       />
-      <UserRegisteredEvents
+      {/* <UserRegisteredEvents
         isOpen={!!registrationsEventId}
         eventId={registrationsEventId}
         onClose={() => setRegistrationsEventId(null)}
-      />
+      /> */}
     </div>
   );
 };
