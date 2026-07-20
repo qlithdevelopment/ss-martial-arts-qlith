@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import heroVideo from "../../../assets/VN20260611_112458.mp4";
+import heroVideo from "../../../assets/ss.mp4";
 import fallbackImage from "../../../assets/ChatGPT Image Jun 11, 2026, 02_08_50 PM.png";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
-    <section id="hero" className="relative w-full min-h-screen overflow-hidden bg-bgColor pt-10">
-      
+    <section id="hero" className="relative w-full lg:py-0 min-h-screen overflow-hidden bg-bgColor pt-10">
+
       {/* FALLBACK IMAGE */}
       <img
         src={fallbackImage}
@@ -46,7 +47,8 @@ const Hero = () => {
           ${videoLoaded ? "opacity-100" : "opacity-0"}
         `}
       >
-        <source src={heroVideo} type="video/mp4" />
+        <source src={heroVideo} type="video/mp4" 
+        />
       </video>
 
       {/* DARK OVERLAY */}
@@ -89,12 +91,13 @@ const Hero = () => {
           z-20
           min-h-[100svh]
           global-container
+          lg:!px-20
           flex
           items-end lg:items-center lg:pl-8
           pb-12 sm:pb-20 lg:pb-0
         "
       >
-        <div className="max-w-4xl w-full mt-auto lg:mt-0 pt-24 lg:ml-2 lg:pt-0">
+        <div className="max-w-4xl w-full mt-auto lg:mt-20 lg:mb-10 pt-24 lg:ml-2 lg:pt-0">
           {/* TAG */}
           <motion.div
             initial={{
@@ -220,8 +223,9 @@ const Hero = () => {
             "
           >
             {/* BTN 1 */}
-            <button
-              className="
+            <Link to="/contact">
+              <button
+                className="
                 px-6 lg:px-8
                 py-3 lg:py-4
 
@@ -245,11 +249,12 @@ const Hero = () => {
 
                 shadow-[0_0_25px_rgba(38,192,255,0.35)]
               "
-            >
-              Join Academy
-            </button>
-
+              >
+                Join Academy
+              </button>
+            </Link>
             {/* BTN 2 */}
+             <Link to="/services">
             <button
               className="
                 px-6 lg:px-8
@@ -279,8 +284,9 @@ const Hero = () => {
                 hover:bg-primary2/10
               "
             >
-              Watch Training
+              Explore Training
             </button>
+            </Link>
           </motion.div>
 
           {/* STATS */}

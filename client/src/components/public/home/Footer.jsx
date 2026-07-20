@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../../assets/Full_Logo.png";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, Home } from "lucide-react";
+
 
 // Simple SVG Icons for Socials
 const InstagramIcon = ({ className }) => (
@@ -27,15 +28,15 @@ const TwitterIcon = ({ className }) => (
     <path d="M20 4l-6.76 6.76"></path>
   </svg>
 );
+const quicklinks=[
+ 'About','Gallery','Blog','Afiliation','Contact','Events','Faq'
+  
+]
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-black h-auto lg:pt-12 flex flex-col justify-between pt-8 pb-4 border-t border-white/10 relative z-50 overflow-hidden">
-      {/* MASSIVE BACKGROUND TEXT */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
-        CONTACT
-      </div>
-      <div className="global-container flex-1 flex flex-col justify-center relative z-10">
+    <footer className="w-full bg-black h-auto lg:pt-12 flex flex-col justify-between pt-8 pb-4 border-t border-white/10 relative z-50 overflow-hidden">      
+      <div className="global-container lg:!px-22 flex-1 flex flex-col justify-center relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -57,8 +58,8 @@ const Footer = () => {
           {/* QUICK LINKS */}
           <div className="col-span-1">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Quick Links</h4>
-            <ul className="flex flex-col gap-1.5 md:gap-3">
-              {['Home', 'About', 'Services'].map((link) => (
+            <ul className="flex flex-col gap-1 md:gap-1">
+              {quicklinks.map((link) => (
                 <li key={link}>
                   <Link 
                     to={link === 'Home' ? '/' : `/${link.toLowerCase()}`} 
@@ -94,15 +95,15 @@ const Footer = () => {
             <ul className="flex flex-col gap-2 md:gap-4 text-[10px] md:text-sm text-secondary">
               <li className="flex items-start gap-2 md:gap-3">
                 <MapPin className="text-primary mt-0.5 md:mt-1 w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                <span>123 Warrior Way, Combat City, ST 90210</span>
+                <span>near Ekramra College, Sundarpada, Bhubaneswar, Odisha 751002</span>
               </li>
               <li className="flex items-center gap-2 md:gap-3">
                 <Phone className="text-primary w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                <span>(555) 123-4567</span>
+                <span>9090224658</span>
               </li>
               <li className="flex items-center gap-2 md:gap-3">
                 <Mail className="text-primary w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                <span>info@ssmartialarts.com</span>
+                <span>ssmartialartsschool@gmail.com</span>
               </li>
             </ul>
           </div>

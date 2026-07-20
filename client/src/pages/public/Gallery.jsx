@@ -12,6 +12,7 @@ import trainer1Img from "../../assets/group_classes.png";
 import trainer2Img from "../../assets/generated_trainer2.png";
 import trainer3Img from "../../assets/personal_training.png";
 import PaginationComponent from '../../components/PaginationComponent';
+import SectionHeader from '../../components/SectionHeader';
 
 import api from '../../api/axios';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
@@ -66,7 +67,7 @@ const GalleryPage = () => {
   }, [lightboxImage]);
 
   return (
-    <div className="w-full min-h-screen bg-[#f9fafb] pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 font-sans selection:bg-[#f97316] selection:text-white relative">
+    <div className="w-full min-h-screen bg-[#f9fafb] pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8  font-sans selection:bg-[#f97316] selection:text-white relative">
       {/* Lightbox Overlay */}
       <AnimatePresence>
         {lightboxImage && (
@@ -98,11 +99,11 @@ const GalleryPage = () => {
       </AnimatePresence>
 
       {/* MASSIVE BACKGROUND TEXT */}
-      <div className="fixed top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
+      {/* <div className="fixed top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
         GALLERY
-      </div>
+      </div> */}
 
-      <div className="global-container lg:!px-[95px] relative z-10">
+      <div className="global-container lg:!px-14 relative z-10">
 
         <AnimatePresence mode="wait">
           {!selectedAlbum ? (
@@ -118,15 +119,17 @@ const GalleryPage = () => {
             >
               {/* Header */}
               <div className="mb-12">
-                <div className="flex flex-col items-start mb-8">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="h-1 w-12 bg-[#f97316]"></div>
-                    <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Gallery</h3>
-                  </div>
-                  <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
-                    OUR  <span className="text-[#26c0ff]">GALLERY</span>
-                  </h2>
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-4">
+
+                  <SectionHeader
+                    bgText="Gallery"
+                    label="Gallery"
+                    title="OUR"
+                    titleColor="text-black"
+                    highlight="GALLERY"
+                  />
                 </div>
+
                 <p className="text-gray-600 mt-4 max-w-xl font-medium text-lg">
                   Relive the unforgettable moments from our championships, seminars, and academy gatherings. Select an album to view all photos.
                 </p>

@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const RegistrationModal = ({ isOpen, onClose, details, type }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
@@ -15,11 +11,11 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
-    // In a real app, send data to backend here
     setTimeout(() => {
       setSubmitted(false);
       onClose();
     }, 3000);
+    setFormData({ name: '', email: '', phone: '', message: '' });
   };
 
   const handleChange = (e) => {
@@ -28,10 +24,9 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
   };
 
   return (
+    <>
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 overflow-y-auto pt-20 pb-10">
-        
-        {/* Backdrop */}
+      <div className="fixed inset-0 z-[999] flex items-center justify-center px-4 overflow-y-auto pt-20 pb-10">
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -45,12 +40,12 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
           initial={{ opacity: 0, y: 50, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          className="relative bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row z-10 max-h-[90vh]"
+          className="relative bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row z-[100] max-h-[90vh]"
         >
           {/* Close Button */}
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full z-50 transition-colors"
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full z-[100] transition-colors"
           >
             ✕
           </button>
@@ -174,7 +169,8 @@ const RegistrationModal = ({ isOpen, onClose, details, type }) => {
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    </>
   );
 };
 

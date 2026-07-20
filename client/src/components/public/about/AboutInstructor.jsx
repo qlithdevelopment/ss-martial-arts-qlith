@@ -5,6 +5,7 @@ import { instructorData } from '../../../data/aboutData';
 
 const AboutInstructor = () => {
   const [isDesktop, setIsDesktop] = useState(false);
+  
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -16,7 +17,7 @@ const AboutInstructor = () => {
     <section className="w-full bg-black flex items-center justify-center px-4 md:px-8 py-12 lg:py-24">
       
       {/* MASTER CONTAINER - Natural height */}
-      <div className="global-container lg:!px-[95px] h-auto bg-gray-900 rounded-[30px] p-4 sm:p-6 md:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row gap-8 lg:gap-12 border border-gray-800">
+      <div className="global-container lg:!px-14 h-auto bg-gray-900 rounded-[30px] p-4 sm:p-6 md:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex flex-col lg:flex-row gap-8 lg:gap-12 border border-gray-800">
         
         {/* LEFT COLUMN: Photo & Contact Box (Sticky) */}
         <div className="w-full lg:w-[35%] flex flex-col gap-4 lg:gap-6 shrink-0 lg:sticky lg:top-24 lg:h-[calc(100vh-140px)]">
@@ -26,7 +27,7 @@ const AboutInstructor = () => {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative w-full h-[350px] sm:h-[450px] lg:flex-1 bg-[#26c0ff] rounded-tl-[60px] rounded-br-[60px] rounded-tr-[20px] rounded-bl-[20px] overflow-hidden"
+            className="relative w-full h-[350px] sm:h-[450px] lg:flex-1  bg-[#26c0ff] rounded-tl-[60px] rounded-br-[60px] rounded-tr-[20px] rounded-bl-[20px] overflow-hidden"
           >
             <img 
               src={instructorData.photo} 
@@ -53,11 +54,11 @@ const AboutInstructor = () => {
               <div className="space-y-1">
                 <p className="text-xs font-bold text-[#0b1b24] flex items-center gap-2">
                   <span className="w-4 h-4 rounded-full border border-[#0b1b24] flex items-center justify-center text-[10px]">@</span>
-                  contact@ssmartialarts.com
+                  ssmartialartsschool@gmail.com
                 </p>
                 <p className="text-xs font-bold text-[#0b1b24] flex items-center gap-2">
                   <span className="w-4 h-4 rounded-full border border-[#0b1b24] flex items-center justify-center text-[10px]">#</span>
-                  +91 98765 43210
+                  +91 9090224658
                 </p>
               </div>
             </div>

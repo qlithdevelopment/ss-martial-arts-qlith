@@ -81,10 +81,10 @@ const Services = () => {
     <div className="">
       {/* Header section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
+        {/* <div>
           <h1 className="text-3xl font-black text-gray-900 tracking-tight">Service Management</h1>
           <p className="text-gray-500 mt-1">Manage the martial arts and fitness programs you offer.</p>
-        </div>
+        </div> */}
         
         <div className="flex w-full md:w-auto items-center gap-4">
           <div className="relative w-full md:w-64">

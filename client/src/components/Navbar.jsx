@@ -15,10 +15,11 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
-    { name: 'Events', path: '/events' },
+    // { name: 'Events', path: '/events' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Blog', path: '/blog' },
-    { name: 'FAQ', path: '/faq' },
+    { name: 'Affiliations', path: '/affiliations' },
+    // { name: 'FAQ', path: '/faq' },
     { name: 'Contact', path: '/contact' },
     { name: 'Find Student', path: '/find-student' },
   ]
@@ -78,7 +79,7 @@ const Navbar = () => {
           : 'bg-[rgba(0,0,0,0.3)] py-1'}
       `}
     >
-      <div className="global-container">
+      <div className="lg:!px-22 global-container ">
         <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-12' : 'h-16'}`}>
           {/* LOGO */}
           <Link to="/" onClick={handleNavClick} className="flex items-center h-full">
@@ -96,7 +97,7 @@ const Navbar = () => {
                     key={item.name}
                     to={item.path}
                     onClick={handleNavClick}
-                    className="flex items-center gap-1.5 bg-[#f97316] text-white px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black tracking-widest uppercase transition-all duration-300 hover:bg-orange-600 hover:scale-105 shadow-[0_0_15px_rgba(249,115,22,0.4)]"
+                    className="flex items-center gap-1 bg-[#f97316] text-white px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black tracking-widest uppercase transition-all duration-300 hover:bg-orange-600 hover:scale-105 shadow-[0_0_15px_rgba(249,115,22,0.4)]"
                   >
                     {item.name}
                     <ArrowRight size={14} className="ml-1" />

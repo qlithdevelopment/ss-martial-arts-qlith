@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/axios';
 import PaginationComponent from '../../components/PaginationComponent';
+import SectionHeader from '../../components/SectionHeader';
 
 const formatCategory = (str) =>
   str
@@ -34,17 +35,40 @@ const BlogPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({});
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get('category') || 'all'
   );
+  useEffect(() => {
+    const trimmed = searchInput.trim();
 
-  // Fetch blogs from backend, filtered by category when one is selected
+    // If cleared, reset search immediately — no need to wait
+    if (trimmed.length === 0) {
+      setDebouncedSearch('');
+      return;
+    }
+
+    // Only trigger search once at least 4 characters are typed
+    if (trimmed.length < 4) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDebouncedSearch(trimmed);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]); 
+
   const fetchAllBlogs = async () => {
     setLoading(true);
     try {
       const categoryQuery =
         selectedCategory !== 'all' ? `&category=${selectedCategory}` : '';
-      const response = await api.get(`/blogs?page=${page}&per_page=8${categoryQuery}`);
+      const searchQuery =
+        debouncedSearch ? `&search=${encodeURIComponent(debouncedSearch)}` : '';
+      const response = await api.get(`/blogs?is_published=1&page=${page}&per_page=8${categoryQuery}${searchQuery}`);
       const fetchedData = Array.isArray(response.data) ? response.data : (response.data.data || []);
       const publishedBlogs = fetchedData.filter(b => b.is_published);
       setBlogs(publishedBlogs);
@@ -61,6 +85,11 @@ const BlogPage = () => {
   }, []);
 
   useEffect(() => {
+    setPage(1);
+    setCurrentSlide(0);
+  }, [debouncedSearch]);
+
+  useEffect(() => {
     const urlCategory = searchParams.get('category') || 'all';
     if (urlCategory !== selectedCategory) {
       setSelectedCategory(urlCategory);
@@ -72,7 +101,7 @@ const BlogPage = () => {
   // Re-fetch every time page OR category changes
   useEffect(() => {
     fetchAllBlogs();
-  }, [page, selectedCategory]);
+  }, [page, selectedCategory, debouncedSearch]);
 
   useEffect(() => {
     if (blogs.length === 0) return;
@@ -97,67 +126,67 @@ const BlogPage = () => {
   const finalFeatured = blogs;
   const remainingBlogs = blogs;
 
-  const BlogPageSkeleton = () => (
-    <div className="relative overflow-hidden w-full min-h-screen bg-[#f8f9fa] pt-24 pb-20 font-sans animate-fadeIn">
-      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-[8rem]">
-        <div className="mb-12">
-          <div className="flex flex-col items-start mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="h-1 w-12 bg-gray-200" />
-              <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
-            </div>
-            <div className="h-10 md:h-16 w-64 md:w-96 bg-gray-200 rounded-lg animate-pulse" />
-          </div>
-        </div>
-        <div className="flex gap-3 mb-10">
-          {Array.from({ length: 5 }).map((_, idx) => (
-            <div key={idx} className="h-9 w-24 bg-gray-200 rounded-full animate-pulse" />
-          ))}
-        </div>
-        <div className="relative w-full bg-white rounded-3xl shadow-sm overflow-hidden mb-20 border border-gray-100">
-          <div className="relative h-[600px] md:h-[500px] w-full flex flex-col md:flex-row">
-            <div className="w-full md:w-1/2 h-1/2 md:h-full p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1 bg-white">
-              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
-              <div className="h-9 md:h-12 w-full bg-gray-200 rounded-lg animate-pulse mb-3" />
-              <div className="h-9 md:h-12 w-2/3 bg-gray-200 rounded-lg animate-pulse mb-6" />
-              <div className="space-y-2 mb-8">
-                <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse" />
-                <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
-              </div>
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-                <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
-                <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
-              </div>
-            </div>
-            <div className="w-full md:w-1/2 h-1/2 md:h-full order-1 md:order-2 bg-gray-200 animate-pulse" />
-          </div>
-        </div>
-        <div className="mb-8 flex items-center justify-between">
-          <div className="h-7 w-40 bg-gray-200 rounded animate-pulse" />
-          <div className="h-px bg-gray-200 flex-grow ml-6 hidden sm:block" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {Array.from({ length: 4 }).map((_, idx) => (
-            <div key={idx} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
-              <div className="relative w-full aspect-[4/3] bg-gray-200 animate-pulse" />
-              <div className="p-6 md:p-8 flex flex-col flex-grow gap-3">
-                <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
-                <div className="h-5 w-5/6 bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  // const BlogPageSkeleton = () => (
+  //   <div className="relative overflow-hidden w-full min-h-screen bg-[#f8f9fa] pt-24 pb-20 font-sans animate-fadeIn">
+  //     <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-[8rem]">
+  //       <div className="mb-12">
+  //         <div className="flex flex-col items-start mb-8">
+  //           <div className="flex items-center gap-4 mb-4">
+  //             <div className="h-1 w-12 bg-gray-200" />
+  //             <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
+  //           </div>
+  //           <div className="h-10 md:h-16 w-64 md:w-96 bg-gray-200 rounded-lg animate-pulse" />
+  //         </div>
+  //       </div>
+  //       <div className="flex gap-3 mb-10">
+  //         {Array.from({ length: 5 }).map((_, idx) => (
+  //           <div key={idx} className="h-9 w-24 bg-gray-200 rounded-full animate-pulse" />
+  //         ))}
+  //       </div>
+  //       <div className="relative w-full bg-white rounded-3xl shadow-sm overflow-hidden mb-20 border border-gray-100">
+  //         <div className="relative h-[600px] md:h-[500px] w-full flex flex-col md:flex-row">
+  //           <div className="w-full md:w-1/2 h-1/2 md:h-full p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1 bg-white">
+  //             <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
+  //             <div className="h-9 md:h-12 w-full bg-gray-200 rounded-lg animate-pulse mb-3" />
+  //             <div className="h-9 md:h-12 w-2/3 bg-gray-200 rounded-lg animate-pulse mb-6" />
+  //             <div className="space-y-2 mb-8">
+  //               <div className="h-4 bg-gray-200 rounded animate-pulse" />
+  //               <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse" />
+  //               <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
+  //             </div>
+  //             <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+  //               <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
+  //               <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+  //             </div>
+  //           </div>
+  //           <div className="w-full md:w-1/2 h-1/2 md:h-full order-1 md:order-2 bg-gray-200 animate-pulse" />
+  //         </div>
+  //       </div>
+  //       <div className="mb-8 flex items-center justify-between">
+  //         <div className="h-7 w-40 bg-gray-200 rounded animate-pulse" />
+  //         <div className="h-px bg-gray-200 flex-grow ml-6 hidden sm:block" />
+  //       </div>
+  //       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  //         {Array.from({ length: 4 }).map((_, idx) => (
+  //           <div key={idx} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
+  //             <div className="relative w-full aspect-[4/3] bg-gray-200 animate-pulse" />
+  //             <div className="p-6 md:p-8 flex flex-col flex-grow gap-3">
+  //               <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
+  //               <div className="h-5 w-5/6 bg-gray-200 rounded animate-pulse" />
+  //               <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
+  //               <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
+  //             </div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   // Full skeleton only on the very first load ever
-  if (loading && page === 1 && selectedCategory === 'all' && blogs.length === 0 && pagination.total === undefined) {
-    return <BlogPageSkeleton />;
-  }
+  // if (loading && page === 1 && selectedCategory === 'all' && blogs.length === 0 && pagination.total === undefined) {
+  //   return <BlogPageSkeleton />;
+  // }
 
   return (
     <div className="relative overflow-hidden w-full min-h-screen bg-[#f8f9fa] pt-24 pb-20 font-sans">
@@ -165,7 +194,7 @@ const BlogPage = () => {
         BLOG
       </div>
 
-      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-[8rem] ">
+      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-22 ">
 
         {/* HEADER */}
         <div className="mb-8 relative z-10">
@@ -173,15 +202,42 @@ const BlogPage = () => {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
+            className="flex flex-col md:flex-row md:items-end md:justify-between gap-6"
           >
-            <div className="flex flex-col items-start mb-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="h-1 w-12 bg-[var(--color-primary2)]"></div>
-                <h3 className="text-[var(--color-primary2)] font-bold tracking-[0.2em] uppercase text-sm">Blog & Newsroom</h3>
-              </div>
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
-                OUR <span className="text-[var(--color-primary)]">BLOG</span>
-              </h2>
+            <SectionHeader
+              label="Blog & Newsroom"
+              title="OUR"
+              titleColor="text-black"
+              highlight="BLOG"
+                            
+            />            
+
+            {/* SEARCH BAR - top right */}
+            <div className="w-full md:w-72 lg:w-80 relative">
+              <svg
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+              </svg>
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search articles..."
+                className="w-full pl-10 pr-9 py-3 rounded-full bg-white border border-gray-200 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-colors"
+              />
+              {searchInput && (
+                <button
+                  onClick={() => setSearchInput('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label="Clear search"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
           </motion.div>
         </div>

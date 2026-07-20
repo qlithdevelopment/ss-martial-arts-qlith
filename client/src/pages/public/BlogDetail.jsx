@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation,useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight,ArrowLeft } from 'lucide-react';
 import api from '../../api/axios';
 import { formatDate } from '../../components/CommonFormats.js';
+
+const BlogBackButton = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin/blog");
+
+  const handleBack = () => {
+    navigate(isAdmin ? "/admin/blogs" : "/blog");
+  };
+
+  return (
+    <button
+      onClick={handleBack}
+      className={`z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${
+        isAdmin
+          ? "absolute top-5 left-3"
+          : "relative w-20 top-0 my-8 "
+      }`}
+    >
+      <ArrowLeft size={16} /> Back
+    </button>
+  );
+};
+
 
 const formatCategory = (str) =>
   str
@@ -78,7 +102,7 @@ const BlogDetail = () => {
       {/* Hero Skeleton */}
       <div className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden bg-gray-200 animate-pulse">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute global-container lg:!px-[95px] inset-0 flex flex-col justify-end pb-12 md:pb-24">
+        <div className="absolute global-container lg:!px-14 inset-0 flex flex-col justify-end pb-12 md:pb-24">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl space-y-4">
               <div className="flex items-center gap-3">
@@ -94,7 +118,7 @@ const BlogDetail = () => {
       </div>
 
       {/* Content Blocks Skeleton */}
-      <div className="w-full global-container lg:!px-[95px] py-12 md:py-20">
+      <div className="w-full global-container lg:!px-14 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="space-y-6">
@@ -122,7 +146,7 @@ const BlogDetail = () => {
 
       {/* Related Blogs Skeleton (skip entirely for admin view) */}
       {!isAdminView && (
-        <div className="w-full global-container lg:!px-[95px] bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
+        <div className="w-full global-container lg:!px-14 bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-4 mb-10">
               <div className="h-1 w-12 bg-gray-200" />
@@ -147,6 +171,7 @@ const BlogDetail = () => {
     </div>
   );
 
+
   if (loading) {
     return <BlogDetailSkeleton />;
   }
@@ -163,17 +188,18 @@ const BlogDetail = () => {
   const showViewMore = relatedTotalCount > 3;
 
   return (
-    <div className="w-full min-h-screen bg-[#f8f9fa] text-[#0b1b24] font-sans">
+    <div className="w-full min-h-screenn  bg-[#f8f9fa] text-[#0b1b24] font-sans">
 
       {/* HERO SECTION */}
-      <div className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden">
+      <div className="relative w-full  h-[50vh] md:h-[45vh] lg:h-[65vh] overflow-hidden">        
         <div className="absolute inset-0 bg-black/50 z-10" />
         <img
           src={blog.featured_image}
           alt={blog.title}
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        <div className="absolute global-container lg:!px-[95px] inset-0 z-20 flex flex-col justify-end pb-12 md:pb-24">
+         
+        <div className="absolute global-container !py-10 lg:!px-14 inset-0 z-20 flex flex-col justify-end pb-12 md:pb-24">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -181,6 +207,7 @@ const BlogDetail = () => {
               transition={{ duration: 0.6 }}
               className="max-w-4xl"
             >
+               <BlogBackButton />
               <div className="flex items-center gap-3 mb-4">
                 <span className="bg-[var(--color-primary)] text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-sm shadow-md">
                   {formatCategory(blog?.category)}
@@ -203,7 +230,7 @@ const BlogDetail = () => {
       </div>
 
       {/* CONTENT BLOCKS */}
-      <div className="w-full global-container lg:!px-[95px] py-12 md:py-20">
+      <div className="w-full global-container lg:!px-14 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0 }}
@@ -282,7 +309,7 @@ const BlogDetail = () => {
 
       {/* RELATED BLOGS (same category) — hidden when viewed from admin */}
       {!isAdminView && relatedBlogs.length > 0 && (
-        <div className="w-full global-container lg:!px-[95px] bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
+        <div className="w-full global-container lg:!px-14 bg-white py-16 md:py-24 border-t border-gray-100 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-4 mb-10">
               <div className="h-1 w-12 bg-[var(--color-primary)]"></div>

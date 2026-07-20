@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import { ChevronUp, Clock3 } from "lucide-react";
 
 const AdminLayout = () => {
   const [time, setTime] = useState(new Date());
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(window.innerWidth < 768);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsSidebarCollapsed(true);
+    }
+  }, []);
 
   // Synchronize live clock ticker
   useEffect(() => {
@@ -37,10 +43,10 @@ const AdminLayout = () => {
 
       {/* VIEWPORT ACTION FRAME */}
       <div className="flex-1 flex flex-col min-w-0">
-        
+
         {/* STREAMLINED FIXED HEADER */}
-        <header 
-          className="fixed top-0 right-0 left-0 md:left-auto md:w-[calc(100%-16.5rem)] data-[collapsed=true]:md:w-[calc(100%-5rem)] h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-30 transition-all duration-300" 
+        <header
+          className="fixed top-0 right-0 left-0 md:left-auto md:w-[calc(100%-16.5rem)] data-[collapsed=true]:md:w-[calc(100%-5rem)] h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-30 transition-all duration-300"
           data-collapsed={isSidebarCollapsed}
         >
           {/* LEFT SIDE: Identity Badge */}
@@ -53,9 +59,11 @@ const AdminLayout = () => {
 
           {/* RIGHT SIDE: Dynamic Digital Clock */}
           <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 py-1.5 px-3 rounded-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-secondary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+           
+            <Clock3
+              className="w-4 h-4 text-secondary"
+              strokeWidth={1.5}
+            />
             <span className="text-sm font-mono font-bold text-gray-600">
               {time.toLocaleTimeString()}
             </span>
@@ -74,9 +82,11 @@ const AdminLayout = () => {
             className="fixed bottom-8 right-8 bg-[#f97316] text-white p-3.5 rounded-full shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] hover:bg-orange-600 hover:shadow-[0_6px_20px_rgba(249,115,22,0.23)] hover:scale-110 transition-all duration-300 z-50 flex items-center justify-center animate-fadeIn"
             title="Scroll to Top"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-            </svg>
+            <ChevronUp
+              className="w-5 h-5"
+              strokeWidth={3}
+            />
+            
           </button>
         )}
       </div>

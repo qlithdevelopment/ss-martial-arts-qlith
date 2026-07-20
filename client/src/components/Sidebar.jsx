@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from '../assets/Logo_compress.png';
 import { toast } from "react-hot-toast";
-import { ArrowLeft, LogOut, ChevronDown, ChevronsRight, ChevronsLeft, Menu, X, House, Newspaper, CalendarDays, Image, Users, CircleHelp, GraduationCap, Mail,Phone } from "lucide-react";
+import { ArrowLeft, LogOut, Handshake, ChevronDown, ChevronsRight, ChevronsLeft, Menu, X, House, Newspaper, CalendarDays, Image, Users, CircleHelp, GraduationCap, Mail,Phone } from "lucide-react";
 import ConfirmModal from "../components/admin/reusecomponents/ConfirmationModal";
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
@@ -130,6 +130,17 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       label: "Contacts",
       icon: (
         <Phone
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+       
+      )
+    },
+    {
+      path: "/admin/affiliations",
+      label: "Affiliations",
+      icon: (
+        <Handshake
           className="w-5 h-5 shrink-0"
           strokeWidth={1.5}
         />

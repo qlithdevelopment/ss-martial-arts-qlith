@@ -97,11 +97,11 @@ const ViewContactModal = ({ isOpen, onClose, contact, onDelete }) => {
                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1">
                   <MessageSquare size={12} /> Full Message
                 </p>
-                <div className="bg-gray-50 p-4 scrollbar-thin rounded-2xl border border-gray-100 max-h-48 overflow-y-auto">
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                <div className="bg-gray-50 overflow-x-hidden p-4 scrollbar-thin rounded-2xl border border-gray-100 max-h-30 overflow-y-auto min-w-0">
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed">
                     {contact.message || "No message provided."}
                   </p>
-                </div>
+                </div>                
               </div>
             </div>
 

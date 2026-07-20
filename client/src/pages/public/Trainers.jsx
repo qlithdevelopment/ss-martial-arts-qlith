@@ -1,19 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
-import { X, ArrowRight, Award, History, Users, ChevronRight, User as UserIcon } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { X, Award, History, Users, ChevronRight } from 'lucide-react';
 import api from '../../api/axios';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 20 } }
-};
 
 const TrainerCard = ({ instructor, setSelectedId, idx }) => {
   return (
@@ -24,7 +14,7 @@ const TrainerCard = ({ instructor, setSelectedId, idx }) => {
       viewport={{ once: true }}
       transition={{ delay: idx * 0.1 }}
       onClick={() => setSelectedId(instructor.id)}
-      className="group relative  bg-black overflow-hidden border border-white/5 h-[340px] md:h-[400px] lg:h-[450px] shrink-0 w-[85vw] md:w-[355px] lg:w-[415px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] flex flex-col snap-center"
+      className="group relative bg-black overflow-hidden border border-white/5 h-[340px] md:h-[400px] lg:h-[450px] shrink-0 w-[85vw] md:w-[355px] lg:w-[415px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] flex flex-col snap-center"
       style={{ borderRadius: "20px", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
     >
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none"></div>
@@ -63,10 +53,25 @@ const TrainerCard = ({ instructor, setSelectedId, idx }) => {
       <h2 className="absolute -right-4 top-1/4 text-[80px] font-black text-white/[0.03] uppercase tracking-tighter leading-none pointer-events-none z-0 rotate-90 origin-bottom-right">
         TRAINER
       </h2>
-
     </motion.div>
   );
 };
+
+const TrainerCardSkeleton = () => (
+  <div
+    className="relative bg-black overflow-hidden border border-white/5 h-[340px] md:h-[400px] lg:h-[450px] shrink-0 w-[85vw] md:w-[355px] lg:w-[415px] animate-pulse"
+    style={{ borderRadius: "20px" }}
+  >
+    <div className="absolute inset-0 bg-gray-800/60" />
+    <div className="absolute inset-0 p-5 flex flex-col justify-end gap-2">
+      <div className="h-4 w-16 bg-gray-700 rounded" />
+      <div className="h-6 w-3/4 bg-gray-700 rounded" />
+      <div className="h-3 w-1/2 bg-gray-700 rounded" />
+    </div>
+  </div>
+);
+
+const SKELETON_COUNT = 4;
 
 const Trainers = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -118,9 +123,9 @@ const Trainers = () => {
     };
     fetchInstructors();
   }, []);
+
   const parentRef = useRef(null);
   const childRef = useRef(null);
-
 
   useEffect(() => {
     if (!parentRef.current || !childRef.current) return;
@@ -142,7 +147,7 @@ const Trainers = () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updateMaxScroll);
     };
-  }, [instructors]); // 🔑 re-run once instructors load and cards actually render
+  }, [instructors, loading]); // re-run once instructors load (or skeletons swap in) and cards actually render
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -153,11 +158,12 @@ const Trainers = () => {
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      const index = Math.round(latest * (instructors.length - 1));
+      const count = loading ? SKELETON_COUNT : instructors.length;
+      const index = Math.round(latest * (count - 1));
       setActiveIndex(index);
     });
     return () => unsubscribe();
-  }, [scrollYProgress, instructors.length]);
+  }, [scrollYProgress, instructors.length, loading]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -166,7 +172,7 @@ const Trainers = () => {
     }, 50);
     return () => clearTimeout(timer);
   }, []);
-  
+
   useEffect(() => {
     if (selectedId) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
@@ -174,6 +180,7 @@ const Trainers = () => {
   }, [selectedId]);
 
   const selectedInstructor = instructors.find(i => i.id === selectedId);
+  const timelineCount = loading ? SKELETON_COUNT : instructors.length;
 
   return (
     <section
@@ -181,14 +188,14 @@ const Trainers = () => {
       style={{
         height: typeof window !== 'undefined' ? `calc(100vh + ${maxScroll}px)` : 'auto'
       }}
-      className="w-full relative global-container  bg-[#f8f9fa] font-sans selection:bg-[#f97316] selection:text-white pb-20 lg:pb-0"
+      className="w-full relative global-container bg-[#f8f9fa] font-sans selection:bg-[#f97316] selection:text-white pb-20 lg:pb-0"
     >
 
       <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col justify-center">
 
         {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute top-1/2 px-3  -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+          <div className="absolute top-1/2 px-3 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
             TRAINERS
           </div>
           <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-[#26c0ff]/10 rounded-full blur-[100px]"></div>
@@ -207,10 +214,10 @@ const Trainers = () => {
 
               {/* Timeline Indicator */}
               <div className="hidden md:flex flex-col items-center pt-2">
-                {instructors.map((_, i) => (
+                {Array.from({ length: timelineCount }).map((_, i) => (
                   <React.Fragment key={i}>
                     <div className="w-3 h-3 rounded-full bg-black/20 relative flex items-center justify-center">
-                      {activeIndex === i && (
+                      {!loading && activeIndex === i && (
                         <motion.div
                           layoutId="activeTimelineDot"
                           className="w-3 h-3 rounded-full bg-[#f97316] absolute inset-0"
@@ -219,7 +226,7 @@ const Trainers = () => {
                         />
                       )}
                     </div>
-                    {i !== instructors.length - 1 && <div className="w-[2px] h-10 bg-black/10 my-2"></div>}
+                    {i !== timelineCount - 1 && <div className="w-[2px] h-10 bg-black/10 my-2"></div>}
                   </React.Fragment>
                 ))}
               </div>
@@ -248,7 +255,6 @@ const Trainers = () => {
           </div>
 
           {/* RIGHT PANEL: Horizontal Slider */}
-
           <div ref={parentRef} className="w-full lg:flex-1 overflow-hidden relative flex items-center h-[600px] md:h-[720px] lg:h-full hide-scrollbar mt-2 lg:mt-0">
 
             <motion.div
@@ -256,14 +262,20 @@ const Trainers = () => {
               style={{ x }}
               className="grid grid-flow-col grid-rows-1 gap-4 lg:gap-8 w-max pl-0 lg:pl-12 lg:pr-6 relative z-10"
             >
-              {instructors.map((instructor, idx) => (
-                <TrainerCard
-                  key={instructor.id}
-                  instructor={instructor}
-                  setSelectedId={setSelectedId}
-                  idx={idx}
-                />
-              ))}
+              {loading ? (
+                Array.from({ length: SKELETON_COUNT }).map((_, idx) => (
+                  <TrainerCardSkeleton key={idx} />
+                ))
+              ) : (
+                instructors.map((instructor, idx) => (
+                  <TrainerCard
+                    key={instructor.id}
+                    instructor={instructor}
+                    setSelectedId={setSelectedId}
+                    idx={idx}
+                  />
+                ))
+              )}
             </motion.div>
           </div>
 

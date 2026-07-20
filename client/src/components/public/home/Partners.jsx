@@ -39,7 +39,7 @@ const Partners = () => {
   return (
     <section className="w-full bg-[#fcfcfc] py-12 lg:pl-2 md:py-24 overflow-hidden flex flex-col items-center">
       
-      <div className="global-container pt-16 pb-24 md:pt-20 md:pb-32 relative z-10">
+      <div className="global-container pt-16 pb-24 md:pt-8 md:pb-28 relative z-10">
         <div className="flex flex-col items-center mb-12">
           <div className="flex items-center gap-4 mb-4">
             <div className="h-1 w-12 bg-[#f97316]"></div>
