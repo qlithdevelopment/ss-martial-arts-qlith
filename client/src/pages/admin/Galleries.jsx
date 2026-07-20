@@ -20,8 +20,7 @@ const getImageUrl = (path) => {
 
 const Galleries = () => {
   const [albums, setAlbums] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);  
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [albumToDelete, setAlbumToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,27 +28,19 @@ const Galleries = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
-  const [viewAlbum, setViewAlbum] = useState(null);
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [viewAlbum, setViewAlbum] = useState(null);  
   const [totalImagesCount, setTotalImagesCount] = useState(0);
 
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1);
-    }, 400);
 
-    return () => clearTimeout(timer);
-  }, [search]);
   useEffect(() => {
     fetchAlbums();
-  }, [page, debouncedSearch]);
+  }, [page]);
 
   const fetchAlbums = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/galleries?per_page=8&page=${page}&search=${debouncedSearch}`);
+      const res = await api.get(`/galleries?per_page=8&page=${page}`);
       setAlbums(res?.data?.data);
       setPagination(res?.data?.pagination);
       setTotalImagesCount(res?.data?.total_all_gallery_images || 0);
@@ -91,28 +82,13 @@ const Galleries = () => {
   const openEditModal = (album) => {
     setSelectedAlbum(album);
     setIsModalOpen(true);
-  };
-
-  const filteredAlbums = albums.filter(a =>
-    a.name?.toLowerCase().includes(search.toLowerCase()) ||
-    a.description?.toLowerCase().includes(search.toLowerCase())
-  );
+  }; 
 
   return (
     <div className="">
       {/* Header section */}
       <div className="flex flex-col mb-14 md:mb-8 md:flex-row justify-between items-start md:items-center gap-4 ">
-        <div className="flex w-full md:w-auto items-center gap-4">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Search albums..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
-            />
-          </div>
+        <div className="flex w-full md:w-auto items-center gap-4">          
           <button
             onClick={openCreateModal}
             className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
@@ -160,7 +136,7 @@ const Galleries = () => {
             </div>
           ))}
         </div>        
-      ) : filteredAlbums.length === 0 ? (
+      ) : albums.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <CopyPlus className="text-gray-400" size={24} />
@@ -173,7 +149,7 @@ const Galleries = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredAlbums.map((album) => (
+          {albums.map((album) => (
             <div key={album.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col group">
               {/* Cover Image */}
               <div className="relative h-48 bg-gray-100 overflow-hidden">

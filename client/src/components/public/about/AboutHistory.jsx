@@ -5,7 +5,7 @@ import { historyData, achievementsData } from '../../../data/aboutData';
 const AboutHistory = () => {
   return (
     <section className="w-full bg-[#f8f9fa] py-12 md:py-16 lg:py-24 px-4 md:px-8 border-t border-gray-200">
-      <div className="global-container lg:!px-[95px]">
+      <div className="global-container lg:!px-14">
         
         <div className="flex flex-col lg:flex-row gap-16">
           

@@ -24,6 +24,7 @@ import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
 import Blog from "../pages/public/Blog";
 import FindStudent from "../pages/public/FindStudent";
+import Affiliation from "../pages/public/Affiliations";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -36,6 +37,7 @@ import AdminServices from "../pages/admin/Services";
 import StudentManagement from "../pages/admin/StudentManagement";
 import StudentView from "../pages/admin/StudentView";
 import AdminContacts from "../pages/admin/Contacts";
+import Affiliations from "../pages/admin/Affiliations";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
@@ -44,12 +46,13 @@ import Unauthorized from "../pages/errors/Unauthorized";
 import NotFound from "../pages/errors/NotFound";
 import Loader from "../components/Loader";
 import BlogDetail from "../pages/public/BlogDetail";
+import WelcomeScreen from "../components/WelcomeScreen";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
 
   if (loading) return <Loader />;
-
+   
   // Helper component/function to handle logged-in users visiting /login
   const RedirectIfAuthenticated = () => {
     if (user) {
@@ -79,6 +82,7 @@ const AppRoutes = () => {
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/affiliations" element={<Affiliation />} />
 
         {/* Always keep the route declared, but handle the redirection logically */}
         <Route path="/login" element={<RedirectIfAuthenticated />} />
@@ -112,6 +116,7 @@ const AppRoutes = () => {
         <Route path="/admin/students" element={<StudentManagement />} />
         <Route path="/admin/students/:id" element={<StudentView />} />
         <Route path="/admin/contacts" element={<AdminContacts />} />
+        <Route path="/admin/affiliations" element={<Affiliations />} />
       </Route>
 
       {/* STUDENT */}

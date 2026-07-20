@@ -3,6 +3,9 @@ import { Users, CalendarDays, Activity, ArrowRight, UserPlus, Clock, IndianRupee
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../../api/axios';
+import { formatDate } from '../../components/CommonFormats';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -170,34 +173,8 @@ const Dashboard = () => {
         <div className="lg:col-span-6 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
-              <h3 className="text-lg font-bold text-gray-900">Revenue Growth Model</h3>
+              <h3 className="text-lg font-bold text-gray-900">Last 6 Month Revenue Growth Model</h3>
               <p className="text-xs text-gray-500 font-medium">Dynamic revenue tracking</p>
-            </div>
-
-            <div className="flex items-center gap-2 bg-gray-50 p-1.5 rounded-xl border border-gray-100">
-              <input
-                type="date"
-                value={dateRange.start}
-                disabled={loading}
-                onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                className="text-xs px-2 py-1.5 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-orange-500 text-gray-600 disabled:opacity-50"
-              />
-              <span className="text-gray-400 text-xs font-bold">TO</span>
-              <input
-                type="date"
-                value={dateRange.end}
-                disabled={loading}
-                onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                className="text-xs px-2 py-1.5 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-orange-500 text-gray-600 disabled:opacity-50"
-              />
-              {(dateRange.start || dateRange.end) && (
-                <button
-                  onClick={() => setDateRange({ start: '', end: '' })}
-                  className="text-xs font-bold text-red-500 hover:text-red-700 px-2"
-                >
-                  Clear
-                </button>
-              )}
             </div>
           </div>
           <div className="flex-1 min-h-[200px]">
@@ -473,7 +450,7 @@ const Dashboard = () => {
                     <div key={blog.id} className="flex gap-4 group cursor-pointer" onClick={() => navigate('/admin/blogs')}>
                       <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200 overflow-hidden group-hover:border-pink-200 transition-colors">
                         {blog.image ? (
-                          <img src={blog.image.startsWith('http') ? blog.image : `http://localhost:8000/storage/${blog.image}`} alt={blog.title} className="w-full h-full object-cover" />
+                          <img src={blog.image.startsWith('http') ? blog.image : `${BASE_URL}/storage/${blog.image}`} alt={blog.title} className="w-full h-full object-cover" />
                         ) : (
                           <FileText size={20} className="text-gray-400 group-hover:text-pink-500" />
                         )}
@@ -481,7 +458,7 @@ const Dashboard = () => {
                       <div>
                         <h4 className="font-bold text-gray-900 text-sm leading-tight mb-1 group-hover:text-pink-600 transition-colors line-clamp-2">{blog.title}</h4>
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
-                          {blog.created_at ? new Date(blog.created_at).toLocaleDateString() : 'Recent'}
+                          {blog.created_at ?formatDate(new Date(blog.created_at).toLocaleDateString()) : 'Recent'}
                         </p>
                       </div>
                     </div>

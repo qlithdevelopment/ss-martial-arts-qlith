@@ -2,38 +2,26 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { aboutIntroData } from '../../../data/aboutData';
 import { Target, Compass } from 'lucide-react';
+import SectionHeader from "../../SectionHeader"
 
 const AboutIntro = () => {
   return (
     <section className="relative w-full min-h-[100svh] flex items-center bg-[#fafafa] pt-16 pb-12 md:pt-20 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 overflow-hidden">
-      
-      {/* MASSIVE BACKGROUND TEXT */}
-      <div className="fixed top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
-        ABOUT
-      </div>
+     
 
-      <div className="global-container lg:!px-[95px]  relative z-10 flex flex-col xl:flex-row gap-16 xl:gap-24">
-        
-        {/* LEFT: Text Content */}
+      <div className="global-container lg:!px-14 relative z-10 flex flex-col xl:flex-row gap-16 xl:gap-24">
+
         <div className="w-full xl:w-[55%] flex flex-col justify-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-8"
-          >
-            <div className="flex flex-col items-start mb-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="h-1 w-12 bg-[#f97316]"></div>
-                <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Welcome to SS Martial Arts</h3>
-              </div>
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
-                OUR  <span className="text-[#26c0ff]">LEGACY</span>
-              </h2>
-            </div>
-          </motion.div>
+          <SectionHeader
+            bgText="ABOUT"            
+            label="Welcome to SS Martial Arts"
+            title="OUR"
+            highlight="LEGACY"
+            titleColor="text-black"            
+          />
+          
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -49,8 +37,8 @@ const AboutIntro = () => {
         </div>
 
         {/* RIGHT: Mission & Vision */}
-        <div className="w-full xl:w-[45%] flex flex-col justify-center border-t xl:border-t-0 xl:border-l-[2px] border-gray-200 pt-10 xl:pt-0 xl:pl-12 gap-12">
-          
+        <div className="w-full xl:w-[45%] flex flex-col justify-center lg:px-2 border-t xl:border-t-0 xl:border-l-[2px] border-gray-200 pt-10 xl:pt-0 xl:pl-12 gap-12">
+
           {/* MISSION */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
@@ -92,7 +80,7 @@ const AboutIntro = () => {
         </div>
 
       </div>
-    </section>
+    </section >
   );
 };
 

@@ -21,7 +21,7 @@ const FeatureItem = ({ item, isLeft }) => (
 
 const AboutFeatures = () => {
   return (
-    <section className="w-full bg-white py-12 md:py-16 lg:py-24 px-4 md:px-8 overflow-hidden">
+    <section className="w-full bg-white py-12 md:py-16 lg:py-24 px-4 md:px-8 lg:px-0 overflow-hidden">
       <div className="global-container">
         
         {/* Header */}

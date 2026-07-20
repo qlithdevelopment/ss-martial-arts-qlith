@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import axiosInstance from "../../api/axios.js";
 import toast from "react-hot-toast";
+import { getBeltColor } from "../../components/CommonFormats.js";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');  
 
 // ── API helpers ───────────────────────────────────────────────────────────────
 export const getStudent = async (id) => {
@@ -29,20 +31,6 @@ const TABS = [
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-export const getBeltColor = (belt) => {
-  if (!belt) return { bg: "bg-slate-100 dark:bg-slate-800", text: "text-slate-600 dark:text-slate-400", border: "border-slate-200 dark:border-slate-700" };
-  const b = belt.toLowerCase();
-  if (b.includes("white")) return { bg: "bg-slate-50 dark:bg-slate-800", text: "text-slate-700 dark:text-slate-200", border: "border-slate-200 dark:border-slate-700" };
-  if (b.includes("yellow")) return { bg: "bg-[#FEF3C7] dark:bg-[#451A03]/40", text: "text-[#B45309] dark:text-[#FDE68A]", border: "border-amber-200 dark:border-amber-900/50" };
-  if (b.includes("orange")) return { bg: "bg-[#FFEDD5] dark:bg-[#7C2D12]/40", text: "text-[#C2410C] dark:text-[#FED7AA]", border: "border-orange-200 dark:border-orange-900/50" };
-  if (b.includes("green")) return { bg: "bg-[#D1FAE5] dark:bg-[#064E3B]/40", text: "text-[#047857] dark:text-[#A7F3D0]", border: "border-emerald-200 dark:border-emerald-900/50" };
-  if (b.includes("blue")) return { bg: "bg-[#DBEAFE] dark:bg-[#1E3A8A]/40", text: "text-[#1D4ED8] dark:text-[#BFDBFE]", border: "border-blue-200 dark:border-blue-900/50" };
-  if (b.includes("purple")) return { bg: "bg-[#F3E8FF] dark:bg-[#581C87]/40", text: "text-[#7E22CE] dark:text-[#E9D5FF]", border: "border-purple-200 dark:border-purple-900/50" };
-  if (b.includes("brown")) return { bg: "bg-[#F5E6D3] dark:bg-[#3E2723]/60", text: "text-[#5C4033] dark:text-[#D7CCC8]", border: "border-stone-200 dark:border-stone-800" };
-  if (b.includes("red")) return { bg: "bg-[#FEE2E2] dark:bg-[#7F1D1D]/40", text: "text-[#B91C1C] dark:text-[#FECACA]", border: "border-rose-200 dark:border-rose-900/50" };
-  if (b.includes("black")) return { bg: "bg-[#1E293B] dark:bg-[#020617]", text: "text-white dark:text-slate-200", border: "border-slate-700 dark:border-slate-800" };
-  return { bg: "bg-slate-100 dark:bg-slate-800", text: "text-slate-600 dark:text-slate-400", border: "border-slate-200 dark:border-slate-700" };
-};
 
 const fmt = (dateStr) =>
   dateStr
@@ -288,7 +276,7 @@ function CertsTab() {
             fileUrl = cert.certificated[0];
             if (typeof fileUrl === 'string' && !fileUrl.startsWith('http')) {
                 // Ensure we hit the Laravel server
-                fileUrl = `http://127.0.0.1:8000${fileUrl.startsWith('/') ? '' : '/'}${fileUrl}`;
+                fileUrl = `${BASE_URL}${fileUrl.startsWith('/') ? '' : '/'}${fileUrl}`;
             }
         } else if (cert.file_url) {
             fileUrl = cert.file_url;

@@ -12,7 +12,7 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs, faqsLength }) =>
     isPublish: true,
     order: 0,
   });
-const maxOrder = faqData ? faqsLength : faqsLength + 1;
+// const maxOrder = faqData ? faqsLength : faqsLength + 1;
   useEffect(() => {
     if (isOpen) {
       if (faqData) {
@@ -57,7 +57,7 @@ const maxOrder = faqData ? faqsLength : faqsLength + 1;
       setLoading(false);
     }
   };
-
+console.log("max value:", faqsLength + 1);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -140,13 +140,14 @@ const maxOrder = faqData ? faqsLength : faqsLength + 1;
                     <input
                       type="number"
                       name="order"
-                      value={formData.order}
-                      max={faqsLength + 1}                      
+                      value={formData.order}                                                                 
                       onChange={handleInputChange}
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium"
-                      placeholder="0"
+                      placeholder="0"                      
                     />
                   </div>
+                   
+                  
 
                   <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200 mt-5 md:mt-0">
                     <label className="relative inline-flex items-center cursor-pointer">

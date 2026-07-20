@@ -5,21 +5,7 @@ import { Search, Award, CheckCircle, Calendar, Users, ArrowLeft, Eye } from 'luc
 import api from '../../api/axios';
 import bgimage from '../../assets/martial_arts_bg.png';
 import StudentDetailView from '../../components/public/StudentDetailView'
-
-const getBeltColor = (belt) => {
-  if (!belt) return { bg: "bg-slate-100", border: "border-slate-200", text: "text-slate-600" };
-  const b = belt.toLowerCase();
-  if (b.includes("white")) return { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-700" };
-  if (b.includes("yellow")) return { bg: "bg-[#FEF3C7]", border: "border-amber-200", text: "text-[#B45309]" };
-  if (b.includes("orange")) return { bg: "bg-[#FFEDD5]", border: "border-orange-200", text: "text-[#C2410C]" };
-  if (b.includes("green")) return { bg: "bg-[#D1FAE5]", border: "border-emerald-200", text: "text-[#047857]" };
-  if (b.includes("blue")) return { bg: "bg-[#DBEAFE]", border: "border-blue-200", text: "text-[#1D4ED8]" };
-  if (b.includes("purple")) return { bg: "bg-[#F3E8FF]", border: "border-purple-200", text: "text-[#7E22CE]" };
-  if (b.includes("brown")) return { bg: "bg-[#F5E6D3]", border: "border-stone-200", text: "text-[#5C4033]" };
-  if (b.includes("red")) return { bg: "bg-[#FEE2E2]", border: "border-rose-200", text: "text-[#B91C1C]" };
-  if (b.includes("black")) return { bg: "bg-[#1E293B]", border: "border-slate-700", text: "text-white" };
-  return { bg: "bg-slate-100", border: "border-slate-200", text: "text-slate-600" };
-};
+import {getBeltColor } from '../../components/CommonFormats'
 
 const FindStudent = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -97,20 +83,15 @@ const FindStudent = () => {
   return (
     <div className="min-h-screen lg:h-screen w-full bg-slate-50 text-gray-900 relative lg:overflow-hidden flex flex-col lg:flex-row">
 
-      {/* Back Button */}
-      <Link to="/" className="absolute top-6 lg:left-16  left-6 z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
-        <ArrowLeft size={16} /> Back to Home
-      </Link>
-
-      {/* Background Orbs for Texture */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[500px] opacity-40 pointer-events-none overflow-hidden flex justify-center z-0">
-        <div className="absolute top-[-100px] left-10 w-96 h-96 bg-primary/20 rounded-full blur-[100px] mix-blend-multiply" />
-        <div className="absolute top-[-50px] right-10 w-96 h-96 bg-primary2/20 rounded-full blur-[100px] mix-blend-multiply" />
-      </div>
+      {/* Back Button */}      
 
       {/* LEFT COLUMN - Heading & Info */}
       <div className="w-full lg:w-5/12 flex-none lg:h-full flex flex-col items-start p-8 lg:p-16 pt-24 lg:pt-16 relative z-10 bg-white/40 backdrop-blur-sm overflow-hidden">
         <div className="text-left max-w-lg w-full z-20">
+          <Link to="/" className="absolute top-6 lg:left-16  left-6 z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,7 +105,7 @@ const FindStudent = () => {
             transition={{ delay: 0.2 }}
             className="text-gray-500 text-sm max-w-sm mb-10 leading-relaxed"
           >
-            Verify student enrollment, current belt rank, and batch information by searching their Name or ID.
+            Verify student enrollment, current belt rank, and batch information by searching their Registration Number.
           </motion.p>
 
           {/* Features List */}
@@ -193,7 +174,7 @@ const FindStudent = () => {
               <input
                 type="text"
                 className="w-full py-2 bg-transparent border-none text-[10.5px] truncate md:text-sm focus:outline-none font-medium placeholder:text-gray-400"
-                placeholder="Search by Name, Email, Belt, or Batch"
+                placeholder="Search by Registration Number"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

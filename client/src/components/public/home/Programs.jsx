@@ -29,7 +29,7 @@ const Programs = () => {
   return (
     <section id="programs" className="w-full min-h-screen bg-[#f8f9fa] flex flex-col justify-center items-center pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24">
       
-      <div className="global-container w-full z-10 flex flex-col items-center">
+      <div className="global-container lg:!px-0  w-full z-10 flex flex-col items-center">
         
         {/* Animated Header */}
         <motion.div 
@@ -47,7 +47,8 @@ const Programs = () => {
             <div className="h-1 w-12 bg-[#f97316]"></div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-[#0b1b24] text-center">
-            PROGRAMS &  <span className="text-[#26c0ff]">CLASSES</span>
+            inquiry 
+            {/* <span className="text-[#26c0ff]">CLASSES</span> */}
           </h2>
         </div>
         <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
@@ -61,7 +62,7 @@ const Programs = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-100px" }}
-        className="global-container grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10"
+        className="global-container lg:!px-22 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10"
       >
         
         {programsData.map((program) => (

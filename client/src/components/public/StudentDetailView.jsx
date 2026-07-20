@@ -1,23 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Award, Users, DollarSign, Calendar, Shield } from 'lucide-react';
+import { ArrowLeft, Mail, Award, Users, DollarSign, Calendar, Shield, FileText, Eye, X } from 'lucide-react';
+import api from '../../api/axios';
+import { getBeltColor } from '../CommonFormats';
 
-const getBeltColor = (belt) => {
-  if (!belt) return { bg: "bg-slate-100", border: "border-slate-200", text: "text-slate-600" };
-  const b = belt.toLowerCase();
-  if (b.includes("white")) return { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-700" };
-  if (b.includes("yellow")) return { bg: "bg-[#FEF3C7]", border: "border-amber-200", text: "text-[#B45309]" };
-  if (b.includes("orange")) return { bg: "bg-[#FFEDD5]", border: "border-orange-200", text: "text-[#C2410C]" };
-  if (b.includes("green")) return { bg: "bg-[#D1FAE5]", border: "border-emerald-200", text: "text-[#047857]" };
-  if (b.includes("blue")) return { bg: "bg-[#DBEAFE]", border: "border-blue-200", text: "text-[#1D4ED8]" };
-  if (b.includes("purple")) return { bg: "bg-[#F3E8FF]", border: "border-purple-200", text: "text-[#7E22CE]" };
-  if (b.includes("brown")) return { bg: "bg-[#F5E6D3]", border: "border-stone-200", text: "text-[#5C4033]" };
-  if (b.includes("red")) return { bg: "bg-[#FEE2E2]", border: "border-rose-200", text: "text-[#B91C1C]" };
-  if (b.includes("black")) return { bg: "bg-[#1E293B]", border: "border-slate-700", text: "text-white" };
-  return { bg: "bg-slate-100", border: "border-slate-200", text: "text-slate-600" };
-};
+
 
 const StudentDetailView = ({ student, onBack }) => {
+  const [certificates, setCertificates] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (!student?.id) return;
+
+    const fetchCertificates = async () => {
+      setFetching(true);
+      setCertificates([]);
+      try {
+        const response = await api.get(`/users/${student.id}/certificates`);
+        const data = response.data?.data || response.data;
+        setCertificates(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to fetch certificate:", err);
+        setCertificates([]);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchCertificates();
+  }, [student?.id]);
+
   if (!student) return null;
 
   const isActive =
@@ -60,6 +74,9 @@ const StudentDetailView = ({ student, onBack }) => {
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
               ID: {student.id}
             </span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              REG NO: {student.reg_no}
+            </span>
           </div>
         </div>
       </div>
@@ -98,13 +115,13 @@ const StudentDetailView = ({ student, onBack }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+        {/* <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
           <DollarSign size={16} className="text-gray-400 shrink-0" />
           <div className="min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Fee</p>
             <p className="text-sm font-semibold text-gray-900">₹{student.total_fee}</p>
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
           <Calendar size={16} className="text-gray-400 shrink-0" />
@@ -118,6 +135,97 @@ const StudentDetailView = ({ student, onBack }) => {
           </div>
         </div>
       </div>
+
+      {/* Certificate Section */}
+      <div className="mt-6 pt-6 border-t border-gray-100">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Certificate</h3>
+
+        {fetching ? (
+          <div className="h-20 bg-gray-100 rounded-xl animate-pulse" />
+        ) : certificates.length === 0 ? (
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+            <FileText size={18} className="text-gray-300 shrink-0" />
+            <p className="text-sm text-gray-400 font-medium">No certificates issued yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {certificates.map((cert) => {
+              const certUrl =
+                Array.isArray(cert.certificated) && cert.certificated.length > 0
+                  ? `${ import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "")}${cert.certificated[0]}`
+                  : null;
+
+              return (
+                <div
+                  key={cert.id}
+                  className="flex items-center justify-between gap-3 p-4 rounded-xl border border-emerald-100 bg-emerald-50/50"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                      <FileText size={18} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-gray-900 truncate capitalize">
+                        {cert.title || 'Certificate'}
+                      </p>
+                      <p className="text-[11px] text-gray-500 font-medium">
+                        Issued{' '}
+                        {cert.created_at
+                          ? new Date(cert.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                          : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {certUrl && (
+                    <button
+                      onClick={() => setPreviewUrl(certUrl)}
+                      className="flex items-center gap-2 text-xs font-bold text-white bg-[#0b1b24] hover:bg-emerald-600 px-4 py-2 rounded-lg transition-colors shrink-0"
+                    >
+                      <Eye size={14} />
+                      View
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Certificate Preview Modal — rendered once, outside the list */}
+      {previewUrl && (
+        <div
+          className="fixed w-full h-full inset-0 z-[100] flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setPreviewUrl(null)}
+        >
+          <div
+            className="relative bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-auto p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setPreviewUrl(null)}
+              className="absolute top-3 right-3 text-[#0b1b24] hover:text-emerald-600"
+            >
+              <X size={20} />
+            </button>
+
+            {previewUrl.toLowerCase().endsWith(".pdf") ? (
+              <iframe
+                src={previewUrl}
+                title="Certificate"
+                className="w-full h-[80vh] rounded-lg"
+              />
+            ) : (
+              <img
+                src={previewUrl}
+                alt="Certificate"
+                className="w-full h-auto rounded-lg"
+              />
+            )}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };

@@ -53,7 +53,7 @@ const ServicesPage = () => {
       </div>
 
       {/* Services List (Vertical Layout) */}
-      <div className="global-container flex flex-col gap-12 md:gap-16 lg:gap-24 mb-16 lg:mb-24">
+      <div className="global-container lg:!px-14 flex flex-col gap-12 md:gap-16 lg:gap-24 mb-16 lg:mb-24">
         {allServices.map((service, index) => (
           <motion.div 
             key={service.id}

@@ -10,7 +10,7 @@ const About = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
         ABOUT
       </div>
-      <div className="global-container relative z-10 flex items-center">
+      <div className="global-container lg:!px-22 relative z-10 flex items-center">
         
         <div className="flex flex-col lg:flex-row-reverse w-full items-center justify-center lg:justify-between gap-16 lg:gap-8">
           
