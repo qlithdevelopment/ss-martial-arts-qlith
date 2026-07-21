@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('reg_no')->nullable()->unique();
             $table->enum('role', ['admin', 'student'])->default('student');
             $table->foreignId('batch_id')->nullable()->constrained('batches')->onDelete('set null');
             $table->string('belt')->default(''); // Defaults to empty string, completely optional

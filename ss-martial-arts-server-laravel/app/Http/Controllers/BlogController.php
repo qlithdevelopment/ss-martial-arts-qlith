@@ -36,9 +36,11 @@ class BlogController extends Controller
             if ($isPublishedParam !== null) {
                 $status = filter_var($isPublishedParam, FILTER_VALIDATE_BOOLEAN);
                 $query->where('is_published', $status);
-            } else {
-                $query->where('is_published', true);
-            }
+            } 
+            
+            // else {
+            //     $query->where('is_published', true);
+            // }
 
             if (!empty($category)) {
                 $query->where('category', $category);

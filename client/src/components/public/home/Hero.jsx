@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import heroVideo from "../../../assets/ss.mp4";
-import fallbackImage from "../../../assets/ChatGPT Image Jun 11, 2026, 02_08_50 PM.png";
+import fallbackImage from "../../../assets/SSHeroImage.jpeg";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -42,7 +42,7 @@ const Hero = () => {
           h-full
           object-cover
           scale-[1.15] md:scale-[1.20]
-          object-[70%_40%] md:object-[70%_40%] lg:object-[0%_40%] xl:object-[5%_40%]
+          object-[80%_60%] lg:object-[0%_40%] xl:object-[5%_40%]
           transition-opacity duration-[1000ms] ease-in-out
           ${videoLoaded ? "opacity-100" : "opacity-0"}
         `}

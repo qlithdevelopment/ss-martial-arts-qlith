@@ -29,6 +29,7 @@ class StudentController extends Controller
                 ->select(
                     'users.id',
                     'users.name',
+                    'users.reg_no',
                     'users.email',
                     'users.role',
                     'users.batch_id',
@@ -42,10 +43,10 @@ class StudentController extends Controller
             // Apply search filter if search parameter is present
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('users.name', 'LIKE', "%{$search}%")
-                        ->orWhere('users.email', 'LIKE', "%{$search}%")
-                        ->orWhere('users.belt', 'LIKE', "%{$search}%")
-                        ->orWhere('batches.name', 'LIKE', "%{$search}%");
+                    $q->orWhere('users.req_no', 'LIKE', "%{$search}%");
+                        // ->orWhere('users.email', 'LIKE', "%{$search}%")
+                        // ->orWhere('users.belt', 'LIKE', "%{$search}%")
+                        // ->orWhere('batches.name', 'LIKE', "%{$search}%");
                 });
             }
 
@@ -78,6 +79,7 @@ class StudentController extends Controller
     {
         try {
             $validated = $request->validate([
+                'reg_no' => 'required|string|max:50|unique:users,reg_no',
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:6',
@@ -88,6 +90,7 @@ class StudentController extends Controller
             ]);
 
             $student = User::create([
+                'reg_no' => $validated['reg_no'],
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
@@ -212,6 +215,7 @@ class StudentController extends Controller
             $student = User::where('role', 'student')->findOrFail($id);
 
             $validated = $request->validate([
+                'reg_no' => 'required|string|max:50|unique:users,reg_no',
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
                 'password' => 'nullable|string|min:6',
@@ -223,6 +227,7 @@ class StudentController extends Controller
             ]);
 
             $updateData = [
+                'reg_no' => $validated['reg_no'],
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'batch_id' => $validated['batch_id'],
