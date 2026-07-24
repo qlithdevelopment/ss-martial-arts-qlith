@@ -14,6 +14,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\TestimonialController;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -44,6 +45,8 @@ Route::get('/findstudents', [StudentController::class, 'findstudent']);
 Route::get('/affiliations', [AffiliationController::class, 'index']);
 
 Route::get('/testimonials', [TestimonialController::class, 'index']);
+Route::get('/news', [NewsController::class, 'index']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -112,4 +115,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/belts/{belt}', [BeltController::class, 'update']);
     Route::patch('/belts/{belt}', [BeltController::class, 'update']);
     Route::delete('/belts/{belt}', [BeltController::class, 'destroy']);
+
+    Route::get('/news/{id}', [NewsController::class, 'show']);
+    Route::post('/news', [NewsController::class, 'store']);
+    Route::put('/news/{id}', [NewsController::class, 'update']);
+    Route::delete('/news/{id}', [NewsController::class, 'destroy']);
 });
