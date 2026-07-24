@@ -23,6 +23,7 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageError, setImageError] = useState("");
 
   const isEdit = Boolean(affiliation);
 
@@ -54,15 +55,39 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const MAX_SIZE_MB = 2;
+  const ALLOWED_TYPES = ["image/jpeg", "image/png"];
+
   const handleImageChange = (e) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files[0];
     if (!file) return;
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setImageError("Only JPG, JPEG, or PNG allowed.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      setImageError(`Image must be under ${MAX_SIZE_MB}MB.`);
+      e.target.value = "";
+      return;
+    }
+
+    setImageError("");
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate image is present — required only if there's no file AND no existing preview (e.g. add mode, or edit mode where image was cleared)
+    if (!imageFile && !imagePreview) {
+      setImageError("Please select an image.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -76,7 +101,7 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
       }
 
       if (isEdit) {
-        payload.append('_method', 'PUT'); // Laravel needs this for multipart PUT requests
+        payload.append('_method', 'PUT');
         await api.post(`/affiliations/${affiliation.id}`, payload, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -100,6 +125,7 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
   const handleClose = () => {
     resetForm();
     onClose();
+    setImageError("")
   };
 
   return (
@@ -149,22 +175,32 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
                     <ImagePlus size={12} className="text-orange-500" /> LOGO / IMAGE
                   </label>
                   <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+                    <div
+                      className={`w-20 h-20 rounded-xl bg-gray-50 border flex items-center justify-center overflow-hidden shrink-0 ${imageError ? "border-red-400" : "border-gray-200"
+                        }`}
+                    >
                       {imagePreview ? (
                         <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-1" />
                       ) : (
                         <Building2 className="text-gray-300" size={28} />
                       )}
                     </div>
-                    <label className="cursor-pointer px-4 py-2.5 text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all">
-                      Choose File
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                      />
-                    </label>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="cursor-pointer px-4 py-2.5 text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all w-fit">
+                        Choose File
+                        <input
+                          type="file"                         
+                          accept=".jpeg,.jpg,.png,image/jpeg,image/png"
+                          onChange={handleImageChange}
+                          className="hidden"
+                        />
+                      </label>
+                      {imageError ? (
+                        <p className="text-[10px] font-semibold text-red-500">{imageError}</p>
+                      ) : (
+                        <p className="text-[10px] text-gray-400">JPG, JPEG or PNG · Max 2MB</p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -236,7 +272,7 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-5 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
+                  className="px-5 py-2.5 text-sm font-bold shadow-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
                 >
                   Cancel
                 </button>

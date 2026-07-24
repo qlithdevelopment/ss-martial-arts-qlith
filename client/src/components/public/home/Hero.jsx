@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const REFERENCE_YEAR = 2026;
+  const currentYear = new Date().getFullYear();
+  const yearCount = (currentYear - REFERENCE_YEAR) +10;
 
   return (
     <section id="hero" className="relative w-full lg:py-0 min-h-screen overflow-hidden bg-bgColor pt-10">
@@ -47,7 +50,7 @@ const Hero = () => {
           ${videoLoaded ? "opacity-100" : "opacity-0"}
         `}
       >
-        <source src={heroVideo} type="video/mp4" 
+        <source src={heroVideo} type="video/mp4"
         />
       </video>
 
@@ -254,9 +257,9 @@ const Hero = () => {
               </button>
             </Link>
             {/* BTN 2 */}
-             <Link to="/services">
-            <button
-              className="
+            <Link to="/services">
+              <button
+                className="
                 px-6 lg:px-8
                 py-3 lg:py-4
 
@@ -283,9 +286,9 @@ const Hero = () => {
 
                 hover:bg-primary2/10
               "
-            >
-              Explore Training
-            </button>
+              >
+                Explore Training
+              </button>
             </Link>
           </motion.div>
 
@@ -303,7 +306,7 @@ const Hero = () => {
             {/* ITEM */}
             <div>
               <h3 className="text-4xl md:text-5xl font-black text-white">
-                10+
+                {yearCount}+
               </h3>
               <p className="text-gray-300 font-bold uppercase tracking-widest text-xs mt-2">
                 Years Experience

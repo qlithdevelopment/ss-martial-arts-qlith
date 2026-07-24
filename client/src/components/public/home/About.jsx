@@ -44,10 +44,10 @@ const About = () => {
                 className="flex flex-col justify-start mb-10 border-l-[3px] border-[#26c0ff] pl-6"
               >
                 <p className="text-gray-600 text-sm leading-relaxed mb-4 font-medium max-w-[90%]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos deleniti magnam perspiciatis dolorem error laboriosam necessitatibus, veniam debitis in! Ipsam animi officiis sapiente aspernatur hic repellat minus praesentium facilis.
+                 SS Martial Arts School is a trusted martial arts academy in Bhubaneswar, offering expert training in Karate, Taekwondo, Boxing, Kickboxing, MMA, and Self-Defense for all age groups. Our certified instructors provide structured training in a safe, supportive, and disciplined environment. We focus on building fitness, confidence, self-defense skills, and lifelong discipline through personalized coaching. Whether you're a beginner or an aspiring athlete, we help you achieve your goals and become stronger, healthier, and more confident.
                 </p>
                 <p className="text-gray-600 text-sm leading-relaxed font-medium max-w-[90%]">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit optio architecto tempore unde obcaecati in sequi id voluptatibus est, possimus, iste eaque officiis!
+                  
                 </p>
               </motion.div>
 
@@ -69,33 +69,30 @@ const About = () => {
                     <ul className="space-y-2 text-[12px] sm:text-[13px] text-gray-600 font-medium">
                       <li className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                        Build discipline, confidence, and resilience.
+                        Deliver high-quality martial arts training for all age groups.
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                        Focus on fitness and personal safety.
+                       Build confidence, discipline, fitness, and practical self-defense skills.
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                        Empower youth and women.
+                       Support every student in achieving their personal and fitness goals.
                       </li>
-                      <li className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                        Proudly support the Fit India movement.
-                      </li>
+                     
                     </ul>
                   </div>
                 </div>
 
                 {/* VISION */}
-                <div className="flex flex-col justify-start">
+                <div className="flex flex-col pb-7  justify-start">
                   <div className="relative">
                     <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
                       <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#26c0ff] z-[-1] opacity-90 mix-blend-multiply"></span>
                       VISION
                     </h3>
                     <p className="text-gray-600 leading-relaxed text-[12px] sm:text-[13px] font-medium pr-4">
-                      To enhance this initiative, the Trust is launching an Integrated Martial Arts Training Program in Bhubaneswar as well as other states of India to empower the next generation.
+                      Our vision is to make SS Martial Arts School the most trusted martial arts academy in Bhubaneswar by combining traditional values with modern training. We aim to inspire people of all ages to become stronger, more disciplined, and more confident in every aspect of life.
                     </p>
                   </div>
                 </div>

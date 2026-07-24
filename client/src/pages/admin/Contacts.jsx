@@ -173,7 +173,7 @@ const Contacts = () => {
     <div>
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div className="flex w-full md:w-auto items-center gap-4">
+        <div className="flex w-full md:w-full items-center gap-4">
           <button
             onClick={fetchContacts}
             className="p-2.5 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-lg transition-colors"
@@ -181,7 +181,7 @@ const Contacts = () => {
           >
             <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
           </button>
-          <div className="relative w-full md:w-64">
+          <div className="relative w-full md:w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"

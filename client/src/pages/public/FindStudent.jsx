@@ -37,7 +37,7 @@ const FindStudent = () => {
     const fetchStudents = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/students?search=${encodeURIComponent(debouncedQuery)}`);
+        const response = await api.get(`/findstudents?search=${encodeURIComponent(debouncedQuery)}`);
         const rawStudents = response?.data?.data || response.data;
         setStudents(Array.isArray(rawStudents) ? rawStudents : []);
       } catch (error) {

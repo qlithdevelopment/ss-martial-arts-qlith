@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, Mail, IndianRupee, IdCard, X, Save, Type, Lock, Activity, FileText, Eye, EyeOff, Award, RefreshCw } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Mail, IndianRupee, IdCard, X, Save, Type, Lock, Activity, FileText, Eye, EyeOff, Award, RefreshCw, User, Users, Calendar, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -8,17 +8,17 @@ import PaginationComponent from '../../components/PaginationComponent';
 import ConfirmModal from '../../components/admin/reusecomponents/ConfirmationModal';
 import AdminTable from '../../components/admin/reusecomponents/AdminTable';
 
+// Hardcoded branch/dojo list — no branches table/API, just a static list of names.
+
 const Students = () => {
   const [students, setStudents] = useState([]);
-  const [batches, setBatches] =useState([]);
+  const [batches, setBatches] = useState([]);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [isLoadingBatches, setIsLoadingBatches] = useState(true);
   const navigate = useNavigate();
 
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
@@ -29,30 +29,50 @@ const Students = () => {
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
 
-  const [formData, setFormData] = useState({
+  const emptyFormData = {
     name: '',
+    father_name: '',
+    mother_name: '',
+    gender: '',
+    date_of_birth: '',
+    height: '',
+    weight: '',
+    address: '',
+    mobile_number: '',
+    joining_date: '',
     email: '',
     reg_no: '',
     password: '',
     batch_id: '',
+    branch_id: '',
+    sensei: '',
     belt: '',
     total_fee: '',
     status: 1,
-    notes: ''
-  });
+    notes: '',
+    id_proof_name: '',
+    id_proof_number: ''
+  };
+
+  const [formData, setFormData] = useState(emptyFormData);
 
   const openCreateModal = () => {
     setSelectedStudent(null);
     setSearch('');
     fetchBatches();
-    setFormData({ name: '', reg_no: '', email: '', password: '', batch_id: '', belt: '', total_fee: '', status: 1, notes: '' });
+    setFormData(emptyFormData);
     setIsModalOpen(true);
   };
 
   const openEditModal = (student) => {
     setSelectedStudent(student);
     fetchBatches();
-    setFormData({ ...student, password: '', status: (student.status == '1' || student.status === true || student.status === 'true' || student.status === 'active') ? 1 : 0 });
+    setFormData({
+      ...emptyFormData,
+      ...student,
+      password: '',
+      status: (student.status == '1' || student.status === true || student.status === 'true' || student.status === 'active') ? 1 : 0
+    });
     setIsModalOpen(true);
   };
 
@@ -75,16 +95,12 @@ const Students = () => {
 
   const fetchBatches = async () => {
     try {
-      setIsLoadingData(true);
       const res = await api.get(`/batches`);
-      setBatches(res?.data?.data || res.data || []);      
+      setBatches(res?.data?.data || res.data || []);
     } catch (err) {
       toast.error('Failed to load batches');
-    } finally {
-      setIsLoadingData(false);
     }
   };
-
 
   const fetchStudents = async () => {
     try {
@@ -187,6 +203,16 @@ const Students = () => {
       ),
     },
     {
+      header: 'Branch / Dojo',
+      accessor: 'branch_id',
+      skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
+      render: (_, row) => (
+        <span className="inline-flex items-center gap-1 px-1 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-semibold">
+          {row.branch_name || 'Unassigned'}
+        </span>
+      ),
+    },
+    {
       header: 'Total Fee',
       accessor: 'total_fee',
       skeleton: () => <div className="h-5 bg-gray-200 rounded w-16"></div>,
@@ -263,13 +289,7 @@ const Students = () => {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <button
-            onClick={fetchStudents}
-            className="p-3 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-xl transition-colors hidden lg:flex items-center justify-center shrink-0"
-            title="Refresh Students"
-          >
-            <RefreshCw size={20} className={isLoadingData ? 'animate-spin' : ''} />
-          </button>
+
           <button
             onClick={openCreateModal}
             className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
@@ -291,12 +311,13 @@ const Students = () => {
       />
       <div className="mt-8">
         {!loading && students.length > 0 && pagination?.total > 0 && (
-        <PaginationComponent
-          pagination={pagination}
-          onPageChange={(newPage) => setPage(newPage)}
-        />
+          <PaginationComponent
+            pagination={pagination}
+            onPageChange={(newPage) => setPage(newPage)}
+          />
         )}
       </div>
+
       {/* Modal */}
       <AnimatePresence>
         {isModalOpen && (
@@ -316,7 +337,7 @@ const Students = () => {
               className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
             >
               <div
-                className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-2xl flex flex-col max-h-[85dvh] pointer-events-auto overflow-hidden"
+                className="bg-white w-full max-w-3xl rounded-[1.5rem] shadow-2xl flex flex-col max-h-[90dvh] pointer-events-auto overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-100 shrink-0">
@@ -339,6 +360,11 @@ const Students = () => {
                 <form onSubmit={handleSave} className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+                    {/* ===== PERSONAL DETAILS ===== */}
+                    <div className="md:col-span-2">
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">Personal Details</p>
+                    </div>
+
                     <div className="md:col-span-2 flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                         <Type size={12} className="text-[#f97316]" /> FULL NAME *
@@ -357,6 +383,152 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <User size={12} className="text-[#f97316]" /> FATHER'S NAME
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Robert Doe"
+                        value={formData.father_name}
+                        onChange={(e) => setFormData({ ...formData, father_name: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Users size={12} className="text-[#f97316]" /> MOTHER'S NAME
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Jane Doe"
+                        value={formData.mother_name}
+                        onChange={(e) => setFormData({ ...formData, mother_name: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Activity size={12} className="text-[#f97316]" /> GENDER
+                      </label>
+                      <select
+                        value={formData.gender}
+                        onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Calendar size={12} className="text-[#f97316]" /> DATE OF BIRTH
+                      </label>
+                      <input
+                        type="date"
+                        value={formData.date_of_birth}
+                        onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Ruler size={12} className="text-[#f97316]" /> HEIGHT (cm)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        placeholder="e.g. 165"
+                        value={formData.height}
+                        onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Weight size={12} className="text-[#f97316]" /> WEIGHT (kg)
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        placeholder="e.g. 60"
+                        value={formData.weight}
+                        onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Phone size={12} className="text-[#f97316]" /> MOBILE NUMBER
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        value={formData.mobile_number}
+                        onChange={(e) => setFormData({ ...formData, mobile_number: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2 flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <MapPin size={12} className="text-[#f97316]" /> ADDRESS
+                      </label>
+                      <textarea
+                        rows="2"
+                        placeholder="Full residential address"
+                        value={formData.address}
+                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      ></textarea>
+                    </div>
+
+                    {/* ===== IDENTITY PROOF ===== */}
+                    <div className="md:col-span-2 pt-2">
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">Identity Proof</p>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <ScanLine size={12} className="text-[#f97316]" /> ID PROOF NAME
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Aadhar Card"
+                        value={formData.id_proof_name}
+                        onChange={(e) => setFormData({ ...formData, id_proof_name: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <IdCard size={12} className="text-[#f97316]" /> ID PROOF NUMBER
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. XXXX-XXXX-XXXX"
+                        value={formData.id_proof_number}
+                        onChange={(e) => setFormData({ ...formData, id_proof_number: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
+                    </div>
+
+                    {/* ===== ACCOUNT & ACADEMY DETAILS ===== */}
+                    <div className="md:col-span-2 pt-2">
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">Account & Academy Details</p>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                         <Mail size={12} className="text-[#f97316]" /> EMAIL ADDRESS *
                       </label>
                       <input
@@ -368,9 +540,10 @@ const Students = () => {
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
+
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IdCard size={12} className="text-[#f97316]" /> registration no
+                        <IdCard size={12} className="text-[#f97316]" /> REGISTRATION NO
                       </label>
                       <input
                         type="text"
@@ -408,6 +581,18 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Calendar size={12} className="text-[#f97316]" /> JOINING DATE
+                      </label>
+                      <input
+                        type="date"
+                        value={formData.joining_date}
+                        onChange={(e) => setFormData({ ...formData, joining_date: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                         <Activity size={12} className="text-[#f97316]" /> ASSIGN BATCH *
                       </label>
                       <select
@@ -421,6 +606,48 @@ const Students = () => {
                           <option key={batch.id} value={batch.id}>{batch.name}</option>
                         ))}
                       </select>
+                    </div>
+
+                    {/* <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Building2 size={12} className="text-[#f97316]" /> ADMISSION DOJO (BRANCH)
+                      </label>
+                      <select
+                        value={formData.branch_id || ''}
+                        onChange={(e) => setFormData({ ...formData, branch_id: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
+                      >
+                        <option value="">Select a Branch</option>
+                        {BRANCHES.map(branch => (
+                          <option key={branch} value={branch}>{branch}</option>
+                        ))}
+                      </select>
+                    </div> */}
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <Building2 size={12} className="text-[#f97316]" /> ADMISSION DOJO (BRANCH)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.branch_id || ''}
+                        onChange={(e) => setFormData({ ...formData, branch_id: e.target.value })}
+                        placeholder="Enter branch name"
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                        <UserCog size={12} className="text-[#f97316]" /> SENSEI (COACH)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Siddharth Kumar Sahoo"
+                        value={formData.sensei}
+                        onChange={(e) => setFormData({ ...formData, sensei: e.target.value })}
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
+                      />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -496,7 +723,7 @@ const Students = () => {
                       type="button"
                       onClick={() => setIsModalOpen(false)}
                       disabled={loading}
-                      className="px-5 py-2.5 text-sm font-bold cursor-pointer text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-5 py-2.5 text-sm shadow-sm font-bold cursor-pointer text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Cancel
                     </button>

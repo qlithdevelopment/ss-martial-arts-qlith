@@ -16,37 +16,71 @@ import generatedTrainer3Img from "../assets/yoga_master_bgrm.png";
 export const programsData = [
   {
     id: 1,
-    tag: "Access All Areas",
-    title: "MEMBERSHIPS",
+    tag: "karate classes near me",
+    title: "Karate",
     bullets: [
-      "Flexible monthly plans",
-      "Unlimited facility access",
-      "Open mat sessions included"
+      "Structured Karate training for kids and adults",
+      "focusing on discipline, technique, and belt",
+      "progression — ideal for anyone searching for"
     ],
     image: membershipsImg, 
   },
   {
     id: 2,
-    tag: "1-on-1 Coaching",
-    title: "PERSONAL TRAINING",
+    tag: "taekwondo classes near me",
+    title: "Taekwondo",
     bullets: [
-      "Elite instructor guidance",
-      "Custom training regimen",
-      "Accelerated goal tracking"
+      "Dynamic, kick-focused Taekwondo classes that ",
+      "build flexibility, speed, and confidence — a top",
+      
     ],
     image: personalTrainingImg,
   },
   {
     id: 3,
-    tag: "Group Sessions",
-    title: "CLASSES",
+    tag: "",
+    title: "Boxing",
     bullets: [
-      "Striking & Grappling",
-      "High-intensity fitness",
-      "All skill levels welcome"
+      "High-energy boxing training covering footwork",
+      "striking technique, and conditioning for fitness",
+      "competition alike"
     ],
     image: groupClassesImg,
-  }
+  },
+  {
+    id: 4,
+    tag: "Group Sessions",
+    title: "Kickboxing",
+    bullets: [
+      "A powerful blend of striking and cardio",
+      "conditioning, perfect for those wanting a full-body",
+      "workout with real self-defense value"
+    ],
+    image: groupClassesImg,
+  },
+  {
+    id: 5,
+    tag: "mma classes near me",
+    title: "MMA (Mixed Martial Arts)",
+    bullets: [
+      "Comprehensive training that blends striking",
+      "well-rounded combat skills.",
+      
+    ],
+    image: groupClassesImg,
+  },
+  {
+    id: 5,
+    tag: "",
+    title: "Self-Defense",
+    bullets: [
+      "Practical, real-world self-defense classes for all ages",
+      "designed for everyday safety and personal confidence.",
+      
+    ],
+    image: groupClassesImg,
+  },
+  
 ];
 
 // ==========================================

@@ -67,9 +67,7 @@ const Contact = () => {
             title="LET'S"
             highlight="WORK"            
           />          
-          <p className="text-gray-300 max-w-2xl text-lg font-medium">
-            Ready to begin your journey? Whether you have questions about our programs, want to schedule a trial, or are interested in private coaching, we are here to help.
-          </p>
+          
         </motion.div>
       </div>
 
@@ -127,14 +125,12 @@ const Contact = () => {
           </div>
 
           {/* Let's Work Together Banner */}
-          <div className="bg-[#26c0ff] border border-[#26c0ff] rounded-2xl p-6 flex items-center justify-between shadow-lg">
+          <div className="bg-[#26c0ff] border border-[#26c0ff] rounded-2xl p-6 flex items-center justify-center text-center shadow-lg">
             <div>
               <h4 className="text-black font-black text-xl uppercase tracking-tight mb-1">Start Training Today</h4>
               <p className="text-black/80 font-bold text-xs">Join the elite rank of our academy.</p>
             </div>
-            <div className="w-14 h-14 bg-[#f9fafb] rounded-xl p-1 shrink-0 shadow-sm flex items-center justify-center border border-white/10">
-              <span className="text-[9px] font-bold text-[#26c0ff] text-center uppercase tracking-widest leading-none">Scan<br />To<br />Join</span>
-            </div>
+            
           </div>
         </motion.div>
 

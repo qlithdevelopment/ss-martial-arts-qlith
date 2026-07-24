@@ -76,10 +76,10 @@ const Footer = () => {
           <div className="col-span-1 ml-10 md:ml-0">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Programs</h4>
             <ul className="flex flex-col gap-1.5 md:gap-3">
-              {['Adult Martial Arts', 'Youth Classes', 'Private Coaching'].map((link) => (
+              {['Karate', 'Taekwondo', 'Boxing','Kickboxing','MMA (Mixed Martial Arts)','Self-Defense'].map((link) => (
                 <li key={link}>
                   <Link 
-                    to="/services" 
+                    to="/allprograms" 
                     className="text-secondary hover:text-primary transition-colors duration-300 text-[10px] md:text-sm font-medium"
                   >
                     {link}
@@ -95,11 +95,11 @@ const Footer = () => {
             <ul className="flex flex-col gap-2 md:gap-4 text-[10px] md:text-sm text-secondary">
               <li className="flex items-start gap-2 md:gap-3">
                 <MapPin className="text-primary mt-0.5 md:mt-1 w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                <span>near Ekramra College, Sundarpada, Bhubaneswar, Odisha 751002</span>
+                <span>Near Ekramra College, Sundarpada, Bhubaneswar, Odisha 751002</span>
               </li>
               <li className="flex items-center gap-2 md:gap-3">
                 <Phone className="text-primary w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                <span>9090224658</span>
+                <span>+91 9090224658</span>
               </li>
               <li className="flex items-center gap-2 md:gap-3">
                 <Mail className="text-primary w-4 h-4 md:w-5 md:h-5 shrink-0" />

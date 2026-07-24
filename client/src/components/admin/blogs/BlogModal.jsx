@@ -43,6 +43,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
   });
 
   const [featuredImage, setFeaturedImage] = useState(null);
+  const [featuredImageError, setFeaturedImageError] = useState("");
   const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
 
   const [contentBlocks, setContentBlocks] = useState([
@@ -67,6 +68,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
     });
     setFeaturedImage(null);
     setFeaturedImagePreview(blog.featured_image ? blog.featured_image : null);
+    setFeaturedImageError("");
 
     // Parse array of tags safely and assign color mappings
     if (blog.meta_keywords) {
@@ -109,6 +111,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
     });
     setFeaturedImage(null);
     setFeaturedImagePreview(null);
+    setFeaturedImageError("");
     setTags([]);
     setTagInput('');
     setContentBlocks([{ title: '', description: [''], keypoints: [''], image: null, preview: null }]);
@@ -153,13 +156,27 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
     if (!file) return;
 
     if (!['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(file.type)) {
-      toast.error('Only JPG, JPEG, PNG, or WEBP are allowed');
+      if (index === null) {
+        setFeaturedImageError('Only JPG, JPEG, PNG, or WEBP are allowed');
+      } else {
+        toast.error('Only JPG, JPEG, PNG, or WEBP are allowed');
+      }
+      e.target.value = "";
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('Image size must be less than 1MB');
+      if (index === null) {
+        setFeaturedImageError('Image size must be less than 1MB');
+      } else {
+        toast.error('Image size must be less than 1MB');
+      }
+      e.target.value = "";
       return;
+    }
+
+    if (index === null) {
+      setFeaturedImageError("");
     }
 
     const previewUrl = URL.createObjectURL(file);
@@ -179,6 +196,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
     if (index === null) {
       setFeaturedImage(null);
       setFeaturedImagePreview(null);
+      setFeaturedImageError("");
     } else {
       const newBlocks = [...contentBlocks];
       newBlocks[index].image = null;
@@ -316,6 +334,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
           return;
         }
         if (!featuredImagePreview) {
+          setFeaturedImageError('Please upload a featured image');
           toast.error('Please upload a Featured Header Image.');
           return;
         }
@@ -410,6 +429,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
 
   const handleClose = () => {
     if (loading) return;
+    setFeaturedImageError("");
     onClose();
   };
 
@@ -479,7 +499,9 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-1">
                     <label className="block text-xs font-semibold text-gray-700 mb-1.5">Featured Header Image {!isEditMode && '*'}</label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors relative h-[220px] flex flex-col items-center justify-center overflow-hidden group">
+                    <div className={`border-2 border-dashed rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors relative h-[220px] flex flex-col items-center justify-center overflow-hidden group ${
+                      featuredImageError ? 'border-red-400 bg-red-50/50' : 'border-gray-300'
+                    }`}>
 
                       {featuredImagePreview ? (
                         <>
@@ -499,6 +521,9 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
                         </div>
                       )}
                     </div>
+                    {featuredImageError && (
+                      <p className="text-[10px] font-semibold text-red-500 mt-1.5">{featuredImageError}</p>
+                    )}
                   </div>
 
                   <div className="lg:col-span-2 space-y-4">
@@ -506,7 +531,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
                       <label className="block text-xs font-semibold text-gray-700 mb-1">Blog Title *</label>
                       <input type="text" name="title" value={formData.title} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Enter title" required />
                     </div>
-                                        
+
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-1">Category *</label>
                       <select
@@ -578,7 +603,7 @@ const BlogModal = ({ isOpen, onClose, blogId = null, fetchBlogs }) => {
                             ) : (
                               <div className="text-center p-2">
                                 <Upload size={18} className="mx-auto text-gray-400 mb-1" />
-                                <span className="text-[10px] text-gray-500 block">Max: 1MB</span>
+                                <span className="text-[10px] text-gray-500 block">PNG, JPG, JPEG, WEBP (Max 1MB)</span>
                                 <input type="file" accept="image/png, image/jpeg, image/jpg, image/webp" onChange={(e) => handleImageSelect(e, idx)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                               </div>
                             )}

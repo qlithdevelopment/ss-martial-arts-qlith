@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { historyData, achievementsData } from '../../../data/aboutData';
+import { Link } from 'react-router-dom';
 
 const AboutHistory = () => {
   return (
@@ -74,6 +75,7 @@ const AboutHistory = () => {
             </div>
             
             {/* Call to action decorative banner */}
+            <Link to="/contact">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -84,6 +86,7 @@ const AboutHistory = () => {
               <h4 className="text-xl font-black uppercase mb-1">Join the Legacy</h4>
               <p className="text-sm text-gray-300 font-medium">Be part of our next championship team.</p>
             </motion.div>
+            </Link>
             
           </div>
 

@@ -62,6 +62,7 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
   const [expertise, setExpertise] = useState(['']);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageError, setImageError] = useState("");
   const [existingTrainerId, setExistingTrainerId] = useState(null); // used for the PUT url
 
   // ── Parse array from API (handles array or JSON string) ──────────────────────
@@ -89,6 +90,7 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
     setImagePreview(trainer.image_path ? `${BASE_URL}${trainer.image_path}` : null);
     setImage(null);
     setExistingTrainerId(trainer.id);
+    setImageError("");
   };
 
   const resetForm = () => {
@@ -98,6 +100,7 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
     setImage(null);
     setImagePreview(null);
     setExistingTrainerId(null);
+    setImageError("");
   };
 
   // ── Fetch trainer by id ────────────────────────────────────────────────────────
@@ -154,21 +157,30 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
   const handleImageSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     if (!validTypes.includes(file.type)) {
-      toast.error('Only JPG, JPEG, PNG, or WEBP files are allowed');
+      setImageError('Only JPG, JPEG, PNG, or WEBP files are allowed');
+      e.target.value = "";
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Image size must be less than 2MB');
+      setImageError('Image size must be less than 2MB');
+      e.target.value = "";
       return;
     }
+
+    setImageError("");
     setImage(file);
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
   };
-  const removeImage = () => { setImage(null); setImagePreview(null); };
+
+  const removeImage = () => {
+    setImage(null);
+    setImagePreview(null);
+  };
 
   // ── Build FormData payload from current form state ───────────────────────────
   const buildPayload = () => {
@@ -221,6 +233,11 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
       toast.error('Designation is required');
       return;
     }
+    if (!imagePreview) {
+      setImageError('Please select a profile photo');
+      toast.error('Please select a profile photo');
+      return;
+    }
     if (!achievements.some((a) => a.trim() !== '')) {
       toast.error('At least one achievement is required');
       return;
@@ -238,7 +255,6 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
       } else {
         await createTrainer();
       }
-
 
       try {
         await fetchTrainers();
@@ -323,7 +339,6 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
                         required
                         value={formData.name}
                         onChange={handleInputChange}
-                        required
                         placeholder="e.g. John Doe"
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
                       />
@@ -338,7 +353,6 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
                         required
                         value={formData.designation}
                         onChange={handleInputChange}
-                        required
                         placeholder="e.g. Head Sensei"
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder:text-gray-400"
                       />
@@ -348,7 +362,7 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
                   {/* Image Upload */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                      <Upload size={12} className="text-orange-500" /> PROFILE PHOTO
+                      <Upload size={12} className="text-orange-500" /> PROFILE PHOTO *
                       <span className="text-gray-400 normal-case tracking-normal font-medium">(Max 2MB · JPG, PNG, WEBP)</span>
                     </label>
                     <div className="flex items-center gap-4">
@@ -362,10 +376,13 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
                         />
                         <label
                           htmlFor="trainer-image-upload"
-                          className={`flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${imagePreview
-                            ? 'border-gray-200 bg-gray-50'
-                            : 'border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-500'
-                            }`}
+                          className={`flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${
+                            imageError
+                              ? 'border-red-400 bg-red-50/50'
+                              : imagePreview
+                              ? 'border-gray-200 bg-gray-50'
+                              : 'border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-500'
+                          }`}
                         >
                           {imagePreview ? (
                             <>
@@ -393,10 +410,15 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
                           </button>
                         )}
                       </div>
-                      <p className="text-xs text-gray-400 leading-relaxed">
-                        Click the box to upload a profile photo.<br />
-                        Recommended: square image, at least 300×300px.
-                      </p>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-gray-400 leading-relaxed">
+                          Click the box to upload a profile photo.<br />
+                          Recommended: square image, at least 300×300px.
+                        </p>
+                        {imageError && (
+                          <p className="text-[10px] font-semibold text-red-500">{imageError}</p>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -465,7 +487,7 @@ const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
                   type="button"
                   onClick={handleClose}
                   disabled={loading}
-                  className="px-5 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
+                  className="px-5 py-2.5 text-sm font-bold shadow-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
                 >
                   Cancel
                 </button>

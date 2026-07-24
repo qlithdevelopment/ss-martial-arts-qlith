@@ -91,21 +91,10 @@ const Dashboard = () => {
 
   return (
     <div className="animate-fadeIn max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">Dashboard Overview</h1>
-          <p className="text-gray-500 font-medium mt-1">Welcome back! Here is what's happening at your academy today.</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={fetchDashboardData}
-            disabled={loading}
-            className="p-2.5 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-lg transition-colors hidden lg:flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Refresh Dashboard"
-          >
-            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-            <span className="font-bold text-sm hidden lg:block">Refresh</span>
-          </button>
+      <div className="flex flex-col md:flex-row justify-end items-start md:items-center mb-4 gap-4">
+        
+        <div className="flex items-end justify-end gap-4">
+          
         </div>
       </div>
 

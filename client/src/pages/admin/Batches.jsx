@@ -219,13 +219,7 @@ const Batches = () => {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <button
-            onClick={fetchBatches}
-            className="p-3 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-xl transition-colors hidden lg:flex items-center justify-center shrink-0"
-            title="Refresh Batches"
-          >
-            <RefreshCw size={20} className={isLoadingData ? 'animate-spin' : ''} />
-          </button>
+          
           <button
             onClick={openCreateModal}
             className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
@@ -391,7 +385,7 @@ const Batches = () => {
                       type="button"
                       onClick={() => setIsModalOpen(false)}
                       disabled={loading}
-                      className="px-5 py-2.5 text-sm font-bold cursor-pointer text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-5 py-2.5 text-sm font-bold cursor-pointer shadow-sm text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Cancel
                     </button>

@@ -173,7 +173,7 @@ console.log("max value:", faqsLength + 1);
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
+                  className="px-5 py-2.5 shadow-sm text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
                 >
                   Cancel
                 </button>

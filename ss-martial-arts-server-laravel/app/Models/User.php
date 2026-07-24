@@ -12,14 +12,27 @@ use Laravel\Sanctum\HasApiTokens;
 
 #[Fillable([
     'name',
+    'father_name',
+    'mother_name',
+    'gender',
+    'date_of_birth',
+    'height',
+    'weight',
+    'address',
+    'mobile_number',
+    'joining_date',
     'email',
     'reg_no',
     'password',
     'role',
     'batch_id',
+    'branch_id', // Admission Dojo (branch)
+    'sensei', // Teacher/Coach
     'belt', // Dynamic optional string mapping
     'total_fee',
     'notes',
+    'id_proof_name',
+    'id_proof_number',
     'status',
 ])]
 #[Hidden(['password', 'remember_token'])]
