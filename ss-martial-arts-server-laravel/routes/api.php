@@ -13,6 +13,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\TestimonialController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -41,6 +42,7 @@ Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 Route::get('/findstudents', [StudentController::class, 'findstudent']);
 Route::get('/affiliations', [AffiliationController::class, 'index']);
 
+Route::get('/testimonials', [TestimonialController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -95,4 +97,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/affiliations', [AffiliationController::class, 'store']);
     Route::put('/affiliations/{id}', [AffiliationController::class, 'update']);
     Route::delete('/affiliations/{id}', [AffiliationController::class, 'destroy']);
+
+    Route::post('/testimonials', [TestimonialController::class, 'store']);
+    Route::get('/testimonials/{testimonial}', [TestimonialController::class, 'show']);
+    Route::put('/testimonials/{testimonial}', [TestimonialController::class, 'update']);
+    Route::patch('/testimonials/{testimonial}', [TestimonialController::class, 'update']);
+    Route::delete('/testimonials/{testimonial}', [TestimonialController::class, 'destroy']);
 });
