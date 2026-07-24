@@ -41,14 +41,9 @@ const AboutInstructor = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, delay: 0.2 }}
-            className="bg-[#26c0ff] rounded-[20px] p-5 flex items-center gap-4 shrink-0 shadow-lg"
+            className="bg-[#26c0ff] rounded-[20px] p-5 flex justify-center items-center gap-4 shrink-0 shadow-lg"
           >
-            <div className="w-14 h-14 bg-white rounded-[10px] p-1 shrink-0">
-              {/* QR Code Placeholder */}
-              <div className="w-full h-full flex items-center justify-center">
-                <QrCode className="w-10 h-10 text-gray-800" strokeWidth={1.5} />
-              </div>
-            </div>
+            
             <div>
               <h4 className="text-[#0b1b24] font-black text-base mb-1">Let's Work Together :</h4>
               <div className="space-y-1">
@@ -107,7 +102,7 @@ const AboutInstructor = () => {
                 {instructorData.details.map((item, idx) => (
                   <div key={idx} className="flex flex-col">
                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-0.5">{item.label}</span>
-                    <span className="text-sm font-bold text-gray-200">{item.value}</span>
+                    <span className="text-sm font-bold whitespace-pre-line text-gray-200">{item.value}</span>
                   </div>
                 ))}
               </div>

@@ -5,55 +5,56 @@ import generatedTrainerImg from "../assets/generated_trainer2.png";
 // ==========================================
 export const aboutIntroData = {
   paragraphs: [
-    "Welcome to a sanctuary of discipline, strength, and transformation. Our academy is built on the profound philosophy that martial arts is not merely a method of combat, but a lifelong journey toward self-mastery. We provide an environment where physical conditioning meets mental fortitude, forging individuals who are prepared to face any challenge both inside and outside the dojo.",
-    "Our curriculum integrates time-tested traditional techniques with modern athletic science. We believe that true power comes from precision, focus, and unwavering dedication. Whether you are stepping onto the mat for the first time or looking to elevate your competitive career, our training programs are rigorously designed to push your limits and unlock your highest potential.",
-    "Beyond kicks and strikes, we foster a culture of profound respect and community. We are dedicated to creating a safe, empowering space for students of all ages and backgrounds to learn the invaluable skills of self-defense, build lasting confidence, and cultivate an indomitable spirit that will resonate through every aspect of their lives."
+    `SS Martial Arts School is a leading martial arts academy in Bhubaneswar, offering professional training in Karate, Taekwondo, Boxing, Kickboxing, MMA, and Self-Defense. We provide structured programs for children, teenagers, and adults, making us a trusted choice for anyone searching for martial arts classes near me, martial arts in Bhubaneswar, karate classes in Bhubaneswar, or MMA classes near me.
+
+Our certified instructors focus on building strength, discipline, confidence, and self-defense skills in a safe, supportive, and motivating environment. Whether you're a complete beginner, looking to improve your fitness, or preparing for competitions, our personalized training programs are designed to help you achieve your goals.
+
+At SS Martial Arts School, we believe martial arts is more than just learning techniques—it's about developing physical fitness, mental resilience, self-confidence, and lifelong discipline. Join one of the best martial arts academies in Bhubaneswar and begin your journey toward a healthier, stronger, and more confident you.`
   ],
-  mission: "Our core mission is to profoundly empower our students through the pillars of discipline, unshakable confidence, and deep resilience. We strive to cultivate a supportive, family-like community while championing physical fitness and personal safety—especially for youth and women across our region. We are also proud participants in national fitness initiatives.",
-  vision: "We envision expanding our transformative impact by launching comprehensive, Integrated Martial Arts Training Programs not only throughout our home city, but expanding across multiple regions to build a nationwide community of martial artists."
+  mission: `At SS Martial Arts School, our mission is to make high-quality martial arts training accessible to people of all ages and skill levels in Bhubaneswar. We provide expert coaching in Karate, Taekwondo, Boxing, Kickboxing, MMA, and Self-Defense in a safe and supportive environment. Our programs are designed to build confidence, discipline, physical fitness, and practical self-defense skills. Whether you're a beginner or an experienced athlete, we help you achieve your personal and fitness goals. Our commitment is to empower every student to become stronger, healthier, and more confident through martial arts.`,
+  vision: `At SS Martial Arts School, our vision is to be the most trusted martial arts academy in Bhubaneswar, offering world-class training in a safe and supportive environment. We combine traditional martial arts values with modern coaching methods to help students build confidence, discipline, and physical strength. Our goal is to create a community of respectful, resilient, and motivated individuals who carry these values into their everyday lives. Through expert guidance, we inspire children, teenagers, and adults to become healthier, stronger, and more confident—both on and off the mat.`
 };
 
 // ==========================================
 // INSTRUCTOR DATA (New Style)
 // ==========================================
 export const instructorData = {
-  name: "MASTER ALEX MERCER",
+  name: "Siddharth Kumar Sahoo",
   subtitle: "PRESIDENT / CHIEF INSTRUCTOR",
   photo: generatedTrainerImg,
   stats: [
-    { value: "30+", label: "YEARS" },
-    { value: "10K+", label: "STUDENTS" },
-    { value: "7TH", label: "DAN" }
+    { value: "10+", label: "YEARS" },
+    { value: "1000K+", label: "STUDENTS" },
+    { value: "9TH", label: "DAN" }
   ],
   details: [
-    { label: "Qualification", value: "BSc Sports Science & Kinesiology" },
-    { label: "Role", value: "National Head Coach & Master Trainer" },
-    { label: "Specialty", value: "Advanced Striking & Grappling" },
-    { label: "Certifications", value: "Elite Level Combat Sports Certified" },
-    { label: "President", value: "Regional Martial Arts Association" },
-    { label: "Black Belt", value: "7th Dan (Karate & Kickboxing)" },
-    { label: "Institution", value: "SS Martial Arts Academy" },
-    { label: "Phone", value: "+1 (555) 123-4567" },
-    { label: "Email", value: "alex.mercer@ssmartialarts.com" }
+    { label: "Background/Training History", value: "Karate, Shaolin Kung-fu, Taekwondo, Pencak Silat, Kick-boxing, Mixed Martial Arts (MMA), Gymnastics (Only Flips), Boxing, Weapons, Wushu, Self-defense, Muay Thai — attended training camps Pan India." },
+    {
+      label: "Personal Philosophy/Quote", value: `Your Belt Never Decides Your Position, but Your Practice and Mindset Can.
+
+       ~ Siddharth Kumar Sahoo ~` },
+    { label: "Role", value: "Founder & Chief Instructor" },
+    { label: "Institute", value: "SS Martialarts School" },
+
+
+
   ],
-  experience: "With a lifelong passion ignited in childhood, our Chief Instructor brings over 30 years of elite coaching experience to the mat. Throughout his distinguished career, he has successfully trained and mentored countless state, national, and international athletes, consistently bringing profound recognition and championship medals to our academy.",
+  experience: "With a passion for martial arts and a commitment to nurturing discipline in the next generation, our founder established SS Martial Arts School to bring authentic, high-quality training to Bhubaneswar — making it easier than ever for locals to find trustworthy *karate classes near me* and *karate schools near me* without having to look far.",
+
   achievements: [
-    "Gold – World Martial Arts Championship 2010",
-    "Silver – International Combat Sports Open 2012",
-    "Best Master Instructor Award – National Sports Federation",
-    "Physical Education & Sports Excellence Award",
-    "International Referee Certifications (Tier 1)",
-    "Member – Global Referee Council",
-    "Coach – National Team 2013 (15 medals)",
-    "A1 Certified Coach – Global MMA Federation",
-    "Black Belt 7th Dan – World Karate Association",
-    "Technical Director – Regional Kickboxing Federation",
-    "Over 10,000+ Students trained Nationally & Abroad"
+    "Asian Taekwondo Championship 2025 (Triple Gold Achiever)",
+    "International Karate Championship (Gold Medal)",
+    "The International Best Teacher Award 2023 in the category of Sports Coaching and Social Work",
+    "International Icon Award 2024",
+    "9th Dan Black Belt (IKMO Japan)",
+    "8th Dan Taekwondo Korea",
+    "Shaolin Kung-fu 7th Dan Black Belt (KIO Approved)",
+    "Kick-Boxing 2nd Dan Black Belt",
   ],
   badges: [
-    "7TH DAN CERTIFIED",
-    "INTERNATIONAL REFEREE",
-    "10,000+ STUDENTS"
+    "9TH DAN CERTIFIED",
+    "National Kick-boxing Judge",
+    "1000K+ Students Trained"
   ]
 };
 
@@ -65,39 +66,39 @@ import judoThrowImg from "../assets/Picsart_26-06-08_13-20-53-998.png";
 export const featuresCenterImage = judoThrowImg;
 
 export const featuresLeft = [
+  
   {
     number: "01",
-    title: "Best Quality Education",
-    desc: "Comprehensive curriculum covering fundamentals to advanced techniques with precision."
+    title: "Wide Range of Disciplines",
+    desc: "From traditional Karate and Taekwondo to modern Kickboxing, Boxing, and MMA, all under one roof."
   },
   {
     number: "02",
-    title: "Elite Environment",
-    desc: "Train in a facility designed for champions, equipped with top-tier mats and gear."
+    title: "Focus on Self-Defense",
+    desc: "Practical, real-world self-defense training integrated into every discipline."
   },
   {
     number: "03",
-    title: "Discipline & Focus",
-    desc: "Develop mental fortitude that translates into all areas of your personal and professional life."
-  }
+    title: "Safe, Disciplined Environment",
+    desc: "A clean, well-equipped facility that prioritizes safety and structured learning."
+  },
+  
 ];
 
 export const featuresRight = [
+
   {
     number: "04",
-    title: "Professional Coaches",
-    desc: "Learn directly from national champions and internationally recognized black belts."
+    title: "All Age Groups Welcome",
+    desc: "Structured batches for kids, teens, and adults searching for *martial arts classes near me* at every stage of life."
   },
   {
     number: "05",
-    title: "Self Defense",
-    desc: "Practical, real-world self-defense strategies tailored for modern scenarios."
+    title: "Certified & Experienced Instructors",
+    desc: "Learn from trainers with real competitive and teaching experience across Karate, Boxing, and MMA disciplines."
   },
-  {
-    number: "06",
-    title: "Community & Respect",
-    desc: "Join a brotherhood of martial artists built on mutual respect and unwavering support."
-  }
+
+
 ];
 
 // ==========================================
@@ -105,34 +106,34 @@ export const featuresRight = [
 // ==========================================
 export const historyData = [
   {
-    year: "2015",
+    year: "2016",
     title: "Foundation",
-    desc: "The academy was founded with a small class of 10 dedicated students in a community center."
+    desc: "Every great academy has a story. SS Martial Arts School began with a simple vision — to provide authentic martial arts education to students of all ages. We believe that martial arts is not just about learning to fight — it is a way of life that develops discipline, confidence, respect, mental strength, and strong character."
   },
   {
-    year: "2018",
-    title: "National Recognition",
-    desc: "Our competitive team brought home 5 gold medals from the National Championships."
+    year: "",
+    title: "",
+    desc: "We do not teach martial arts merely for entertainment or competition. Our mission is to help every student become physically stronger, mentally resilient, and emotionally confident while learning practical self-defense skills that can be applied in real-life situations."
   },
   {
-    year: "2021",
-    title: "Facility Expansion",
-    desc: "Moved into our current 10,000 sq ft state-of-the-art training facility."
+    year: "",
+    title: "",
+    desc: "To inspire people of all ages through authentic martial arts education, empowering them with confidence, discipline, practical self-defense skills, strong character, and a lifelong commitment to personal excellence. ~ Siddharth Kumar Sahoo"
   },
   {
-    year: "2024",
-    title: "Global Reach",
-    desc: "Hosted the first international martial arts seminar featuring world-renowned masters."
+    year: "",
+    title: "",
+    desc: "From humble beginnings to becoming a recognized name among those searching for *martial arts Bhubaneswar*, our journey has been shaped by the dedication of our instructors and the trust of hundreds of students and families in the community."
   }
 ];
 
 export const achievementsData = [
-  "WUMF National Champions 2018",
-  "Best Martial Arts School - State Awards 2020",
-  "Over 50+ Black Belts Graduated",
-  "International Kickboxing Gold Medallists",
-  "100% Women's Self Defense Seminar Success Rate",
-  "Fit India Movement Certified Partner"
+  "Asian Taekwondo Championship 2025 - Triple Gold",
+  "International Karate Championship - Gold Medal",
+  "International Best Teacher Award 2023",
+  "International Icon Award 2024",
+  "500 - 1000K+ Students Trained",
+  "Taekwondo International Judge & National Kick-boxing Judge"
 ];
 
 // ==========================================

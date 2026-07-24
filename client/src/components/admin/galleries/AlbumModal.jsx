@@ -29,6 +29,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
   const [galleryImages, setGalleryImages] = useState([]);
   const [galleryPreviews, setGalleryPreviews] = useState([]);
   const [oldImages, setOldImages] = useState([]);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -85,8 +86,6 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
   // Whichever limit is tighter wins
   const remainingSlots = Math.max(0, Math.min(albumRemainingSlots, globalRemainingSlots));
   const isCapReached = isAlbumCapReached || isGlobalCapReached;
-
-  
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -191,6 +190,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
     }
 
     if (!albumData && galleryImages.length === 0) {
+      setImageError(true)
       toast.error('Please upload at least one image to create an album');
       return;
     }
@@ -248,6 +248,11 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
       setLoading(false);
     }
   };
+  const handleClose = () => {    
+    resetForm();
+    setImageError(false);
+    onClose();
+  };
 
   return (
     <AnimatePresence>
@@ -257,7 +262,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
           />
           <motion.div
@@ -280,7 +285,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
                   </p>
                 </div>
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
                 >
                   <X size={20} strokeWidth={2.5} />
@@ -326,7 +331,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
                   <div className="flex items-center justify-between mb-2 flex-wrap gap-y-1">
                     <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
                       <CopyPlus size={12} className="text-orange-500" /> GALLERY PHOTOS
-                      <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 2MB per photo)</span>
+                      <span className="text-gray-400 lowercase normal-case tracking-normal">JPG, JPEG, WEBP or PNG · (Max 2MB per photo)</span>
                     </label>
                     <div className="flex items-center gap-3">
                       <span className={`text-[10px] font-bold whitespace-nowrap ${isAlbumCapReached ? 'text-red-500' : 'text-gray-400'}`}>
@@ -363,11 +368,17 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
                         />
                         <label
                           htmlFor="album-image-upload"
-                          className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600 rounded-xl cursor-pointer transition-all"
+                          className={`flex flex-col items-center justify-center w-full h-full border-2 border-dashed ${imageError ? 'border-red-600 bg-white' : 'border-orange-200'
+                            } bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600 rounded-xl cursor-pointer transition-all`}
+
                         >
                           <Upload size={18} className="mb-1" />
                           <span className="text-[9px] font-bold">ADD PHOTOS</span>
                         </label>
+                        {imageError && <span className='text-red-500 text-[10px]'>
+                          select at least one image 
+                        </span>
+                        }
                       </div>
                     )}
 
@@ -416,9 +427,9 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
                   type="button"
                   onClick={() => {
                     resetForm();
-                    onClose();
+                    handleClose();
                   }}
-                  className="px-5 py-2.5 text-sm font-bold cursor-pointer text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                  className="px-5 py-2.5 text-sm font-bold shadow-sm cursor-pointer text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-200 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>

@@ -6,20 +6,28 @@ import SectionHeader from "../../SectionHeader"
 
 const AboutIntro = () => {
   return (
-    <section className="relative w-full min-h-[100svh] flex items-center bg-[#fafafa] pt-16 pb-12 md:pt-20 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8 overflow-hidden">
-     
+    <section className="relative w-full min-h-[100svh] flex items-center bg-[#fafafa] pt-16 pb-12 md:pt-20 md:pb-16 lg:pt-24 lg:pb-24 px-4 md:px-8 overflow-hidden">
+
 
       <div className="global-container lg:!px-14 relative z-10 flex flex-col xl:flex-row gap-16 xl:gap-24">
+        <div className="fixed top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[16vw] font-black text-black/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
+          ABOUT
+        </div>
 
         <div className="w-full xl:w-[55%] flex flex-col justify-center">
-          <SectionHeader
-            bgText="ABOUT"            
-            label="Welcome to SS Martial Arts"
-            title="OUR"
-            highlight="LEGACY"
-            titleColor="text-black"            
-          />
-          
+          <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          >
+            <SectionHeader
+              // bgText="ABOUT"
+              label="Welcome to SS Martial Arts"
+              title="OUR"
+              highlight="LEGACY"
+              titleColor="text-black"
+            />
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -28,8 +36,9 @@ const AboutIntro = () => {
             transition={{ delay: 0.2 }}
             className="space-y-6 text-gray-600 text-base leading-relaxed font-medium"
           >
+
             {aboutIntroData.paragraphs.map((paragraph, idx) => (
-              <p key={idx} className={idx === 0 ? "text-lg text-[#0b1b24] font-semibold border-l-4 border-[#26c0ff] pl-6 py-1" : ""}>
+              <p key={idx} className={idx === 0 ? "text-lg text-[#0b1b24] whitespace-pre-line font-semibold border-l-4 border-[#26c0ff] pl-6 py-1" : ""}>
                 {paragraph}
               </p>
             ))}
@@ -53,6 +62,7 @@ const AboutIntro = () => {
                 MISSION
               </h3>
               <p className="text-gray-600 text-[15px] leading-relaxed font-medium">
+                                
                 {aboutIntroData.mission}
               </p>
             </div>
@@ -72,6 +82,7 @@ const AboutIntro = () => {
                 VISION
               </h3>
               <p className="text-gray-600 leading-relaxed text-[15px] font-medium pr-4">
+                
                 {aboutIntroData.vision}
               </p>
             </div>

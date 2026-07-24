@@ -37,7 +37,8 @@ Route::get('/blogs/{id}/related', [BlogController::class, 'getRelatedBlogs']);
 
 Route::get('/users/{userId}/certificates', [CertificateController::class, 'index']);
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
-Route::get('/students', [StudentController::class, 'index']);
+
+Route::get('/findstudents', [StudentController::class, 'findstudent']);
 Route::get('/affiliations', [AffiliationController::class, 'index']);
 
 
@@ -66,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/student/my-batch', [StudentController::class, 'myBatch']);
     Route::put('/students/{id}', [StudentController::class, 'update']);
     Route::delete('/students/{id}', [StudentController::class, 'destroy']);
+    Route::get('/students', [StudentController::class, 'index']);
 
     Route::get('/student/fee-status', [PaymentController::class, 'myFeeStatus']);
     Route::post('/payments/add', [PaymentController::class, 'addPayment']);

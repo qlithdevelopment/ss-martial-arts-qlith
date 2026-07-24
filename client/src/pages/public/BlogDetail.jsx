@@ -19,8 +19,8 @@ const BlogBackButton = () => {
       onClick={handleBack}
       className={`z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${
         isAdmin
-          ? "absolute top-5 left-3"
-          : "relative w-20 top-0 my-8 "
+          ? "relative  mb-8 lg:mb-44 lg:-ml-14"
+          : "relative w-20  my-8 "
       }`}
     >
       <ArrowLeft size={16} /> Back

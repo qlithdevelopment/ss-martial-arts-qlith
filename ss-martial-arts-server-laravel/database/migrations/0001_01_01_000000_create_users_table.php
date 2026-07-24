@@ -11,16 +11,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {           
             $table->id();
             $table->string('name');
+            $table->string('father_name')->nullable();
+            $table->string('mother_name')->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->decimal('height', 5, 2)->nullable(); // e.g. in cm
+            $table->decimal('weight', 5, 2)->nullable(); // e.g. in kg
+            $table->text('address')->nullable();
+            $table->string('mobile_number')->nullable();
+            $table->date('joining_date')->nullable();
             $table->string('email')->unique();
             $table->string('reg_no')->nullable()->unique();
             $table->enum('role', ['admin', 'student'])->default('student');
             $table->foreignId('batch_id')->nullable()->constrained('batches')->onDelete('set null');
+            $table->string('branch_id')->nullable(); // Admission Dojo (branch)
+            $table->string('sensei')->nullable(); // Teacher/Coach name
             $table->string('belt')->default(''); // Defaults to empty string, completely optional
-            $table->decimal('total_fee', 10, 2)->nullable(); 
+            $table->decimal('total_fee', 10, 2)->nullable();
             $table->text('notes')->nullable();
+            $table->string('id_proof_name')->nullable(); // e.g. Aadhar Card, Passport, etc.
+            $table->string('id_proof_number')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

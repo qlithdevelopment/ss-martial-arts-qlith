@@ -67,7 +67,7 @@ const GalleryPage = () => {
   }, [lightboxImage]);
 
   return (
-    <div className="w-full min-h-screen bg-[#f9fafb] pt-24 pb-12 md:pt-28 md:pb-16 lg:pt-32 lg:pb-24 px-4 md:px-8  font-sans selection:bg-[#f97316] selection:text-white relative">
+    <div className="w-full min-h-screen bg-[#f9fafb] pt-24 pb-12 md:pt-24 md:pb-16 lg:pt-24 lg:pb-24 px-4 md:px-0  font-sans selection:bg-[#f97316] selection:text-white relative">
       {/* Lightbox Overlay */}
       <AnimatePresence>
         {lightboxImage && (
@@ -99,17 +99,40 @@ const GalleryPage = () => {
       </AnimatePresence>
 
       {/* MASSIVE BACKGROUND TEXT */}
-      {/* <div className="fixed top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
-        GALLERY
-      </div> */}
+      <div className="fixed top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[16vw] font-black text-black/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
+          Gallery
+        </div>
 
-      <div className="global-container lg:!px-14 relative z-10">
+      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-22 ">
+      {/* <div className="global-container lg:!px-14 relative z-10"> */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="mb-12">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-0">
+
+              <SectionHeader                
+                label="Gallery"
+                title="OUR"
+                titleColor="text-black"
+                highlight="GALLERY"
+              />
+            </div>
+
+            {/* <p className="text-gray-600 mt-4 max-w-xl font-medium text-lg">
+                  Relive the unforgettable moments from our championships, seminars, and academy gatherings. Select an album to view all photos.
+                </p> */}
+          </div>
+        </motion.div>
 
         <AnimatePresence mode="wait">
           {!selectedAlbum ? (
             /* ========================================= */
             /*              MAIN ALBUMS GRID             */
             /* ========================================= */
+
             <motion.div
               key="albums-grid"
               initial={{ opacity: 0, y: 20 }}
@@ -118,22 +141,7 @@ const GalleryPage = () => {
               transition={{ duration: 0.5 }}
             >
               {/* Header */}
-              <div className="mb-12">
-                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-4">
 
-                  <SectionHeader
-                    bgText="Gallery"
-                    label="Gallery"
-                    title="OUR"
-                    titleColor="text-black"
-                    highlight="GALLERY"
-                  />
-                </div>
-
-                <p className="text-gray-600 mt-4 max-w-xl font-medium text-lg">
-                  Relive the unforgettable moments from our championships, seminars, and academy gatherings. Select an album to view all photos.
-                </p>
-              </div>
 
               {/* Bento Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[250px] md:auto-rows-[300px] gap-6">

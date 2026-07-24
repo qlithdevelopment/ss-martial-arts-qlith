@@ -108,7 +108,7 @@ const Affiliations = () => {
         <div className="flex w-full md:w-auto items-center gap-4">          
           <button
             onClick={openCreateModal}
-            className="shrink-0  flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
+            className="shrink-0  flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
           >
             <Plus size={18} />{" "}
             <span className="hidden lg:inline">Add Affiliation</span>

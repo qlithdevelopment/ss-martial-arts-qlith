@@ -52,12 +52,18 @@ const Affiliation = () => {
         <div className="fixed top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[16vw] font-black text-black/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
           AFFILIATED
         </div>
+        <motion.div
+        initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
         <SectionHeader
           label="Our Network"
           title="OUR"
           titleColor="text-black"
           highlight="AFFILIATIONS"
         />
+        </motion.div>
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[220px] md:auto-rows-[300px] gap-6">

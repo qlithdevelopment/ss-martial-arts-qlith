@@ -57,7 +57,7 @@ const AboutFAQ = ({ limit = 10, paginate = false }) => {
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({
@@ -108,8 +108,8 @@ const AboutFAQ = ({ limit = 10, paginate = false }) => {
               viewport={{ once: true, delay: 0.1 }}
               className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-6 tracking-tight"
             >
-              Frequently asked <br />
-              <span className="text-[#ffffff]">questions</span>
+              Frequently Asked <br />
+              <span className="text-white">Questions</span>
             </motion.h2>
 
             <motion.p
@@ -122,7 +122,7 @@ const AboutFAQ = ({ limit = 10, paginate = false }) => {
               you need before stepping onto the mat.
             </motion.p>
             {limit < 10 && (
-              <Button variant="primary" className="mt-6" onClick={()=> navigate('/faq')} >
+              <Button variant="primary" className="mt-6" onClick={() => navigate('/faq')} >
                 View All FAQs
               </Button>
             )}

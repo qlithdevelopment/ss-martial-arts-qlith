@@ -29,24 +29,39 @@ class StudentController extends Controller
                 ->select(
                     'users.id',
                     'users.name',
+                    'users.father_name',
+                    'users.mother_name',
+                    'users.gender',
+                    'users.date_of_birth',
+                    'users.height',
+                    'users.weight',
+                    'users.address',
+                    'users.mobile_number',
+                    'users.joining_date',
                     'users.reg_no',
                     'users.email',
                     'users.role',
                     'users.batch_id',
+                    'users.branch_id',
+                    'users.sensei',
                     'users.belt',
                     'users.total_fee',
                     'users.status',
+                    'users.id_proof_name',
+                    'users.id_proof_number',
                     'users.created_at',
-                    'batches.name as batch_name'
+                    'batches.name as batch_name',
+                    'users.branch_id as branch_name'
                 );
 
             // Apply search filter if search parameter is present
             if (!empty($search)) {
                 $query->where(function ($q) use ($search) {
-                    $q->orWhere('users.req_no', 'LIKE', "%{$search}%");
-                        // ->orWhere('users.email', 'LIKE', "%{$search}%")
-                        // ->orWhere('users.belt', 'LIKE', "%{$search}%")
-                        // ->orWhere('batches.name', 'LIKE', "%{$search}%");
+                    $q->Where('users.reg_no', 'LIKE', "%{$search}%")
+                        ->orWhere('users.email', 'LIKE', "%{$search}%")
+                        ->orWhere('users.name', 'LIKE', "%{$search}%")
+                        ->orWhere('users.belt', 'LIKE', "%{$search}%")                       
+                        ->orWhere('batches.name', 'LIKE', "%{$search}%");
                 });
             }
 
@@ -63,7 +78,76 @@ class StudentController extends Controller
                     'per_page' => $students->perPage(),
                 ],
             ], 200);
-        } catch (\Exception $e) { // Added backslash to ensure global Exception class is caught
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while fetching the students list.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function findstudent(Request $request)
+    {
+        try {
+            $perPage = (int) $request->query('per_page', 10);
+            if ($perPage < 1 || $perPage > 100) {
+                $perPage = 10;
+            }
+
+            $search = $request->query('search');
+
+            $query = User::leftJoin('batches', 'users.batch_id', '=', 'batches.id')
+                ->where('users.role', 'student')
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.father_name',
+                    'users.mother_name',
+                    'users.gender',
+                    'users.date_of_birth',
+                    'users.height',
+                    'users.weight',
+                    'users.address',
+                    'users.mobile_number',
+                    'users.joining_date',
+                    'users.reg_no',
+                    'users.email',
+                    'users.role',
+                    'users.batch_id',
+                    'users.branch_id',
+                    'users.sensei',
+                    'users.belt',
+                    'users.total_fee',
+                    'users.status',
+                    'users.id_proof_name',
+                    'users.id_proof_number',
+                    'users.created_at',
+                    'batches.name as batch_name',
+                    'users.branch_id as branch_name'
+                );
+
+            // Apply search filter if search parameter is present
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->Where('users.reg_no', 'LIKE', "%{$search}%");
+                });
+            }
+
+            $students = $query->latest('users.created_at')->paginate($perPage);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Students fetched successfully.',
+                'data' => $students->items(),
+                'pagination' => [
+                    'total' => $students->total(),
+                    'current_page' => $students->currentPage(),
+                    'last_page' => $students->lastPage(),
+                    'per_page' => $students->perPage(),
+                ],
+            ], 200);
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => 'An error occurred while fetching the students list.',
@@ -81,23 +165,49 @@ class StudentController extends Controller
             $validated = $request->validate([
                 'reg_no' => 'required|string|max:50|unique:users,reg_no',
                 'name' => 'required|string|max:255',
+                'father_name' => 'nullable|string|max:255',
+                'mother_name' => 'nullable|string|max:255',
+                'gender' => 'nullable|in:male,female,other',
+                'date_of_birth' => 'nullable|date',
+                'height' => 'nullable|numeric|min:0',
+                'weight' => 'nullable|numeric|min:0',
+                'address' => 'nullable|string',
+                'mobile_number' => 'nullable|string|max:20',
+                'joining_date' => 'nullable|date',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:6',
                 'batch_id' => 'required|exists:batches,id',
+                'branch_id' => 'nullable|string|max:255',
+                'sensei' => 'nullable|string|max:255',
                 'belt' => 'nullable|string|max:50', // Completely optional field
                 'total_fee' => 'required|numeric|min:0',
                 'notes' => 'nullable|string',
+                'id_proof_name' => 'nullable|string|max:255',
+                'id_proof_number' => 'nullable|string|max:255',
             ]);
 
             $student = User::create([
                 'reg_no' => $validated['reg_no'],
                 'name' => $validated['name'],
+                'father_name' => $validated['father_name'] ?? null,
+                'mother_name' => $validated['mother_name'] ?? null,
+                'gender' => $validated['gender'] ?? null,
+                'date_of_birth' => $validated['date_of_birth'] ?? null,
+                'height' => $validated['height'] ?? null,
+                'weight' => $validated['weight'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'mobile_number' => $validated['mobile_number'] ?? null,
+                'joining_date' => $validated['joining_date'] ?? null,
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'batch_id' => $validated['batch_id'],
+                'branch_id' => $validated['branch_id'] ?? null,
+                'sensei' => $validated['sensei'] ?? null,
                 'belt' => $validated['belt'] ?? '', // Saves empty string if omitted
                 'total_fee' => $validated['total_fee'],
                 'notes' => $validated['notes'] ?? null,
+                'id_proof_name' => $validated['id_proof_name'] ?? null,
+                'id_proof_number' => $validated['id_proof_number'] ?? null,
                 'role' => 'student',
                 'status' => true,
             ]);
@@ -215,25 +325,51 @@ class StudentController extends Controller
             $student = User::where('role', 'student')->findOrFail($id);
 
             $validated = $request->validate([
-                'reg_no' => 'required|string|max:50|unique:users,reg_no',
+                'reg_no' => 'required|string|max:50|unique:users,reg_no,' . $id,
                 'name' => 'required|string|max:255',
+                'father_name' => 'nullable|string|max:255',
+                'mother_name' => 'nullable|string|max:255',
+                'gender' => 'nullable|in:male,female,other',
+                'date_of_birth' => 'nullable|date',
+                'height' => 'nullable|numeric|min:0',
+                'weight' => 'nullable|numeric|min:0',
+                'address' => 'nullable|string',
+                'mobile_number' => 'nullable|string|max:20',
+                'joining_date' => 'nullable|date',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
                 'password' => 'nullable|string|min:6',
                 'batch_id' => 'required|exists:batches,id',
+                'branch_id' => 'nullable|string|max:255',
+                'sensei' => 'nullable|string|max:255',
                 'belt' => 'nullable|string|max:50', // Optional field rule configurations
                 'total_fee' => 'required|numeric|min:0',
                 'notes' => 'nullable|string',
+                'id_proof_name' => 'nullable|string|max:255',
+                'id_proof_number' => 'nullable|string|max:255',
                 'status' => 'required|in:0,1'
             ]);
 
             $updateData = [
                 'reg_no' => $validated['reg_no'],
                 'name' => $validated['name'],
+                'father_name' => $validated['father_name'] ?? null,
+                'mother_name' => $validated['mother_name'] ?? null,
+                'gender' => $validated['gender'] ?? null,
+                'date_of_birth' => $validated['date_of_birth'] ?? null,
+                'height' => $validated['height'] ?? null,
+                'weight' => $validated['weight'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'mobile_number' => $validated['mobile_number'] ?? null,
+                'joining_date' => $validated['joining_date'] ?? null,
                 'email' => $validated['email'],
                 'batch_id' => $validated['batch_id'],
+                'branch_id' => $validated['branch_id'] ?? null,
+                'sensei' => $validated['sensei'] ?? null,
                 'belt' => $validated['belt'] ?? '', // Keeps standard empty string default assignment
                 'total_fee' => $validated['total_fee'],
                 'notes' => $validated['notes'] ?? null,
+                'id_proof_name' => $validated['id_proof_name'] ?? null,
+                'id_proof_number' => $validated['id_proof_number'] ?? null,
                 'status' => $validated['status'],
             ];
 

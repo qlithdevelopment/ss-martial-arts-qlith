@@ -17,7 +17,7 @@ const SectionHeader = ({
  
 
   const content = (
-    <div className={`flex flex-col justify-start mb-8 md:mb-16`}>
+    <div className={`flex flex-col justify-start mb-8 md:mb-10`}>
       {label && (
         <div className="flex items-center gap-4 mb-4">
           <div className="h-1 w-12" style={{ backgroundColor: accentColor }}></div>

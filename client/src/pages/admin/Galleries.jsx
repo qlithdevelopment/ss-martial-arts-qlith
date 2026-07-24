@@ -20,7 +20,7 @@ const getImageUrl = (path) => {
 
 const Galleries = () => {
   const [albums, setAlbums] = useState([]);
-  const [loading, setLoading] = useState(true);  
+  const [loading, setLoading] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [albumToDelete, setAlbumToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -28,7 +28,7 @@ const Galleries = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
-  const [viewAlbum, setViewAlbum] = useState(null);  
+  const [viewAlbum, setViewAlbum] = useState(null);
   const [totalImagesCount, setTotalImagesCount] = useState(0);
 
 
@@ -56,7 +56,7 @@ const Galleries = () => {
     setAlbumToDelete(id);
     setIsDeleteModalOpen(true);
   };
-  
+
   const handleDeleteConfirm = async () => {
     if (!albumToDelete) return;
     try {
@@ -82,23 +82,24 @@ const Galleries = () => {
   const openEditModal = (album) => {
     setSelectedAlbum(album);
     setIsModalOpen(true);
-  }; 
+  };
 
   return (
     <div className="">
       {/* Header section */}
       <div className="flex flex-col mb-14 md:mb-8 md:flex-row justify-between items-start md:items-center gap-4 ">
-        <div className="flex w-full md:w-auto items-center gap-4">          
-          <button
-            onClick={openCreateModal}
-            className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
-          >
-            <Plus size={18} /> <span className="hidden lg:inline">Create Album</span>
-          </button>
-          <div className="ml-auto top-30  md:top-0  absolute md:top-18 right-7 text-sm text-gray-500 font-medium">
+        <div className="flex w-full justify-between md:w-full  gap-4">
+
+          <div className=" top-30  md:top-0   md:top-18  text-sm text-gray-500 font-medium">
             Total Images: <span className="font-bold text-gray-900">{totalImagesCount}/{MAX_TOTAL_IMAGES}</span>
             <p className="text-xs text-gray-400">Max {MAX_TOTAL_IMAGES} images allowed</p>
           </div>
+          <button
+            onClick={openCreateModal}
+            className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
+          >
+            <Plus size={18} /> <span className="hidden lg:inline">Create Album</span>
+          </button>
         </div>
       </div>
 
@@ -119,7 +120,7 @@ const Galleries = () => {
 
               {/* Body skeleton */}
               <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 mb-3">                  
+                <div className="flex items-center gap-2 mb-3">
                 </div>
 
                 <div className="space-y-2 mb-4 flex-1">
@@ -128,14 +129,14 @@ const Galleries = () => {
                 </div>
 
                 {/* Actions skeleton */}
-                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">                  
+                <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100 mt-auto">
                   <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
                   <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
                 </div>
               </div>
             </div>
           ))}
-        </div>        
+        </div>
       ) : albums.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">

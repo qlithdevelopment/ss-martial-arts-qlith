@@ -184,28 +184,22 @@ const Faqs = () => {
     <div>
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div className="flex w-full md:w-auto items-center gap-4">
-          <button
-            onClick={fetchFaqs}
-            className="p-2.5 bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded-lg transition-colors"
-            title="Refresh FAQs"
-          >
-            <RefreshCw size={20} />
-          </button>
-          <div className="relative w-full md:w-64">
+        <div className="flex w-full md:w-full items-center gap-4">
+          
+          <div className="relative w-full md:w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="text"
               placeholder="Search FAQs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
+              className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm"
             />
           </div>
           <button
             onClick={openCreateModal}
             disabled={loading}
-            className="shrink-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"
+            className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
           >
             <Plus size={18} /> <span className="hidden lg:inline">Add FAQ</span>
           </button>

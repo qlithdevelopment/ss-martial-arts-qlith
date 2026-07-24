@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { X, Send, Calendar, Flame, Circle, ImageIcon } from "lucide-react";
+import { X, Send, Calendar, Flame, Circle, ChevronRight, ImageIcon } from "lucide-react";
 import api from "../../../api/axios";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
@@ -39,7 +39,7 @@ const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEventId, setSelectedEventId] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);  
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const Events = () => {
 
   return (
     <section id="events" ref={targetRef} className=" bg-black relative pb-0"
-    style={{ height: `${scrollMultiplier * 100}vh` }}
+      style={{ height: `${scrollMultiplier * 100}vh` }}
     >
 
       {/* Sticky Container */}
@@ -276,6 +276,16 @@ const Events = () => {
           </motion.div>
 
         </div>
+        <div className="mt-10 md:mt-36 flex justify-center relative z-10">
+          <Link
+            to="/events"
+            className="group inline-flex items-center gap-3 px-8 py-3.5 md:py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white font-black uppercase tracking-widest text-xs md:text-sm hover:border-[#f97316] hover:bg-[#f97316] transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] hover:-translate-y-1"
+          >
+            View All Events
+            <ChevronRight size={16} className="text-[#26c0ff] group-hover:text-white transition-all duration-300 group-hover:translate-x-1" />
+          </Link>
+        </div>
+
       </div>
 
       {/* Registration Modal */}
@@ -317,7 +327,7 @@ const Events = () => {
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Email Address</label>
                     <input type="email" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="john@example.com" />
-                  </div>                  
+                  </div>
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Phone Number</label>
@@ -333,6 +343,7 @@ const Events = () => {
           </div>
         )}
       </AnimatePresence>
+
 
     </section>
   );

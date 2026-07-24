@@ -25,6 +25,7 @@ import Contact from "../pages/public/Contact";
 import Blog from "../pages/public/Blog";
 import FindStudent from "../pages/public/FindStudent";
 import Affiliation from "../pages/public/Affiliations";
+import AllPrograms from "../pages/AllPrograms";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -83,6 +84,7 @@ const AppRoutes = () => {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/affiliations" element={<Affiliation />} />
+        <Route path="/allprograms" element={<AllPrograms />} />
 
         {/* Always keep the route declared, but handle the redirection logically */}
         <Route path="/login" element={<RedirectIfAuthenticated />} />

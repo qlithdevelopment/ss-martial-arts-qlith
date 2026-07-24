@@ -20,6 +20,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
 
   const [featuredImage, setFeaturedImage] = useState(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState(null);
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -37,12 +38,18 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
     }
   }, [isOpen, eventData]);
 
+  const handleClose = () => {
+    setImageError("");
+    onClose();
+  };
+
   const resetForm = () => {
     setFormData({
       name: '', location: '', description: '', date: new Date().toISOString().split('T')[0]
     });
     setFeaturedImage(null);
     setFeaturedImagePreview(null);
+    setImageError("");
   };
 
   const handleInputChange = (e) => {
@@ -55,15 +62,18 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
     if (!file) return;
 
     if (!['image/jpeg', 'image/png', 'image/jpg', 'image/webp'].includes(file.type)) {
-      toast.error('Only JPG, JPEG, PNG, or WEBP are allowed');
+      setImageError('Only JPG, JPEG, PNG, or WEBP are allowed');
+      e.target.value = "";
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('Image size must be less than 1MB');
+      setImageError('Image size must be less than 1MB');
+      e.target.value = "";
       return;
     }
 
+    setImageError("");
     setFeaturedImage(file);
     setFeaturedImagePreview(URL.createObjectURL(file));
   };
@@ -75,8 +85,15 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.name || !formData.date || !formData.location) {
-      toast.error('Please fill required fields: Name and Date');
+      toast.error('Please fill required fields: Name, Date, and Location');
+      return;
+    }
+
+    if (!featuredImagePreview) {
+      setImageError('Please select a cover image');
+      toast.error('Please select a cover image');
       return;
     }
 
@@ -94,6 +111,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
 
     try {
       if (eventData) {
+        payload.append('_method', 'PUT');
         await api.post(`/events/${eventData.id}`, payload, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -122,7 +140,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
           />
           <motion.div
@@ -145,7 +163,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                   </p>
                 </div>
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
                 >
                   <X size={20} strokeWidth={2.5} />
@@ -200,7 +218,7 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                    <ImageIcon size={12} className="text-orange-500" /> EVENT COVER IMAGE <span className="text-gray-400 lowercase normal-case tracking-normal">(Max 1MB)</span>
+                    <ImageIcon size={12} className="text-orange-500" /> EVENT COVER IMAGE <span className="text-gray-400 lowercase normal-case tracking-normal">JPG, JPEG, WEBP, or PNG · (Max 1MB)</span>
                   </label>
 
                   <div className="relative group">
@@ -213,7 +231,9 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                     />
                     <label
                       htmlFor="event-image-upload"
-                      className={`flex items-center justify-center w-full h-18 mb-2 border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${featuredImagePreview
+                      className={`flex items-center justify-center w-full h-18 mb-1 border-2 border-dashed rounded-xl cursor-pointer transition-all overflow-hidden relative ${imageError
+                        ? 'border-red-400 bg-red-50/50'
+                        : featuredImagePreview
                           ? 'border-gray-200 bg-gray-50'
                           : 'border-orange-200 bg-orange-50/50 hover:bg-orange-50 hover:border-orange-300 text-orange-600'
                         }`}
@@ -244,6 +264,9 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
                       </button>
                     )}
                   </div>
+                  {imageError && (
+                    <p className="text-[10px] font-semibold text-red-500 mb-2">{imageError}</p>
+                  )}
                 </div>
 
 
@@ -267,8 +290,8 @@ const EventModal = ({ isOpen, onClose, eventData = null, fetchEvents }) => {
               <div className="flex justify-end gap-3 p-4 sm:p-5 border-t border-gray-50 shrink-0 bg-white">
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="px-5 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                  onClick={handleClose}
+                  className="px-5 py-2.5 text-sm font-bold shadow-sm text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-200 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>

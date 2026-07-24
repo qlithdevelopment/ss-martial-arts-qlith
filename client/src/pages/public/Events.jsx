@@ -69,7 +69,7 @@ const Events = () => {
       </div>
 
       {/* Header */}
-      <div className="global-container lg:!px-[95px] mb-16 relative z-10">
+      <div className="global-container lg:!px-14 mb-16 relative z-10">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -81,7 +81,7 @@ const Events = () => {
               <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Event Schedule</h3>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
-              FOLLOW  <span className="text-[#26c0ff]">EVENTS</span>
+            FOLLOW  <span className="text-[#26c0ff]">EVENTS</span>
             </h2>
           </div>
         </motion.div>
@@ -109,56 +109,56 @@ const Events = () => {
                   <div className="shrink-0 w-10 h-10 bg-white/10 rounded-xl"></div>
                 </div>
               </div>
-            </div>            
+            </div>
           ))
         ) : eventsData.map((event, idx) => (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              onClick={() => { setSelectedEventId(event.id); setModalMode('details'); }}
-              className="group relative bg-black rounded-[20px] overflow-hidden border border-white/5 h-[340px] lg:h-[400px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] w-full flex flex-col"
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply z-10 pointer-events-none"></div>
+          <motion.div
+            key={event.id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1 }}
+            onClick={() => { setSelectedEventId(event.id); setModalMode('details'); }}
+            className="group relative bg-black rounded-[20px] overflow-hidden border border-white/5 h-[340px] lg:h-[400px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] w-full flex flex-col"
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply z-10 pointer-events-none"></div>
 
-              <img
-                src={getImageUrl(event.image)}
-                alt={event.name}
-                className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80"
-              />
+            <img
+              src={getImageUrl(event.image)}
+              alt={event.name}
+              className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105 opacity-80"
+            />
 
-              <div className="absolute inset-0 p-5 z-30 flex flex-col justify-end pointer-events-none">
-                <div className="flex justify-between items-end w-full">
-                  {/* Bottom Left Text */}
-                  <div className="flex flex-col gap-1 pr-2 flex-1">
-                    <div className="inline-block px-2 py-0.5 bg-[#f97316] w-fit text-white font-black text-[9px] tracking-widest uppercase rounded shadow-lg mb-1">
-                      {event.date}
-                    </div>
-                    <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter leading-tight mb-1 line-clamp-2">
-                      {event.name}
-                    </h2>
-                    <div className="flex items-center gap-2 text-[#26c0ff] font-bold text-[10px] uppercase tracking-wider mb-0.5">
-                      <Clock size={12} className="text-[#f97316]" /> {event.timing}
-                    </div>
+            <div className="absolute inset-0 p-5 z-30 flex flex-col justify-end pointer-events-none">
+              <div className="flex justify-between items-end w-full">
+                {/* Bottom Left Text */}
+                <div className="flex flex-col gap-1 pr-2 flex-1">
+                  <div className="inline-block px-2 py-0.5 bg-[#f97316] w-fit text-white font-black text-[9px] tracking-widest uppercase rounded shadow-lg mb-1">
+                    {event.date}
                   </div>
-
-                  {/* Bottom Right Arrow Box */}
-                  <div className="shrink-0 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center rounded-xl group-hover:bg-[#f97316] group-hover:border-[#f97316] transition-colors pointer-events-auto mb-1">
-                    <ChevronRight className="text-white transform group-hover:-rotate-45 transition-transform" size={16} />
+                  <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tighter leading-tight mb-1 line-clamp-2">
+                    {event.name}
+                  </h2>
+                  <div className="flex items-center gap-2 text-[#26c0ff] font-bold text-[10px] uppercase tracking-wider mb-0.5">
+                    <Clock size={12} className="text-[#f97316]" /> {event.timing}
                   </div>
                 </div>
+
+                {/* Bottom Right Arrow Box */}
+                <div className="shrink-0 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center rounded-xl group-hover:bg-[#f97316] group-hover:border-[#f97316] transition-colors pointer-events-auto mb-1">
+                  <ChevronRight className="text-white transform group-hover:-rotate-45 transition-transform" size={16} />
+                </div>
               </div>
+            </div>
 
-              {/* Giant Background Text */}
-              <h2 className="absolute -right-4 top-1/4 text-[80px] font-black text-white/[0.03] uppercase tracking-tighter leading-none pointer-events-none z-0 rotate-90 origin-bottom-right">
-                EVENT
-              </h2>
+            {/* Giant Background Text */}
+            <h2 className="absolute -right-4 top-1/4 text-[80px] font-black text-white/[0.03] uppercase tracking-tighter leading-none pointer-events-none z-0 rotate-90 origin-bottom-right">
+              EVENT
+            </h2>
 
-            </motion.div>
-          ))}
+          </motion.div>
+        ))}
       </div>
       <div className="mt-8 global-container">
         {!loading && eventsData.length > 0 && pagination?.total > 0 && (
@@ -284,6 +284,8 @@ const Events = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* VIEW ALL BUTTON */}
+     
 
     </div>
   );
