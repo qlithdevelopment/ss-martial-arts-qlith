@@ -61,6 +61,16 @@ class TestimonialController extends Controller
                 'stars' => 'nullable|integer|min:1|max:5',
             ]);
 
+            if ($request->hasFile('image')) {
+                $fileName = Str::uuid() . '.' . $request->file('image')->getClientOriginalExtension();
+
+                $validated['image'] = $request->file('image')->storeAs(
+                    'testimonials',
+                    $fileName,
+                    'public'
+                );
+            }
+
             $testimonial = Testimonial::create($validated);
 
             return response()->json([
