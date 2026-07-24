@@ -3,6 +3,7 @@
 use App\Http\Controllers\AffiliationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BatchController;
+use App\Http\Controllers\BeltController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\PaymentController;
@@ -103,4 +104,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/testimonials/{testimonial}', [TestimonialController::class, 'update']);
     Route::patch('/testimonials/{testimonial}', [TestimonialController::class, 'update']);
     Route::delete('/testimonials/{testimonial}', [TestimonialController::class, 'destroy']);
+
+    Route::get('/belts', [BeltController::class, 'index']);
+    Route::post('/belts', [BeltController::class, 'store']);
+    Route::get('/belts/{belt}', [BeltController::class, 'show']);
+    Route::get('/belts/user/{userId}', [BeltController::class, 'getBeltsByUser']);
+    Route::put('/belts/{belt}', [BeltController::class, 'update']);
+    Route::patch('/belts/{belt}', [BeltController::class, 'update']);
+    Route::delete('/belts/{belt}', [BeltController::class, 'destroy']);
 });
