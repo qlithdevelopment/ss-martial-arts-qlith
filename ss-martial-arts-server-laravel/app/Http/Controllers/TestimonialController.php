@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TestimonialController extends Controller
 {
@@ -55,7 +57,7 @@ class TestimonialController extends Controller
                 'text' => 'required|string',
                 'name' => 'nullable|string|max:255',
                 'role' => 'nullable|string|max:255',
-                'image' => 'nullable|url',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
                 'stars' => 'nullable|integer|min:1|max:5',
             ]);
 
@@ -106,9 +108,25 @@ class TestimonialController extends Controller
                 'text' => 'required|string',
                 'name' => 'nullable|string|max:255',
                 'role' => 'nullable|string|max:255',
-                'image' => 'nullable|url',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
                 'stars' => 'nullable|integer|min:1|max:5',
             ]);
+
+            if ($request->hasFile('image')) {
+
+                // Delete old image
+                if ($testimonial->image && Storage::disk('public')->exists($testimonial->image)) {
+                    Storage::disk('public')->delete($testimonial->image);
+                }
+
+                $fileName = Str::uuid() . '.' . $request->file('image')->getClientOriginalExtension();
+
+                $validated['image'] = $request->file('image')->storeAs(
+                    'testimonials',
+                    $fileName,
+                    'public'
+                );
+            }
 
             $testimonial->update($validated);
 
@@ -132,6 +150,11 @@ class TestimonialController extends Controller
     public function destroy(Testimonial $testimonial)
     {
         try {
+
+            if ($testimonial->image && Storage::disk('public')->exists($testimonial->image)) {
+                Storage::disk('public')->delete($testimonial->image);
+            }
+
             $testimonial->delete();
 
             return response()->json([
