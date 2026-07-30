@@ -277,7 +277,12 @@ class StudentController extends Controller
     {
         try {
             $student = User::where('role', 'student')
-                ->with('batch')
+                ->with([
+                    'batch',
+                    'belts' => function ($query) {
+                        $query->latest('date_of_issue');
+                    }
+                ])
                 ->find($id);
 
             if (!$student) {
@@ -293,6 +298,9 @@ class StudentController extends Controller
 
             $payments = $student->payments()->latest()->get();
 
+            // Most recently issued belt record (null if the student has none yet)
+            $latestBelt = $student->belts->first();
+
             $responseData = array_merge(
                 ['success' => true],
                 $student->toArray(),
@@ -302,7 +310,8 @@ class StudentController extends Controller
                         'total_paid' => $totalPaid,
                         'pending_amount' => max(0, $pendingAmount),
                     ],
-                    'payment_history' => $payments
+                    'payment_history' => $payments,
+                    'latest_belt' => $latestBelt,
                 ]
             );
 

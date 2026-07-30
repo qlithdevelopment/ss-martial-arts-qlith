@@ -13,7 +13,7 @@ const Navbar = () => {
   const location = useLocation()
 
   const navLinks = [
-    { name: 'Home', path: '/' },
+    // { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
     // { name: 'Events', path: '/events' },
     { name: 'Gallery', path: '/gallery' },
@@ -21,7 +21,7 @@ const Navbar = () => {
     { name: 'Affiliations', path: '/affiliations' },
     // { name: 'FAQ', path: '/faq' },
     { name: 'Contact', path: '/contact' },
-    { name: 'Find Student', path: '/find-student' },
+    // { name: 'Find Student', path: '/find-student' },
   ]
 
   if (user) {

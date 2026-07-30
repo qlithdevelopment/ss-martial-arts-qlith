@@ -79,6 +79,33 @@ const FindStudent = () => {
     </div>
   );
 
+  {/* Reusable Search Bar (shown under Back to Home on mobile, and at top of right column on desktop) */}
+  const SearchBar = () => (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.3 }}
+      className="relative w-full"
+    >
+      <div className="relative w-full bg-white shadow-lg shadow-gray-200/40 rounded-full border border-gray-100 p-2 flex items-center">
+        <div className="pl-4 pr-3 text-gray-400">
+          <Search size={18} />
+        </div>
+        <input
+          type="text"
+          className="w-full py-2 bg-transparent border-none text-[10.5px] truncate md:text-sm focus:outline-none font-medium placeholder:text-gray-400"
+          placeholder="Search by Registration Number"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button className="bg-[#f97316] hover:bg-orange-600  text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-md shadow-orange-500/20 shrink-0">
+          <span className='hidden md:flex'>Search</span>
+          <Search size={18} className='md:hidden' />
+        </button>
+      </div>
+    </motion.div>
+  );
+
 
   return (
     <div className="min-h-screen lg:h-screen w-full bg-slate-50 text-gray-900 relative lg:overflow-hidden flex flex-col lg:flex-row">
@@ -91,6 +118,11 @@ const FindStudent = () => {
           <Link to="/" className="absolute top-6 lg:left-16  left-6 z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all">
             <ArrowLeft size={16} /> Back to Home
           </Link>
+
+          {/* Mobile-only search bar, placed right under the Back to Home button */}
+          <div className="lg:hidden w-full mb-6">
+            <SearchBar />
+          </div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -159,30 +191,9 @@ const FindStudent = () => {
       {/* RIGHT COLUMN - Search & Results */}
       <div className="w-full lg:w-7/12 flex flex-col lg:h-full relative z-10 pt-4 lg:pt-16 bg-slate-50">
 
-        {/* Search Bar */}
-        <div className="flex-none px-6 lg:px-12 pb-6 w-full max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="relative w-full"
-          >
-            <div className="relative w-full bg-white shadow-lg shadow-gray-200/40 rounded-full border border-gray-100 p-2 flex items-center">
-              <div className="pl-4 pr-3 text-gray-400">
-                <Search size={18} />
-              </div>
-              <input
-                type="text"
-                className="w-full py-2 bg-transparent border-none text-[10.5px] truncate md:text-sm focus:outline-none font-medium placeholder:text-gray-400"
-                placeholder="Search by Registration Number"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button className="bg-[#f97316] hover:bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold transition-all shadow-md shadow-orange-500/20 shrink-0">
-                Search
-              </button>
-            </div>
-          </motion.div>
+        {/* Search Bar (desktop only - mobile version sits under Back to Home above) */}
+        <div className="hidden lg:block flex-none px-6 lg:px-12 pb-6 w-full max-w-4xl">
+          <SearchBar />
         </div>
 
         {/* Scrollable Results Area */}

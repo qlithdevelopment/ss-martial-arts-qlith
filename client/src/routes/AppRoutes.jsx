@@ -14,18 +14,20 @@ import StudentLayout from "../layouts/StudentLayout";
 import Home from "../pages/public/Home";
 import Trainers from "../pages/public/Trainers";
 import About from "../pages/public/About";
-import Programs from "../pages/public/Programs";
+// import Programs from "../pages/public/Programs";
 import Events from "../pages/public/Events";
 import Services from "../pages/public/Services";
 import Gallery from "../pages/public/Gallery";
-import Testimonials from "../pages/public/Testimonials";
+// import Testimonials from "../pages/public/Testimonials";
 import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
 import Blog from "../pages/public/Blog";
 import FindStudent from "../pages/public/FindStudent";
 import Affiliation from "../pages/public/Affiliations";
-import AllPrograms from "../pages/AllPrograms";
+import AllPrograms from "../pages/public/AllPrograms";
+import ProgramDetail from "../pages/public/ProgramsDetail";
+import News from "../pages/public/News";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -39,6 +41,8 @@ import StudentManagement from "../pages/admin/StudentManagement";
 import StudentView from "../pages/admin/StudentView";
 import AdminContacts from "../pages/admin/Contacts";
 import Affiliations from "../pages/admin/Affiliations";
+import Testimonials from "../pages/admin/testimonials";
+import AdminNews from "../pages/admin/News";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
@@ -53,7 +57,7 @@ const AppRoutes = () => {
   const { user, loading } = useAuth();
 
   if (loading) return <Loader />;
-   
+
   // Helper component/function to handle logged-in users visiting /login
   const RedirectIfAuthenticated = () => {
     if (user) {
@@ -74,7 +78,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/trainers" element={<Trainers />} />
-        <Route path="/programs" element={<Programs />} />
+        <Route path="/programs" element={<AllPrograms />} />
         <Route path="/events" element={<Events />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
@@ -84,14 +88,16 @@ const AppRoutes = () => {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/affiliations" element={<Affiliation />} />
-        <Route path="/allprograms" element={<AllPrograms />} />
+        <Route path="/programdetail/:id" element={<ProgramDetail />} />
+        <Route path="/news" element={<News />} />
+        
 
         {/* Always keep the route declared, but handle the redirection logically */}
         <Route path="/login" element={<RedirectIfAuthenticated />} />
       </Route>
 
       {/* STANDALONE PUBLIC PAGES */}
-      <Route path="/find-student" element={<FindStudent />} />
+      {/* <Route path="/find-student" element={<FindStudent />} /> */}
 
       {/* ADMIN ROUTES */}
       <Route
@@ -119,6 +125,8 @@ const AppRoutes = () => {
         <Route path="/admin/students/:id" element={<StudentView />} />
         <Route path="/admin/contacts" element={<AdminContacts />} />
         <Route path="/admin/affiliations" element={<Affiliations />} />
+        <Route path="/admin/testimonials" element={<Testimonials />} />
+        <Route path="/admin/news" element={<AdminNews />} />
       </Route>
 
       {/* STUDENT */}

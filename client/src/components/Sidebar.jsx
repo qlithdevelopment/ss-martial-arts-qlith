@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from '../assets/Logo_compress.png';
 import { toast } from "react-hot-toast";
-import { ArrowLeft, LogOut, Handshake, ChevronDown, ChevronsRight, ChevronsLeft, Menu, X, House, Newspaper, CalendarDays, Image, Users, CircleHelp, GraduationCap, Mail,Phone } from "lucide-react";
+import { ArrowLeft, MessageSquareQuote, FileText, LogOut, Handshake, ChevronDown, ChevronsRight, ChevronsLeft, Menu, X, House, Newspaper, CalendarDays, Image, Users, CircleHelp, GraduationCap, Mail,Phone } from "lucide-react";
 import ConfirmModal from "../components/admin/reusecomponents/ConfirmationModal";
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
@@ -147,6 +147,28 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
        
       )
     },
+    {
+      path: "/admin/testimonials",
+      label: "Testimonials",
+      icon: (
+        <MessageSquareQuote
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+       
+      )
+    },
+    {
+      path: "/admin/news",
+      label: "News",
+      icon: (
+        <FileText
+          className="w-5 h-5 shrink-0"
+          strokeWidth={1.5}
+        />
+       
+      )
+    },
   ];
 
   const linkStyles = ({ isActive }) =>
@@ -213,7 +235,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           </div>
 
           {/* DYNAMIC NAVIGATION LINKS */}
-          <nav className="flex-1 overflow-y-auto custom-scrollbar pr-0 pb-4 flex flex-col gap-1.5">
+          <nav className="flex-1 overflow-y-auto scrollbar-track-transparent custom-scrollbar pr-0 pb-4 flex flex-col gap-1.5">
             {menuItems.map((item) => (
               item.children ? (
                 <div key={item.label} className="flex flex-col">

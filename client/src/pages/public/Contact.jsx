@@ -11,7 +11,7 @@ const Contact = () => {
     first_name: '',
     last_name: '',
     mobile_number: '',
-    programs: 'Adult Martial Arts',
+    programs: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,7 +33,7 @@ const Contact = () => {
         first_name: '',
         last_name: '',
         mobile_number: '',
-        programs: 'Adult Martial Arts',
+        programs: '',
         message: ''
       });
     } catch (error) {
@@ -205,10 +205,18 @@ const Contact = () => {
                   onChange={(e) => setFormData({ ...formData, programs: e.target.value })}
                   className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-black focus:outline-none focus:border-[#26c0ff] focus:ring-1 focus:ring-[#26c0ff] transition-all appearance-none cursor-pointer text-sm"
                 >
-                  <option className="text-black">Adult Martial Arts</option>
-                  <option className="text-black">Youth Classes</option>
-                  <option className="text-black">Private Coaching</option>
-                  <option className="text-black">General Inquiry</option>
+                  <option className="text-black " value="">Select a program</option>
+                  <option className="text-black">Karate</option>
+                  <option className="text-black">Taekwondo</option>
+                  <option className="text-black">Boxing</option>
+                  <option className="text-black">Kickboxing</option>
+                  <option className="text-black">MMA (Mixed Martial Arts)</option>
+                  <option className="text-black">Self-Defense</option>
+                  <option className="text-black">Judo/Wushu</option>
+                  <option className="text-black">Shaolin Kung-fu</option>
+                  <option className="text-black">Pencak silat</option>
+                  <option className="text-black">Gymnastics</option>
+                  <option className="text-black">Weapon's,Muay-thai</option>
                 </select>
               </div>
 

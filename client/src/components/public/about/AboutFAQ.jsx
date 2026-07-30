@@ -52,7 +52,7 @@ const FAQItem = ({ faq, isOpen, onClick }) => {
   );
 };
 
-const AboutFAQ = ({ limit = 10, paginate = false }) => {
+const AboutFAQ = ({ limit = 10, paginate = false, isHome = false }) => {
   const [openIndex, setOpenIndex] = useState(0);
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +72,7 @@ const AboutFAQ = ({ limit = 10, paginate = false }) => {
       try {
         setLoading(true);
 
-        const res = await api.get("/faqs", {
+        const res = await api.get(isHome ? "/faqs/home" : "/faqs", {
           params: {
             page: currentPage,
             per_page: limit,
@@ -80,7 +80,7 @@ const AboutFAQ = ({ limit = 10, paginate = false }) => {
           },
         });
 
-        setFaqs(res.data.data || []);
+        setFaqs(res?.data?.data || []);
 
         if (res.data.pagination) {
           setPagination(res.data.pagination);

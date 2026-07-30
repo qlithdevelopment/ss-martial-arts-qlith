@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
+            $table->string('tournament_played')->nullable();
+            $table->string('medals')->nullable();
+            $table->string('venue')->nullable();
+            $table->date('date')->nullable();
+            $table->string('certificate_number')->nullable();
             $table->json('certificated');
             $table->timestamps();
         });

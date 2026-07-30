@@ -9,6 +9,11 @@ class Certificate extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'tournament_played',
+        'medals',
+        'venue',
+        'date',
+        'certificate_number',
         'certificated',
     ];
 

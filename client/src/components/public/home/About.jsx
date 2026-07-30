@@ -4,7 +4,7 @@ import Silhouette from "../../../assets/new_silhouette.png";
 
 const About = () => {
   return (
-    <section id="about" className="relative w-full min-h-[100svh] flex items-center bg-[#f8f9fa] overflow-hidden py-12 md:py-16 lg:py-0">
+    <section id="about" className="relative w-full min-h-[100svh] flex items-center bg-[#f8f9fa] overflow-hidden py-12 md:py-16 lg:py-22">
       
       {/* MASSIVE BACKGROUND TEXT */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
@@ -44,7 +44,7 @@ const About = () => {
                 className="flex flex-col justify-start mb-10 border-l-[3px] border-[#26c0ff] pl-6"
               >
                 <p className="text-gray-600 text-sm leading-relaxed mb-4 font-medium max-w-[90%]">
-                 SS Martial Arts School is a trusted martial arts academy in Bhubaneswar, offering expert training in Karate, Taekwondo, Boxing, Kickboxing, MMA, and Self-Defense for all age groups. Our certified instructors provide structured training in a safe, supportive, and disciplined environment. We focus on building fitness, confidence, self-defense skills, and lifelong discipline through personalized coaching. Whether you're a beginner or an aspiring athlete, we help you achieve your goals and become stronger, healthier, and more confident.
+                 SS Martial Arts School is a trusted martial arts school in Bhubaneswar, offering expert training in Karate, Taekwondo, Boxing, Kickboxing, MMA, and Self-Defense for all age groups. Our certified instructors provide structured training in a safe, supportive, and disciplined environment. We focus on building fitness, confidence, self-defense skills, and lifelong discipline through personalized coaching. Whether you're a beginner or an aspiring athlete, we help you achieve your goals and become stronger, healthier, and more confident.
                 </p>
                 <p className="text-gray-600 text-sm leading-relaxed font-medium max-w-[90%]">
                   
@@ -92,7 +92,7 @@ const About = () => {
                       VISION
                     </h3>
                     <p className="text-gray-600 leading-relaxed text-[12px] sm:text-[13px] font-medium pr-4">
-                      Our vision is to make SS Martial Arts School the most trusted martial arts academy in Bhubaneswar by combining traditional values with modern training. We aim to inspire people of all ages to become stronger, more disciplined, and more confident in every aspect of life.
+                      Our vision is to make SS Martial Arts School the most trusted martial arts school in Bhubaneswar by combining traditional values with modern training. We aim to inspire people of all ages to become stronger, more disciplined, and more confident in every aspect of life.
                     </p>
                   </div>
                 </div>

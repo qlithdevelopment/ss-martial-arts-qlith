@@ -46,7 +46,7 @@ const Events = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const res = await api.get('/events?per_page=10');
+        const res = await api.get('/events?per_page=3');
         setEvents(res?.data?.data || []);
       } catch (err) {
         console.error('Failed to load events');

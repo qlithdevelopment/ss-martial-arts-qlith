@@ -147,6 +147,16 @@ const Faqs = () => {
       ),
     },
     {
+      header: 'Home Order',
+      accessor: 'homeOrder',
+      skeleton: () => <div className="h-5 mx-5 bg-gray-200 rounded w-6" />,
+      render: (value) => (
+        <span className="text-xs font-bold mx-4 text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
+          {value ?? '—'}
+        </span>
+      ),
+    },
+    {
       header: 'Actions',
       className: 'text-right',
       skeleton: () => (

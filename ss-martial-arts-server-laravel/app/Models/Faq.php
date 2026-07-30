@@ -15,6 +15,7 @@ class Faq extends Model
         'question',
         'answer',
         'isPublish',
+        'homeOrder',
         'order',
     ];
 
@@ -26,5 +27,6 @@ class Faq extends Model
     protected $casts = [
         'isPublish' => 'boolean',
         'order' => 'integer',
+        'homeOrder' => 'integer',
     ];
 }
