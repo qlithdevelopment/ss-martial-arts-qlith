@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/dashboard', [AuthController::class, 'dashboard']);
-
+    Route::post('/change-password', [AuthController::class, 'resetPassword']);
 
     Route::get('/contacts', [ContactController::class, 'index']);
     Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
@@ -71,7 +71,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/batches/{id}', [BatchController::class, 'update']);
     Route::delete('/batches/{id}', [BatchController::class, 'destroy']);
 
-    
     Route::post('/students/register', [StudentController::class, 'register']);
     Route::get('/student/my-batch', [StudentController::class, 'myBatch']);
     Route::put('/students/{id}', [StudentController::class, 'update']);

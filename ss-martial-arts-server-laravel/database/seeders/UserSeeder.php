@@ -26,13 +26,16 @@ class UserSeeder extends Seeder
                 'notes' => 'Standard beginner batch.'
             ]);
         }
-        
+
         User::create([
             'name' => 'System Admin',
             'email' => 'admin@example.com',
             'email_verified_at' => now(),
             'password' => Hash::make('admin123'),
             'role' => 'admin',
+            'reg_no' => 'ADMIN',
+            'date_of_birth' => '2016-01-01',
+            'mobile_number' => '9090224658',
             'batch_id' => null,
             'total_fee' => null,
             'status' => true,
@@ -42,7 +45,10 @@ class UserSeeder extends Seeder
             'name' => 'Jane Doe',
             'email' => 'student@example.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('student123'),
+            'reg_no' => 'SSMRS1',
+            'date_of_birth' => '2024-01-01',
+            'mobile_number' => '9101912819',
+            'password' => Hash::make('01012819'),
             'role' => 'student',
             'batch_id' => $batch->id,
             'total_fee' => 1000.00,

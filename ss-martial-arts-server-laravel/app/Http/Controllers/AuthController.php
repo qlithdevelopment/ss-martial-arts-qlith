@@ -10,57 +10,77 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\Blog;
 use Carbon\Carbon;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
     /**
      * Handle user login and issue a Sanctum token.
      */
-    public function login(Request $request)
-    {
-        try {
+  public function login(Request $request)
+{
+    try {
+        // 1. Input Validation
+        $request->validate([
+            'email'    => 'required|string',
+            'password' => 'required|string',
+        ], [
+            'email.required'    => 'Please enter your email or registration number.',
+            'password.required' => 'Please enter your password.',
+        ]);
 
+        $loginInput = $request->email;
 
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
+        // Determine if input is an email or reg_no
+        $field = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'reg_no';
+
+        $user = User::where($field, $loginInput)->first();
+
+        // 2. Specific Error: Account Not Found
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => ['No account found with this email or registration number.'],
             ]);
-
-            $user = User::where('email', $request->email)->first();
-
-            // Check user existence and password strength
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages([
-                    'email' => ['The provided credentials do not match our records.'],
-                ]);
-            }
-
-
-            // Generate token with the user's role embedded in the abilities
-            $token = $user->createToken('auth_token', [$user->role])->plainTextToken;
-
-            return response()->json([
-                'message' => 'Login successful',
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                ]
-            ], 200);
-        } catch (ValidationException $e) {
-            // Re-throw validation exceptions so Laravel can return the 422 error response formatted correctly
-            throw $e;
-        } catch (\Exception $e) {
-            // Handle any other unexpected database or system exceptions
-            return response()->json([
-                'message' => 'An error occurred during login.',
-                'error' => $e->getMessage() // You can remove this line in production for security
-            ], 500);
         }
+
+        // 3. Specific Error: Incorrect Password
+        if (!Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => ['Incorrect password. Please try again.'],
+            ]);
+        }
+
+        // Issue Sanctum token
+        $token = $user->createToken('auth_token', [$user->role])->plainTextToken;
+
+        return response()->json([
+            'success'      => true,
+            'message'      => 'Login successful',
+            'access_token' => $token,
+            'token_type'   => 'Bearer',
+            'user'         => [
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'reg_no' => $user->reg_no ?? null,
+                'role'   => $user->role,
+            ],
+        ], 200);
+
+    } catch (ValidationException $e) {
+         return response()->json([
+            'success' => false,
+            'message' => 'An unexpected server error occurred.',
+            'error'   => config('app.debug') ? $e->getMessage() : 'Internal Server Error',
+        ], 500);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'An unexpected server error occurred.',
+            'error'   => config('app.debug') ? $e->getMessage() : 'Internal Server Error',
+        ], 500);
     }
+}
 
     /**
      * Get the authenticated user details.
@@ -170,6 +190,53 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'An error occurred while fetching dashboard data.',
                 'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $request->validate([
+                'current_password' => ['required', 'string'],
+                'new_password'     => ['required', 'string', 'confirmed', Password::defaults()],
+            ]);
+
+            $user = $request->user();
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'current_password' => ['The current password you provided is incorrect.'],
+                ]);
+            }
+
+            if (Hash::check($request->new_password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'new_password' => ['The new password cannot be the same as your current password.'],
+                ]);
+            }
+
+            $user->update([
+                'password' => Hash::make($request->new_password),
+            ]);
+
+            $request->user()->tokens()->where('id', '!=', $request->user()->currentAccessToken()->id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password reset successfully.',
+            ], 200);
+        } catch (ValidationException $e) {
+           return response()->json([
+            'success' => false,
+            'message' => 'An unexpected server error occurred.',
+            'error'   => config('app.debug') ? $e->getMessage() : 'Internal Server Error',
+        ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while resetting password.',
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }

@@ -17,14 +17,14 @@ return new class extends Migration
             $table->string('father_name')->nullable();
             $table->string('mother_name')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->date('date_of_birth')->nullable();
+            $table->date('date_of_birth');
             $table->decimal('height', 5, 2)->nullable(); // e.g. in cm
             $table->decimal('weight', 5, 2)->nullable(); // e.g. in kg
             $table->text('address')->nullable();
-            $table->string('mobile_number')->nullable();
+            $table->string('mobile_number')->unique();
             $table->date('joining_date')->nullable();
-            $table->string('email')->unique();
-            $table->string('reg_no')->nullable()->unique();
+            $table->string('email')->nullable();
+            $table->string('reg_no')->unique();
             $table->enum('role', ['admin', 'student'])->default('student');
             $table->foreignId('batch_id')->nullable()->constrained('batches')->onDelete('set null');
             $table->string('branch_id')->nullable(); // Admission Dojo (branch)
