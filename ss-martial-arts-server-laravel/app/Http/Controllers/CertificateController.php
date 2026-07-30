@@ -41,6 +41,10 @@ class CertificateController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
+            'tournament_played' => 'nullable|string|max:255',
+            'medals' => 'nullable|string|max:255',
+            'venue' => 'nullable|string|max:255',
+            'certificate_number' => 'nullable|string|max:255',
             'certificated' => 'required|array|min:1',
             'certificated.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096', // supports PDFs/images up to 4MB each
         ]);
@@ -59,6 +63,11 @@ class CertificateController extends Controller
             $certificate = Certificate::create([
                 'user_id' => $request->user_id,
                 'title' => $request->title,
+                'tournament_played' => $request->tournament_played,
+                'medals' => $request->medals,
+                'venue' => $request->venue,
+                'date' => $request->date,
+                'certificate_number' => $request->certificate_number,
                 'certificated' => $uploadedPaths,
             ]);
 
@@ -120,6 +129,10 @@ class CertificateController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
+            'tournament_played' => 'nullable|string|max:255',
+            'medals' => 'nullable|string|max:255',
+            'venue' => 'nullable|string|max:255',
+            'certificate_number' => 'nullable|string|max:255',
             'certificated' => 'nullable|array',
             'certificated.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
         ]);
@@ -127,7 +140,15 @@ class CertificateController extends Controller
         $newUploadedPaths = [];
 
         try {
-            $dataToUpdate = $request->only(['user_id', 'title']);
+            $dataToUpdate = $request->only([
+                'user_id',
+                'title',
+                'tournament_played',
+                'medals',
+                'venue',
+                'date',
+                'certificate_number',
+            ]);
 
             if ($request->hasFile('certificated')) {
                 // Delete old local files entirely before linking new files

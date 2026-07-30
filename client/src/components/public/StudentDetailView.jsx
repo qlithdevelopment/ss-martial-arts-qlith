@@ -1,6 +1,12 @@
+
+
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Award, Users, DollarSign, Calendar, Shield, FileText, Eye, X } from 'lucide-react';
+import {
+  ArrowLeft, Mail, Award, Users, DollarSign, Calendar, Shield, FileText, Eye, X,
+  Phone, MapPin, UserCircle, Ruler, Weight, User, IdCard, Building2, Cake,  StickyNote,
+} from 'lucide-react';
 import api from '../../api/axios';
 import { getBeltColor } from '../CommonFormats';
 
@@ -39,6 +45,9 @@ const StudentDetailView = ({ student, onBack }) => {
 
   const beltColor = getBeltColor(student.belt);
 
+  const formatDate = (d) =>
+    d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -64,7 +73,7 @@ const StudentDetailView = ({ student, onBack }) => {
           <h2 className="text-lg font-black text-gray-900 tracking-tight truncate">
             {student.name}
           </h2>
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
             <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border ${isActive ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
               <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500' : 'bg-red-500'}`} />
               <span className={`text-[10px] font-bold ${isActive ? 'text-green-700' : 'text-red-700'} uppercase tracking-wider`}>
@@ -92,6 +101,14 @@ const StudentDetailView = ({ student, onBack }) => {
         </div>
 
         <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <Phone size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mobile</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.mobile_number || 'N/A'}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
           <Shield size={16} className="text-gray-400 shrink-0" />
           <div className="min-w-0">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Role</p>
@@ -115,25 +132,122 @@ const StudentDetailView = ({ student, onBack }) => {
           </div>
         </div>
 
-        {/* <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
-          <DollarSign size={16} className="text-gray-400 shrink-0" />
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <Building2 size={16} className="text-gray-400 shrink-0" />
           <div className="min-w-0">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Fee</p>
-            <p className="text-sm font-semibold text-gray-900">₹{student.total_fee}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Branch</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.branch_name || 'N/A'}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <UserCircle size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sensei</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.sensei || 'N/A'}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <User size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Gender</p>
+            <p className="text-sm font-semibold text-gray-900 capitalize">{student.gender || 'N/A'}</p>
+          </div>
+        </div>
+
+
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <User size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mother's Name</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.mother_name || 'N/A'}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <User size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Father's Name</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.father_name || 'N/A'}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <Cake size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</p>
+            <p className="text-sm font-semibold text-gray-900">{formatDate(student.date_of_birth)}</p>
+          </div>
+        </div>
+
+
+        
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <Ruler size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Height</p>
+            <p className="text-sm font-semibold text-gray-900">{student.height ? `${student.height} cm` : 'N/A'}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <Weight size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Weight</p>
+            <p className="text-sm font-semibold text-gray-900">{student.weight ? `${student.weight} kg` : 'N/A'}</p>
+          </div>
+        </div>
+
+        {/* <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <IdCard size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID Proof</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.id_proof_name || 'N/A'}</p>
+          </div>
+        </div> */}
+
+        {/* <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <IdCard size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID Proof Number</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.id_proof_number || 'N/A'}</p>
           </div>
         </div> */}
 
         <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
           <Calendar size={16} className="text-gray-400 shrink-0" />
           <div className="min-w-0">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Joined</p>
-            <p className="text-sm font-semibold text-gray-900">
-              {student.created_at
-                ? new Date(student.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                : 'N/A'}
-            </p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Joining Date</p>
+            <p className="text-sm font-semibold text-gray-900">{formatDate(student.joining_date)}</p>
           </div>
         </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
+          <Calendar size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Joined (Account)</p>
+            <p className="text-sm font-semibold text-gray-900">{formatDate(student.created_at)}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 p-3 rounded-xl border max-h-30  border-gray-100 bg-gray-50/50">
+          <StickyNote size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Notes</p>
+            <p className="text-sm font-semibold truncate hover:overflow-visible hover:text-wrap text-gray-900">{student.notes}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl border sm:col-span-2 border-gray-100 bg-gray-50/50 text-wrap">
+          <MapPin size={16} className="text-gray-400 shrink-0" />
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Address</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{student.address || 'N/A'}</p>
+          </div>
+        </div>
+
+
       </div>
 
       {/* Certificate Section */}
@@ -152,7 +266,7 @@ const StudentDetailView = ({ student, onBack }) => {
             {certificates.map((cert) => {
               const certUrl =
                 Array.isArray(cert.certificated) && cert.certificated.length > 0
-                  ? `${ import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "")}${cert.certificated[0]}`
+                  ? `${import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "")}${cert.certificated[0]}`
                   : null;
 
               return (
@@ -170,9 +284,7 @@ const StudentDetailView = ({ student, onBack }) => {
                       </p>
                       <p className="text-[11px] text-gray-500 font-medium">
                         Issued{' '}
-                        {cert.created_at
-                          ? new Date(cert.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                          : 'N/A'}
+                        {formatDate(cert.created_at)}
                       </p>
                     </div>
                   </div>

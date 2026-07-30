@@ -68,6 +68,7 @@ class FaqController extends Controller
             'answer'    => 'required|string',
             'isPublish' => 'required|boolean',
             'order'     => 'required|integer',
+            'homeOrder' => 'nullable|integer',
         ]);
 
         try {
@@ -76,6 +77,7 @@ class FaqController extends Controller
                 'answer'    => $request->answer,
                 'isPublish' => $request->isPublish,
                 'order'     => $request->order,
+                'homeOrder' => $request->homeOrder,
             ]);
 
             return response()->json([
@@ -131,6 +133,7 @@ class FaqController extends Controller
             'answer'    => 'required|string',
             'isPublish' => 'required|boolean',
             'order'     => 'required|integer',
+            'homeOrder' => 'nullable|integer',
         ]);
 
         try {
@@ -139,6 +142,7 @@ class FaqController extends Controller
                 'answer'    => $request->answer,
                 'isPublish' => $request->isPublish,
                 'order'     => $request->order,
+                'homeOrder' => $request->homeOrder,
             ]);
 
             return response()->json([
@@ -174,6 +178,30 @@ class FaqController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove requested FAQ asset from server.'
+            ], 500);
+        }
+    }
+    public function homeFaqs()
+    {
+        try {
+
+            $faqs = Faq::where('isPublish', true)
+                ->orderBy('homeOrder', 'asc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Home FAQs fetched successfully.',
+                'data' => $faqs
+            ], 200);
+
+        } catch (Exception $e) {
+
+            Log::error('Error fetching home FAQs: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch home FAQs.'
             ], 500);
         }
     }

@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->text('question');
             $table->text('answer');
-            $table->boolean('isPublish')->default(true); // default to true, or false based on preference
+            $table->boolean('isPublish')->default(true); 
             $table->integer('order')->default(0);
+            $table->integer('homeOrder')->default(0);
             $table->timestamps();
         });
     }

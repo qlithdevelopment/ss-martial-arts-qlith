@@ -28,6 +28,7 @@ Route::get('/trainers', [TrainerController::class, 'index']);
 Route::get('/trainers/{trainer}', [TrainerController::class, 'show']);
 
 Route::get('/faqs', [FaqController::class, 'index']);
+Route::get('/faqs/home', [FaqController::class, 'homeFaqs']);
 Route::get('/faqs/{id}', [FaqController::class, 'show']);
 
 Route::get('/events', [EventController::class, 'index']);
@@ -40,8 +41,10 @@ Route::get('/blogs/{id}/related', [BlogController::class, 'getRelatedBlogs']);
 
 Route::get('/users/{userId}/certificates', [CertificateController::class, 'index']);
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
+Route::get('/belts/user/{userId}', [BeltController::class, 'getBeltsByUser']);
 
 Route::get('/findstudents', [StudentController::class, 'findstudent']);
+Route::get('/students/{id}', [StudentController::class, 'show']);
 Route::get('/affiliations', [AffiliationController::class, 'index']);
 
 Route::get('/testimonials', [TestimonialController::class, 'index']);
@@ -68,7 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/batches/{id}', [BatchController::class, 'update']);
     Route::delete('/batches/{id}', [BatchController::class, 'destroy']);
 
-    Route::get('/students/{id}', [StudentController::class, 'show']);
+    
     Route::post('/students/register', [StudentController::class, 'register']);
     Route::get('/student/my-batch', [StudentController::class, 'myBatch']);
     Route::put('/students/{id}', [StudentController::class, 'update']);
@@ -111,7 +114,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/belts', [BeltController::class, 'index']);
     Route::post('/belts', [BeltController::class, 'store']);
     Route::get('/belts/{belt}', [BeltController::class, 'show']);
-    Route::get('/belts/user/{userId}', [BeltController::class, 'getBeltsByUser']);
+
     Route::put('/belts/{belt}', [BeltController::class, 'update']);
     Route::patch('/belts/{belt}', [BeltController::class, 'update']);
     Route::delete('/belts/{belt}', [BeltController::class, 'destroy']);

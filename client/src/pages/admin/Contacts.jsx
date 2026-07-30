@@ -57,12 +57,12 @@ const Contacts = () => {
     }
   };
 
-  const closeViewModal = () => {    
+  const closeViewModal = () => {
     setSelectedContact(null);
   };
 
   const handleDelete = (id) => {
-    setContactToDelete(id);   
+    setContactToDelete(id);
     setIsDeleteModalOpen(true);
 
   };
@@ -89,7 +89,7 @@ const Contacts = () => {
     {
       header: 'Sender Info',
       skeleton: () => (
-        <div className="flex-col items-center gap-5">         
+        <div className="flex-col items-center gap-5">
           <div className="h-4 bg-gray-200 my-1 rounded w-24"></div>
           <div className="h-4 bg-gray-200 rounded w-30"></div>
         </div>
@@ -98,10 +98,10 @@ const Contacts = () => {
         <div className="flex items-center gap-3">
           <div className="min-w-0 max-w-48 flex-1">
             <p className="font-bold max-w-28 truncate text-gray-900">
-              {(row.first_name || '')+' '+(row.last_name || '')}
+              {(row.first_name || '') + ' ' + (row.last_name || '')}
             </p>
             <p className="font-normal max-w-30 text-gray-400 truncate">
-              {(row.message || '') }
+              {(row.message || '')}
             </p>
           </div>
         </div>
@@ -112,7 +112,7 @@ const Contacts = () => {
       accessor: 'mobile_number',
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
       render: (value) => (
-        <div className="flex items-center gap-1.5 font-semibold text-gray-700">          
+        <div className="flex items-center gap-1.5 font-semibold text-gray-700">
           <a href={`tel:${value}`} className="hover:text-orange-500 transition-colors">
             {value || 'N/A'}
           </a>
@@ -124,7 +124,7 @@ const Contacts = () => {
       accessor: 'programs',
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-32"></div>,
       render: (value) => (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md text-xs font-semibold">          
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md text-xs font-semibold">
           {value || 'General Inquiry'}
         </span>
       ),
@@ -217,7 +217,7 @@ const Contacts = () => {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
         title="Delete Contact?"
-        message="Are you sure you want to delete this Contact? This action cannot be undone."
+        message="Are you sure you want to delete this Contacts? This action cannot be undone."
         type="delete"
         isLoading={isDeleting}
       />
@@ -225,11 +225,11 @@ const Contacts = () => {
         isOpen={!!selectedContact}
         onClose={closeViewModal}
         contact={selectedContact}
-        onDelete={(contact) =>{
+        onDelete={(contact) => {
           closeViewModal();
           handleDelete(contact.id);
         }}
-      />      
+      />
     </div>
   );
 };

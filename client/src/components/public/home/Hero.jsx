@@ -148,7 +148,7 @@ const Hero = () => {
                 font-semibold
               "
             >
-              Martial Arts Academy
+              Martial Arts School
             </p>
           </motion.div>
 

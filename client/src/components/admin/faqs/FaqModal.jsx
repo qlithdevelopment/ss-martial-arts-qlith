@@ -11,6 +11,7 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs, faqsLength }) =>
     answer: '',
     isPublish: true,
     order: 0,
+    homeOrder: 0,
   });
 // const maxOrder = faqData ? faqsLength : faqsLength + 1;
   useEffect(() => {
@@ -21,9 +22,10 @@ const FaqModal = ({ isOpen, onClose, faqData = null, fetchFaqs, faqsLength }) =>
           answer: faqData.answer || '',
           isPublish: faqData.isPublish ?? true,
           order: faqData.order || 0,
+         homeOrder: faqData.homeOrder || 0,
         });
       } else {
-        setFormData({ question: '', answer: '', isPublish: true, order: 0 });
+        setFormData({ question: '', answer: '', isPublish: true, order: 0, homeOrder: 0, });
       }
     }
   }, [isOpen, faqData]);
@@ -141,6 +143,20 @@ console.log("max value:", faqsLength + 1);
                       type="number"
                       name="order"
                       value={formData.order}                                                                 
+                      onChange={handleInputChange}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium"
+                      placeholder="0"                      
+                    />
+                  </div>
+                   
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <Hash size={12} className="text-orange-500" /> Home ORDER
+                    </label>
+                    <input
+                      type="number"
+                      name="homeOrder"
+                      value={formData.homeOrder}                                                                 
                       onChange={handleInputChange}
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium"
                       placeholder="0"                      

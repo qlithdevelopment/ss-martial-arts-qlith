@@ -8,6 +8,8 @@ import Services from '../../components/public/home/Services';
 import Gallery from '../../components/public/home/Gallery';
 import Partners from '../../components/public/home/Partners';
 import Testimonials from '../../components/public/home/Testimonials';
+import AboutFAQ from '../../components/public/about/AboutFAQ';
+import News from '../../components/public/home/News';
 const Home = () => {
   return (
     <div className="w-full flex flex-col bg-bgColor">
@@ -19,7 +21,9 @@ const Home = () => {
       {/* <Services /> */}
       <Gallery />
       <Partners />
+      <News/>
       <Testimonials />
+      <AboutFAQ limit={5} isHome={true} />
     </div>
   );
 };
