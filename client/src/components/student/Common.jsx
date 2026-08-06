@@ -49,7 +49,7 @@ export function ProfileSkeleton() {
     <Card className="p-6 sm:p-8 animate-pulse">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         <div className="w-28 h-28 rounded-2xl bg-primary/10 dark:bg-slate-800 flex-shrink-0" />
-        <div className="flex-1 w-full space-y-3">
+        <div className="flex flex-col md:items-start md:justify-start items-center justify-center w-full space-y-3">
           <div className="h-8 bg-primary/10 dark:bg-slate-800 rounded-lg w-48" />
           <div className="h-4 bg-slate-200/60 dark:bg-slate-700 rounded w-64" />
           <div className="flex gap-2 mt-2">

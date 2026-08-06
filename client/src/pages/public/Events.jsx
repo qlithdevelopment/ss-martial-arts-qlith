@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { MapPin, Clock, Calendar, User, ChevronRight, X, Send } from 'lucide-react';
-import eventSeminarImg from "../../assets/event_seminar.png";
-import eventTournamentImg from "../../assets/event_tournament.png";
 import PaginationComponent from '../../components/PaginationComponent';
 import api from '../../api/axios';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');

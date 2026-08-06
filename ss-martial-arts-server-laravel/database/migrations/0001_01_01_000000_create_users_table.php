@@ -37,6 +37,8 @@ return new class extends Migration
             $table->boolean('status')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('avatar')->nullable();
+            $table->boolean('is_full_payment')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

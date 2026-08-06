@@ -14,11 +14,8 @@ import StudentLayout from "../layouts/StudentLayout";
 import Home from "../pages/public/Home";
 import Trainers from "../pages/public/Trainers";
 import About from "../pages/public/About";
-// import Programs from "../pages/public/Programs";
 import Events from "../pages/public/Events";
-import Services from "../pages/public/Services";
 import Gallery from "../pages/public/Gallery";
-// import Testimonials from "../pages/public/Testimonials";
 import FAQ from "../pages/public/FAQ";
 import Login from "../pages/public/Login";
 import Contact from "../pages/public/Contact";
@@ -36,7 +33,6 @@ import AdminEvents from "../pages/admin/Events";
 import AdminGalleries from "../pages/admin/Galleries";
 import AdminTrainers from "../pages/admin/Trainers";
 import AdminFaqs from "../pages/admin/Faqs";
-import AdminServices from "../pages/admin/Services";
 import StudentManagement from "../pages/admin/StudentManagement";
 import StudentView from "../pages/admin/StudentView";
 import AdminContacts from "../pages/admin/Contacts";
@@ -46,7 +42,6 @@ import AdminNews from "../pages/admin/News";
 
 // Student Pages
 import StudentDashboard from "../pages/student/Dashboard";
-
 import Unauthorized from "../pages/errors/Unauthorized";
 import NotFound from "../pages/errors/NotFound";
 import Loader from "../components/Loader";
@@ -82,14 +77,14 @@ const AppRoutes = () => {
         <Route path="/events" element={<Events />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/services" element={<Services />} />
+        <Route path="/gallery" element={<Gallery />} />        
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/affiliations" element={<Affiliation />} />
         <Route path="/programdetail/:id" element={<ProgramDetail />} />
         <Route path="/news" element={<News />} />
+        
         
 
         {/* Always keep the route declared, but handle the redirection logically */}
@@ -119,8 +114,7 @@ const AppRoutes = () => {
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/galleries" element={<AdminGalleries />} />
         <Route path="/admin/trainers" element={<AdminTrainers />} />
-        <Route path="/admin/faqs" element={<AdminFaqs />} />
-        <Route path="/admin/services" element={<AdminServices />} />
+        <Route path="/admin/faqs" element={<AdminFaqs />} />        
         <Route path="/admin/students" element={<StudentManagement />} />
         <Route path="/admin/students/:id" element={<StudentView />} />
         <Route path="/admin/contacts" element={<AdminContacts />} />

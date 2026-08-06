@@ -126,68 +126,6 @@ const BlogPage = () => {
   const finalFeatured = blogs;
   const remainingBlogs = blogs;
 
-  // const BlogPageSkeleton = () => (
-  //   <div className="relative overflow-hidden w-full min-h-screen bg-[#f8f9fa] pt-24 pb-20 font-sans animate-fadeIn">
-  //     <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-[8rem]">
-  //       <div className="mb-12">
-  //         <div className="flex flex-col items-start mb-8">
-  //           <div className="flex items-center gap-4 mb-4">
-  //             <div className="h-1 w-12 bg-gray-200" />
-  //             <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
-  //           </div>
-  //           <div className="h-10 md:h-16 w-64 md:w-96 bg-gray-200 rounded-lg animate-pulse" />
-  //         </div>
-  //       </div>
-  //       <div className="flex gap-3 mb-10">
-  //         {Array.from({ length: 5 }).map((_, idx) => (
-  //           <div key={idx} className="h-9 w-24 bg-gray-200 rounded-full animate-pulse" />
-  //         ))}
-  //       </div>
-  //       <div className="relative w-full bg-white rounded-3xl shadow-sm overflow-hidden mb-20 border border-gray-100">
-  //         <div className="relative h-[600px] md:h-[500px] w-full flex flex-col md:flex-row">
-  //           <div className="w-full md:w-1/2 h-1/2 md:h-full p-8 md:p-12 lg:p-16 flex flex-col justify-center order-2 md:order-1 bg-white">
-  //             <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-4" />
-  //             <div className="h-9 md:h-12 w-full bg-gray-200 rounded-lg animate-pulse mb-3" />
-  //             <div className="h-9 md:h-12 w-2/3 bg-gray-200 rounded-lg animate-pulse mb-6" />
-  //             <div className="space-y-2 mb-8">
-  //               <div className="h-4 bg-gray-200 rounded animate-pulse" />
-  //               <div className="h-4 bg-gray-200 rounded w-5/6 animate-pulse" />
-  //               <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
-  //             </div>
-  //             <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-  //               <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
-  //               <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
-  //             </div>
-  //           </div>
-  //           <div className="w-full md:w-1/2 h-1/2 md:h-full order-1 md:order-2 bg-gray-200 animate-pulse" />
-  //         </div>
-  //       </div>
-  //       <div className="mb-8 flex items-center justify-between">
-  //         <div className="h-7 w-40 bg-gray-200 rounded animate-pulse" />
-  //         <div className="h-px bg-gray-200 flex-grow ml-6 hidden sm:block" />
-  //       </div>
-  //       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-  //         {Array.from({ length: 4 }).map((_, idx) => (
-  //           <div key={idx} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
-  //             <div className="relative w-full aspect-[4/3] bg-gray-200 animate-pulse" />
-  //             <div className="p-6 md:p-8 flex flex-col flex-grow gap-3">
-  //               <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
-  //               <div className="h-5 w-5/6 bg-gray-200 rounded animate-pulse" />
-  //               <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
-  //               <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
-  // Full skeleton only on the very first load ever
-  // if (loading && page === 1 && selectedCategory === 'all' && blogs.length === 0 && pagination.total === undefined) {
-  //   return <BlogPageSkeleton />;
-  // }
-
   return (
     <div className="relative overflow-hidden w-full min-h-screen bg-[#f8f9fa] pt-24 pb-20 font-sans">
       <div className="fixed top-[35vh] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-black/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
@@ -248,7 +186,7 @@ const BlogPage = () => {
             <button
               key={cat.value}
               onClick={() => handleCategoryChange(cat.value)}
-              disabled={loading}
+              // disabled={loading}
               className={`px-5 py-2 rounded-full text-sm font-semibold text-nowrap tracking-wider transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed ${selectedCategory === cat.value
                 ? 'bg-[#0b1b24] text-white'
                 : 'bg-white text-gray-500 border border-gray-200 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]'

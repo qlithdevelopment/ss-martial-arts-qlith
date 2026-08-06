@@ -45,6 +45,7 @@ class StudentController extends Controller
                     'users.branch_id',
                     'users.sensei',
                     'users.belt',
+                    'users.avatar',
                     'users.total_fee',
                     'users.status',
                     'users.id_proof_name',
@@ -60,7 +61,7 @@ class StudentController extends Controller
                     $q->Where('users.reg_no', 'LIKE', "%{$search}%")
                         ->orWhere('users.email', 'LIKE', "%{$search}%")
                         ->orWhere('users.name', 'LIKE', "%{$search}%")
-                        ->orWhere('users.belt', 'LIKE', "%{$search}%")                       
+                        ->orWhere('users.belt', 'LIKE', "%{$search}%")
                         ->orWhere('batches.name', 'LIKE', "%{$search}%");
                 });
             }
@@ -292,11 +293,7 @@ class StudentController extends Controller
                 ], 404);
             }
 
-            $totalFee = (float) ($student->total_fee ?? 0);
-            $totalPaid = (float) $student->payments()->sum('amount');
-            $pendingAmount = $totalFee - $totalPaid;
 
-            $payments = $student->payments()->latest()->get();
 
             // Most recently issued belt record (null if the student has none yet)
             $latestBelt = $student->belts->first();
@@ -305,12 +302,7 @@ class StudentController extends Controller
                 ['success' => true],
                 $student->toArray(),
                 [
-                    'ledger_summary' => [
-                        'total_fee' => $totalFee,
-                        'total_paid' => $totalPaid,
-                        'pending_amount' => max(0, $pendingAmount),
-                    ],
-                    'payment_history' => $payments,
+
                     'latest_belt' => $latestBelt,
                 ]
             );
@@ -427,6 +419,106 @@ class StudentController extends Controller
                 'message' => 'Could not delete student record. Element might not exist.',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+    /**
+     * Update Avatar
+     */
+    public function updateAvatar(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'avatar' => 'required|string|max:255',
+            ]);
+
+            $student = User::findOrFail($id);
+
+            $student->update([
+                'avatar' => $validated['avatar']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Avatar updated successfully.',
+                'avatar' => $student->avatar
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Student not found.'
+            ], 404);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error' => $e->getMessage() // Remove this in production
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Avatar
+     */
+    public function getAvatar($id)
+    {
+        try {
+            $student = User::findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'avatar' => $student->avatar
+            ], 200);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Student not found.'
+            ], 404);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error' => $e->getMessage() // Remove this in production
+            ], 500);
+        }
+    }
+   public function updatePaymentStatus($id)
+    {
+        try {
+
+            $user = User::findOrFail($id);
+
+            $user->update([
+                'is_full_payment' => !$user->is_full_payment,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment status updated successfully.',
+                'data' => [
+                    'id' => $user->id,
+                    'is_full_payment' => $user->is_full_payment,
+                ]
+            ]);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong.',
+                'error' => $e->getMessage(),
+            ], 500);
+
         }
     }
 }

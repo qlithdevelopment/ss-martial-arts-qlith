@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import CartoonAnimation from "./CartoonAnimation";
-import Logo from "../assets/Logo_low.png";
-import Comp_logo from "../assets/Logo_compress.png";
+import Logo from "../assets/logo/Logo_low.png";
+import Comp_logo from "../assets/logo/copressed_logo.png";
 
 const easing = [0.87, 0, 0.13, 1];
 
@@ -51,7 +51,7 @@ const WelcomeScreen = () => {
         />
 
         {/* LEFT NINJA */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, right: -NINJA_W / 2 }}
           exit={{
             opacity: [0, 1, 1, 1],
@@ -74,7 +74,7 @@ const WelcomeScreen = () => {
           }}
         >
           <CartoonAnimation direction="left" />
-        </motion.div>
+        </motion.div> */}
       </motion.div>
 
       {/* ─── RIGHT PANEL ─── */}
@@ -112,7 +112,7 @@ const WelcomeScreen = () => {
         />
 
         {/* RIGHT NINJA */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, left: -NINJA_W / 2 }}
           exit={{
             opacity: [0, 1, 1, 1],
@@ -135,7 +135,7 @@ const WelcomeScreen = () => {
           }}
         >
           <CartoonAnimation direction="right" />
-        </motion.div>
+        </motion.div> */}
       </motion.div>
 
       {/* ─── CENTER CONTENT ─── */}
@@ -171,7 +171,7 @@ const WelcomeScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.7, ease: "easeOut" }}
         >
-          Welcome to SS Martial Arts Schools
+          Welcome to SS Martial Arts School
         </motion.p>
       </motion.div>
     </motion.div>

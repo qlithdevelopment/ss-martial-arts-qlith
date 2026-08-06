@@ -37,7 +37,7 @@ export default function ProfileTab({ student }) {
                     </Chip>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
                     <InfoRow icon={<Mail size={14} />} label="Email" value={email} valueClass="text-indigo-500 dark:text-indigo-400" />
                     <InfoRow icon={<Phone size={14} />} label="Mobile Number" value={mobile_number} />
                     <InfoRow icon={<Calendar size={14} />} label="Date of Birth" value={fmt(date_of_birth)} />
@@ -47,7 +47,7 @@ export default function ProfileTab({ student }) {
 
             <Card className="p-6">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Family details</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
                     <InfoRow icon={<Users size={14} />} label="Father's Name" value={father_name} />
                     <InfoRow icon={<Users size={14} />} label="Mother's Name" value={mother_name} />
                 </div>
@@ -67,7 +67,7 @@ export default function ProfileTab({ student }) {
 
             <Card className="p-6">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Academy details</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
                     <InfoRow icon={<Shield size={14} />} label="Branch" value={branch_id} />
                     <InfoRow icon={<BookOpen size={14} />} label="Batch" value={student?.batch?.name} />
                     <InfoRow icon={<Award size={14} />} label="Belt" value={belt} />

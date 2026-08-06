@@ -87,7 +87,7 @@ const Galleries = () => {
   return (
     <div className="">
       {/* Header section */}
-      <div className="flex flex-col mb-14 md:mb-8 md:flex-row justify-between items-start md:items-center gap-4 ">
+      <div className="flex flex-col mb-6 md:mb-4 md:flex-row justify-between items-start md:items-center gap-4 ">
         <div className="flex w-full justify-between md:w-full  gap-4">
 
           <div className=" top-30  md:top-0   md:top-18  text-sm text-gray-500 font-medium">
@@ -96,7 +96,7 @@ const Galleries = () => {
           </div>
           <button
             onClick={openCreateModal}
-            className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
+            className="flex-1 max-w-14 md:max-w-20 lg:max-w-40  md:px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
           >
             <Plus size={18} /> <span className="hidden lg:inline">Create Album</span>
           </button>

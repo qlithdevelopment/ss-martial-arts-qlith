@@ -15,10 +15,13 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 40 },  
   show: {
     opacity: 1,
-    y: 0,   
+    y: 0,
+      transition: {
+      duration: 0.5,
+    },
   }
 };
 
@@ -78,7 +81,7 @@ const AllPrograms = () => {
                   <img
                     src={program.image}
                     alt={program.title}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute top-4 right-4 z-20">
                     <span className="bg-white/90 backdrop-blur-sm text-[#0b1b24] px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
@@ -97,11 +100,11 @@ const AllPrograms = () => {
                     </h3>
 
                     <span className='text-black text-[15px] uppercase font-bold leading-tight mb-1'>
-                      Description
+                      
                     </span>
 
-                    <p className="text-gray-500 max-h-30 w-full break-words text-[13px] md:text-sm font-medium leading-relaxed mb-6 line-clamp-3">
-                      {program.description}
+                    <p className="text-gray-500 max-h-30 w-full break-words text-[13px] md:text-[13px] pl-3 pt-2 font-medium leading-relaxed mb-6 line-clamp-3">
+                      {program.shortDescription}
                     </p>
 
                     <div className="flex flex-col gap-4">

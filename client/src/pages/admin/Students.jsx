@@ -7,8 +7,9 @@ import api from '../../api/axios';
 import PaginationComponent from '../../components/PaginationComponent';
 import ConfirmModal from '../../components/admin/reusecomponents/ConfirmationModal';
 import AdminTable from '../../components/admin/reusecomponents/AdminTable';
+import { getAvatarUrlByName } from '../../components/student/AvatarPickerModal';
+import FeeModal from '../../components/admin/student/FeeModal';
 
-// Hardcoded branch/dojo list — no branches table/API, just a static list of names.
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -17,10 +18,14 @@ const Students = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
+  const [editingFee, setEditingFee] = useState(null);
+  const [id, setId] = useState(null);
   const navigate = useNavigate();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -61,6 +66,7 @@ const Students = () => {
     setSearch('');
     fetchBatches();
     setFormData(emptyFormData);
+    setPasswordTouched(false);
     setIsModalOpen(true);
   };
 
@@ -73,6 +79,7 @@ const Students = () => {
       password: '',
       status: (student.status == '1' || student.status === true || student.status === 'true' || student.status === 'active') ? 1 : 0
     });
+    setPasswordTouched(false);
     setIsModalOpen(true);
   };
 
@@ -92,6 +99,24 @@ const Students = () => {
   useEffect(() => {
     fetchStudents();
   }, [page, debouncedSearch]);
+
+  useEffect(() => {
+    if (selectedStudent) return;
+    if (passwordTouched) return;
+
+    const digitsOnly = (formData.mobile_number || '').replace(/\D/g, '');
+    const last4 = digitsOnly.slice(-4);
+    const [year, month, day] = formData.date_of_birth.split('-');
+    const birthDay = day;     
+    const birthMonth = month;
+    const birthDayMonth = `${birthDay}` + `${birthMonth}`;
+    
+
+    if (last4.length === 4 && birthDayMonth && !Number.isNaN(birthDayMonth)) {
+      const generated = `${birthDayMonth}${last4}`;
+      setFormData(prev => (prev.password === generated ? prev : { ...prev, password: generated }));
+    }
+  }, [formData.mobile_number, formData.date_of_birth, selectedStudent, passwordTouched]);
 
   const fetchBatches = async () => {
     try {
@@ -157,6 +182,15 @@ const Students = () => {
       setIsDeleting(false);
     }
   };
+  const handelfeeOpen = (id) => {
+    setId(id);
+    setEditingFee(null);
+    setIsFeeModalOpen(true);
+  }
+  const handelfeeClose = () => {
+    setIsFeeModalOpen(false);
+    setId(null);
+  }
 
   const COLUMNS = [
     {
@@ -170,27 +204,34 @@ const Students = () => {
           </div>
         </div>
       ),
-      render: (_, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0">
-            {row.name?.charAt(0)}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-gray-400">#{row.id}</span>
-              <p className="font-bold text-gray-900" title={row.name}>
-                {row.name?.split(' ').length > 4
-                  ? row.name.split(' ').slice(0, 4).join(' ') + '...'
-                  : row.name}
-              </p>
+      render: (_, row) => {
+        const avatarImageUrl = row.avatar ? getAvatarUrlByName(row.avatar) : null;
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden">
+              {avatarImageUrl ? (
+                <img src={avatarImageUrl} alt={row.name} className="w-full h-full object-cover" />
+              ) : (
+                row.name?.charAt(0)
+              )}
             </div>
-            <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-              <Mail size={12} />
-              {row.email}
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-gray-400">#{row.id}</span>
+                <p className="font-bold text-gray-900" title={row.name}>
+                  {row.name?.split(' ').length > 4
+                    ? row.name.split(' ').slice(0, 4).join(' ') + '...'
+                    : row.name}
+                </p>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+                <Mail size={12} />
+                {row.email}
+              </div>
             </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       header: 'Assigned Batch',
@@ -244,26 +285,34 @@ const Students = () => {
           <div className="w-8 h-8 rounded-lg bg-gray-200"></div>
           <div className="w-8 h-8 rounded-lg bg-gray-200"></div>
           <div className="w-8 h-8 rounded-lg bg-gray-200"></div>
+          <div className="w-8 h-8 rounded-lg bg-gray-200"></div>
         </div>
       ),
       render: (_, row) => (
         <div className="flex items-center justify-end gap-2">
           <button
+            onClick={() => handelfeeOpen(row.id)}
+            className="px-2 py-1.5 text-xs font-bold text-green-500 bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
+            title="View Details"
+          >
+            <IndianRupee size={16} />
+          </button>
+          <button
             onClick={() => navigate(`/admin/students/${row.id}`)}
-            className="px-3 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
+            className="px-2 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
             title="View Details"
           >
             <Eye size={16} />
           </button>
           <button
             onClick={() => openEditModal(row)}
-            className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
+            className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-2 py-1.5 rounded-lg"
           >
             <Edit2 size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.id)}
-            className="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100 flex items-center gap-1"
+            className="px-2 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100 flex items-center gap-1"
           >
             <Trash2 size={16} />
           </button>
@@ -275,7 +324,7 @@ const Students = () => {
   return (
     <div className="w-full">
       {/* Action Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
@@ -467,10 +516,11 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Phone size={12} className="text-[#f97316]" /> MOBILE NUMBER
+                        <Phone size={12} className="text-[#f97316]" /> MOBILE NUMBER *
                       </label>
                       <input
                         type="tel"
+                        required
                         placeholder="+91 98765 43210"
                         value={formData.mobile_number}
                         onChange={(e) => setFormData({ ...formData, mobile_number: e.target.value })}
@@ -529,11 +579,10 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Mail size={12} className="text-[#f97316]" /> EMAIL ADDRESS *
+                        <Mail size={12} className="text-[#f97316]" /> EMAIL ADDRESS
                       </label>
                       <input
                         type="email"
-                        required
                         placeholder="john@example.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -543,7 +592,7 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IdCard size={12} className="text-[#f97316]" /> REGISTRATION NO
+                        <IdCard size={12} className="text-[#f97316]" /> REGISTRATION NO *
                       </label>
                       <input
                         type="text"
@@ -562,10 +611,14 @@ const Students = () => {
                       <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
+                          readOnly={!selectedStudent}
                           required={!selectedStudent}
                           placeholder="••••••••"
                           value={formData.password}
-                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          onChange={(e) => {
+                            setPasswordTouched(true);
+                            setFormData({ ...formData, password: e.target.value });
+                          }}
                           className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-11 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                         />
                         <button
@@ -577,6 +630,11 @@ const Students = () => {
                           {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
+                      {!selectedStudent && !passwordTouched && formData.password && (
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          Auto-generated from mobile number + birth year — click to edit.
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -607,22 +665,6 @@ const Students = () => {
                         ))}
                       </select>
                     </div>
-
-                    {/* <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Building2 size={12} className="text-[#f97316]" /> ADMISSION DOJO (BRANCH)
-                      </label>
-                      <select
-                        value={formData.branch_id || ''}
-                        onChange={(e) => setFormData({ ...formData, branch_id: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
-                      >
-                        <option value="">Select a Branch</option>
-                        {BRANCHES.map(branch => (
-                          <option key={branch} value={branch}>{branch}</option>
-                        ))}
-                      </select>
-                    </div> */}
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
@@ -758,6 +800,13 @@ const Students = () => {
         message="Are you sure you want to delete this student? This action cannot be undone."
         type="delete"
         isLoading={isDeleting}
+      />
+      <FeeModal
+        isOpen={isFeeModalOpen}
+        onClose={handelfeeClose}
+        studentId={id}
+        editingFee={editingFee}
+        onSuccess={fetchStudents}
       />
     </div>
   );

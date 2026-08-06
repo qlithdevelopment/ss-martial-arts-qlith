@@ -46,7 +46,7 @@ const Affiliation = () => {
   }, []);
 
   return (
-    <section className="w-full min-h-screen bg-white px-4 md:px-8 py-16 md:py-24 relative overflow-hidden">
+    <section className="w-full min-h-screen  bg-white px-4 md:px-8 py-20 md:py-24 relative overflow-hidden">
 
       <div className="global-container lg:!px-14 relative z-10">
         <div className="fixed top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[16vw] font-black text-black/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">

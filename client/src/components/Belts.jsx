@@ -178,7 +178,7 @@ const Belts = ({ belts = [] }) => {
   });
 
   const reservedWidth = CALLOUT_GAP_X + CALLOUT_WIDTH;
-  const chartInnerWidth = Math.max(0, chartWidth - reservedWidth);
+  const chartInnerWidth = Math.max(0, chartWidth - reservedWidth +50 );
 
   const activeRows = BELTS.map((belt, index) => ({ belt, index }))
     .filter(({ belt }) => detailsByColor[belt.name])

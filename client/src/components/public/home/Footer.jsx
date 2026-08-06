@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from "../../../assets/Full_Logo.png";
+import Logo from "../../../assets/logo/Full_Logo.png";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Home, } from "lucide-react";
 
@@ -51,7 +51,7 @@ const Footer = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8 }}
-          className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-6 md:gap-12 mb-4"
+          className="grid grid-cols-2 md:grid-cols-5 md:gap-x-6 gap-x-6 gap-y-6 md:gap-12 mb-4"
         >
 
           {/* BRANDING */}
@@ -82,7 +82,7 @@ const Footer = () => {
           </div>
 
           {/* PROGRAMS */}
-          <div className="col-span-1 ml-10 md:ml-0">
+          <div className="col-span-1 ml-0 md:ml-0">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Programs</h4>
             <ul className="flex flex-col gap-1.5 md:gap-3">
               {['Karate', 'Taekwondo', 'Boxing', 'Kickboxing', 'MMA (Mixed Martial Arts)', 'Self-Defense'].map((link) => (
@@ -97,7 +97,7 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          <div className="col-span-1 ml-10 md:ml-0">
+          <div className="col-span-1 ml-0 md:ml-0">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Programs</h4>
             <ul className="flex flex-col gap-1.5 md:gap-3">
               {['Judo/Wushu', 'Shaolin Kung-fu', 'Pencak silat', 'Gymnastics', `Weapon's,Muay-thai`,].map((link) => (
@@ -114,7 +114,7 @@ const Footer = () => {
           </div>
 
           {/* CONTACT INFO */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-1 md:col-span-1">
             <h4 className="text-white font-bold tracking-widest uppercase mb-2 md:mb-4 text-[10px] md:text-base">Contact</h4>
             <ul className="flex flex-col gap-2 md:gap-4 text-[10px] md:text-sm text-secondary">
               <li className="flex items-start gap-2 md:gap-3">
@@ -137,7 +137,7 @@ const Footer = () => {
         {/* BOTTOM COPYRIGHT */}
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-secondary text-[9px] md:text-xs flex-1 lg:text-start text-start">
-            &copy; {new Date().getFullYear()} SS Martial Arts Schools. All rights reserved. <span className="mx-1 md:mx-2 text-white/20">|</span> Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
+            &copy; {new Date().getFullYear()} SS Martial Arts School. All rights reserved. <span className="mx-1 md:mx-2 text-white/20">|</span> Developed by <a href="https://www.qlith.com/" target="_blank" rel="noreferrer" className="text-white hover:text-primary transition-colors duration-300 font-medium">Qlith</a>
           </p>
 
           <div className="flex gap-3 md:gap-4 flex-1 justify-center md:justify-end">

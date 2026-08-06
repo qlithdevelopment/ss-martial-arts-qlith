@@ -13,7 +13,7 @@ import TestimonialModal from "../../components/admin/testimonials/TestimonialMod
 import ViewTestimonialModal from "../../components/admin/testimonials/ViewTestimonialModal";
 import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
 
-const MAX_TESTIMONIALS = 15;
+const MAX_TESTIMONIALS = 100;
 
 const Testimonials = () => {
     const [testimonials, setTestimonials] = useState([]);
@@ -101,9 +101,9 @@ const Testimonials = () => {
             {/* Header section */}
             <div className="flex w-full flex-col justify-start md:flex-row items-end md:items-center gap-4 mb-3">
                 <div className="flex w-full md:w-full justify-between items-center gap-4">
-                    <span className="text-xs font-bold text-black">
-                        {testimonials.length}/{MAX_TESTIMONIALS}
-                        {console.log(testimonials.length)}
+                    <span className="md:text-lg text-[12px] font-bold text-black">
+                        {/* {testimonials.length}/{MAX_TESTIMONIALS} */}
+                        <span className="px-4 ">Add Minimum 15 Testimonials For Better UI</span>
 
                     </span>
                     <button

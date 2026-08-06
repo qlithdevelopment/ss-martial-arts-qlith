@@ -12,7 +12,7 @@ const AboutPage = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen bg-[#f8f9fa] flex flex-col">
+    <div className="w-full min-h-screen pt-4 md:pt-1 bg-[#f8f9fa] flex flex-col">
       <AboutIntro />
       <AboutInstructor />
       <AboutFeatures />
