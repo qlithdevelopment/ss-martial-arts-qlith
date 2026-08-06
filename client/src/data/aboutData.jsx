@@ -1,4 +1,4 @@
-import generatedTrainerImg from "../assets/generated_trainer2.png";
+import generatedTrainerImg from "../assets/about/generated_trainer2.png";
 
 // ==========================================
 // ABOUT INTRO DATA
@@ -58,7 +58,7 @@ export const instructorData = {
   ]
 };
 
-import judoThrowImg from "../assets/Picsart_26-06-08_13-20-53-998.png";
+import judoThrowImg from "../assets/about/judoThrow.png";
 
 // ==========================================
 // FEATURES DATA

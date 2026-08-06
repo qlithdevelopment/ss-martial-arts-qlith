@@ -1,4 +1,4 @@
-import { Card } from "./common.jsx";
+import { Card } from "./Common.jsx";
 import Belts from "../Belts.jsx";
 
 export default function BeltTab({ beltRecords, loading, error }) {

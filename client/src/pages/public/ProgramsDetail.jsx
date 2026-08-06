@@ -58,16 +58,16 @@ const ProgramDetail = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 80, damping: 15 }}
-          className="w-full bg-white rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] p-6 sm:p-8 md:p-12"
+          className="w-full bg-white rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] p-6 sm:p-8 md:p-0"
         >
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-5 items-start">
 
             {/* Image with title overlay, natural size */}
             <div className="relative inline-block w-full md:w-auto max-w-full mx-auto md:mx-0">
               <img
                 src={image}
                 alt={title}
-                className="w-full md:w-auto max-w-full h-auto rounded-2xl object-contain block"
+                className="w-full md:w-full max-w-full h-auto rounded-2xl object-cover block"
               />
               {tag && (
                 <div className="absolute top-4 right-4 z-20">
@@ -91,9 +91,7 @@ const ProgramDetail = () => {
 
             {/* Right column: shortDescription + bullets */}
             {(shortDescription || hasBullets) && (
-              <div>
-
-
+              <div className='p-6 sm:p-8 md:p-0 md:px-6 md:pr-4 md:py-10'>
                 {hasBullets && (
                   <>
                     <span className="text-black text-sm md:text-[15px] uppercase font-bold leading-tight mb-4 md:mb-6 block">
@@ -116,10 +114,20 @@ const ProgramDetail = () => {
                 {shortDescription && (
                   <>
                     <span className="text-black text-sm md:text-[15px] uppercase font-bold leading-tight my-5 mt-8 md:my-8 block">
-                     Short Description
+                      
                     </span>
                     <p className="text-gray-600 text-sm md:text-base max-h-60 font-medium leading-relaxed mb-5 md:mb-6">
                       {shortDescription}
+                    </p>
+                  </>
+                )}
+                {description && (
+                  <>
+                    <span className="text-black text-sm md:text-[15px] uppercase font-bold leading-tight mb-2 md:mb-3 block">
+                      
+                    </span>
+                    <p className="text-gray-500 text-sm md:text-[13px] overflow-y-auto scrollbar-track-transparent text-wrap max-h-52  font-medium leading-relaxed">
+                      {description}
                     </p>
                   </>
                 )}
@@ -127,29 +135,14 @@ const ProgramDetail = () => {
             )}
           </div>
         </motion.div>
-
-        {/* Description */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, type: 'spring', stiffness: 80, damping: 15 }}
-          className="w-full bg-white rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] p-6 sm:p-8 md:p-12 mt-4 md:mt-6"
-        >
-          <span className="text-black text-sm md:text-[15px] uppercase font-bold leading-tight mb-2 md:mb-3 block">
-            Description
-          </span>
-          <p className="text-gray-500 text-sm md:text-base font-medium leading-relaxed">
-            {description}
-          </p>
-        </motion.div>
-
+  
         {/* FAQs */}
         {hasFaqs && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, type: 'spring', stiffness: 80, damping: 15 }}
-            className="w-full bg-white rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] p-6 sm:p-8 md:p-12 mt-4 md:mt-6"
+            className="w-full bg-white rounded-[24px] md:rounded-[32px] border border-gray-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)] p-6 sm:p-8 md:p-12 mt-4 md:mt-12"
           >
             <span className="text-black text-sm md:text-[15px] uppercase font-bold leading-tight mb-4 md:mb-6 block">
               FAQs
@@ -203,7 +196,7 @@ const ProgramDetail = () => {
         )}
       </div>
 
-      <div className="h-full pt-12 md:pt-18">
+      <div className="h-full pt-12 md:pt-12">
         <RegistrationModal
           details={program}
           type="program"

@@ -132,7 +132,7 @@ const Batches = () => {
     {
       header: 'Batch Name',
       render: (_, row) => (
-        <div className="flex items-center gap-3">          
+        <div className="flex items-center gap-3">
           <div>
             <p className="font-bold text-gray-900">{row.name}</p>
             <p className="text-xs text-gray-500">{row.notes}</p>
@@ -140,7 +140,7 @@ const Batches = () => {
         </div>
       ),
       skeleton: () => (
-        <div className="flex items-center gap-3">          
+        <div className="flex items-center gap-3">
           <div className="space-y-2">
             <div className="h-4 bg-gray-200 rounded w-32" />
             <div className="h-3 bg-gray-200 rounded w-48" />
@@ -151,7 +151,7 @@ const Batches = () => {
     {
       header: 'Duration',
       render: (_, row) => (
-        <div className="flex items-center gap-2 text-gray-600">          
+        <div className="flex items-center gap-2 text-gray-600">
           <span>{formatDate(row.date)} – {formatDate(row.enddate)}</span>
         </div>
       ),
@@ -205,7 +205,7 @@ const Batches = () => {
   return (
     <div className="w-full">
       {/* Action Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           <input
@@ -219,7 +219,7 @@ const Batches = () => {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          
+
           <button
             onClick={openCreateModal}
             className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"

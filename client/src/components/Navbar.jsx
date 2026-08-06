@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowRight } from 'lucide-react'
-import Logo from '../assets/Full_Logo.png'
+import Logo from '../assets/logo/Full_Logo.png'
 import { useAuth } from '../context/AuthContext'
 
 const Navbar = () => {

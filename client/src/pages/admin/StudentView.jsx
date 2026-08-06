@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, User, Users, Mail, Award, BookOpen, Calendar, IndianRupee, FileText, X, Edit, Trash2, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine, IdCard, Activity } from 'lucide-react';
+import { ArrowLeft, User, Plus, Users, Mail, Award, BookOpen, Calendar, IndianRupee, FileText, X, Edit, Trash2, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine, IdCard, Activity, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
 import { getBeltColor } from '../../components/CommonFormats';
@@ -11,6 +11,9 @@ import CertificateModal from '../../components/admin/student/CertificateModal';
 import { formatDate } from '../../components/CommonFormats';
 import ViewAchievementModal from '../../components/ViewAchievementModal';
 import Belts from '../../components/Belts';
+import { getAvatarUrlByName } from '../../components/student/AvatarPickerModal';
+import PaymentDetails from '../../components/student/PaymentDetails';
+import FeeModal from '../../components/admin/student/FeeModal';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
@@ -32,11 +35,18 @@ const StudentView = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [certToDelete, setCertToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
+  const [editingFee, setEditingFee] = useState(null);
+  const [feeid, setfeeId] = useState(null);
 
   // Belt delete state
   const [isDeleteBeltModalOpen, setIsDeleteBeltModalOpen] = useState(false);
   const [beltToDelete, setBeltToDelete] = useState(null);
   const [isDeletingBelt, setIsDeletingBelt] = useState(false);
+
+  // ── payment status toggle state ─────────────────────────────────────────────
+  const [isFullPayment, setIsFullPayment] = useState(false);
+  const [paymentStatusSaving, setPaymentStatusSaving] = useState(false);
 
   useEffect(() => {
     fetchStudent();
@@ -56,6 +66,11 @@ const StudentView = () => {
         ...studentData,
         certificates: certsData
       });
+      setIsFullPayment(
+        studentData?.is_full_payment === true ||
+        studentData?.is_full_payment === 1 ||
+        studentData?.is_full_payment === '1'
+      );
     } catch (error) {
       console.error("Failed to fetch student", error);
       toast.error("Failed to load student details.");
@@ -77,6 +92,27 @@ const StudentView = () => {
       setBelts([]);
     } finally {
       setBeltLoading(false);
+    }
+  };
+
+  // ── payment status toggle — independent PATCH call, fires immediately on click ──
+  const handleTogglePaymentStatus = async () => {
+    if (!student) return;
+    const newValue = !isFullPayment;
+    const previous = isFullPayment;
+    setIsFullPayment(newValue); // optimistic update
+
+    try {
+      setPaymentStatusSaving(true);
+      await api.patch(`/users/${student.id}/payment-status`, {
+        is_full_payment: newValue,
+      });
+      toast.success(newValue ? 'Marked as fully paid' : 'Marked as not fully paid');
+    } catch (error) {
+      setIsFullPayment(previous); // roll back on failure
+      toast.error(error.response?.data?.message || 'Failed to update payment status');
+    } finally {
+      setPaymentStatusSaving(false);
     }
   };
 
@@ -140,6 +176,16 @@ const StudentView = () => {
       setIsDeletingBelt(false);
     }
   };
+  const handelfeeOpen = (id) => {
+    setfeeId(id);
+    setEditingFee(null);
+    setIsFeeModalOpen(true);
+  }
+  const handelfeeClose = () => {
+    setIsFeeModalOpen(false);
+    setfeeId(null);
+  }
+
 
   const StudentViewSkeleton = () => (
     <div className="w-full animate-fadeIn">
@@ -154,7 +200,7 @@ const StudentView = () => {
             <p className="text-sm text-gray-500 font-medium">Manage student details, belts, and certificates</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex justify-center gap-2">
           <div className="h-8 w-28 bg-gray-200 rounded-lg animate-pulse" />
           <div className="h-8 w-32 bg-gray-200 rounded-lg animate-pulse" />
         </div>
@@ -172,6 +218,9 @@ const StudentView = () => {
               <div className="flex items-center justify-center gap-2">
                 <div className="h-5 bg-gray-200 rounded-full w-20 animate-pulse" />
                 <div className="h-5 bg-gray-200 rounded-full w-16 animate-pulse" />
+              </div>
+              <div>
+                <div className="h-8 bg-gray-200 rounded-lg w-52 mt-4 mx-auto animate-pulse" />
               </div>
             </div>
             <div className="border-t border-gray-50 px-6 py-5 flex flex-col gap-4 flex-1">
@@ -204,17 +253,69 @@ const StudentView = () => {
         </div>
       </div>
 
+      <div className="space-y-5 my-6 bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full animate-pulse">
+        {/* Ledger summary skeleton */}
+        <div>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <div className="w-3 h-3 rounded bg-gray-200" />
+            <div className="h-2.5 w-28 bg-gray-200 rounded" />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="bg-gray-50 rounded-xl px-3 py-2.5">
+                <div className="h-2 w-12 bg-gray-200 rounded mb-2" />
+                <div className="h-4 w-16 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Payment history skeleton */}
+        <div>
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <div className="w-3 h-3 rounded bg-gray-200" />
+            <div className="h-2.5 w-32 bg-gray-200 rounded" />
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-gray-200 shrink-0" />
+                  <div className="space-y-2">
+                    <div className="h-3 w-24 bg-gray-200 rounded" />
+                    <div className="h-2.5 w-20 bg-gray-200 rounded" />
+                  </div>
+                </div>
+                <div className="text-right space-y-2">
+                  <div className="h-3 w-14 bg-gray-200 rounded ml-auto" />
+                  <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Bottom Row Skeleton: Belt (50%) + Achievements (50%) — mirrors the real layout */}
       <div className=" gap-6">
 
         {/* Belt Certification Table Skeleton */}
-        <div className="grid grid-cols-2 mb-6">
+        <div className="grid grid-cols-2 max-w-2xl mb-6">
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full">
-            <div className="h-5 bg-gray-200 rounded w-40 mb-4 pb-4 border-b border-gray-50 animate-pulse" />
-            <div className="flex flex-col gap-3">
-              <div className="h-9 bg-gray-200 rounded-lg w-full animate-pulse" />
-              <div className="h-9 bg-gray-100 rounded-lg w-full animate-pulse" />
-              <div className="h-9 bg-gray-100 rounded-lg w-full animate-pulse" />
+            <div className="h-5 bg-gray-200 rounded w-30 mb-4 pb-4 border-b border-gray-50 animate-pulse" />
+            <div className="flex flex-col  gap-3">
+              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
+              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
             </div>
           </div>
         </div>
@@ -277,6 +378,9 @@ const StudentView = () => {
   const displayBelt = latestBelt?.belt_position || student.belt;
   const beltColors = getBeltColor(displayBelt);
 
+  // resolve the stored avatar NAME into a renderable image URL
+  const avatarImageUrl = student.avatar ? getAvatarUrlByName(student.avatar) : null;
+
   return (
     <div className="w-full animate-fadeIn">
       {/* Header */}
@@ -291,10 +395,17 @@ const StudentView = () => {
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={() => handelfeeOpen(student.id)}
+            className="flex-1 sm:flex-none px-5 py-3 bg-primary hover:bg-primary/60 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
+          >
+            <Plus size={18} />{" "}
+            <span className="hidden lg:inline">Add Fee</span>
+          </button>
           <button
             onClick={() => setIsBeltModalOpen(true)}
-            className="px-3 py-1.5 bg-orange-50 text-[#f97316] border border-orange-200 font-bold rounded-lg flex items-center gap-1.5 hover:bg-orange-100 transition-colors text-xs shadow-sm"
+            className="px-3 py-1.5  bg-orange-50 text-[#f97316] border border-orange-200 font-bold rounded-lg flex items-center gap-1.5 hover:bg-orange-100 transition-colors text-xs shadow-sm"
           >
             <Award size={14} />
             Assign Belt
@@ -320,9 +431,13 @@ const StudentView = () => {
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden h-full flex flex-col">
             <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-[#f97316]/10 to-transparent"></div>
 
-            <div className="p-6 text-center relative z-10 shrink-0">
-              <div className="w-24 h-24 bg-white border-4 border-white shadow-md rounded-full mx-auto flex items-center justify-center text-[#f97316] text-4xl font-black mb-4">
-                {student.name ? student.name.charAt(0).toUpperCase() : 'S'}
+            <div className="p-6 pb-0 text-center relative z-10 shrink-0">
+              <div className="w-24 h-24 bg-white shadow-md rounded-full mx-auto flex items-center justify-center text-[#f97316] text-4xl font-black mb-4 overflow-hidden">
+                {avatarImageUrl ? (
+                  <img src={avatarImageUrl} alt={`${student.name}'s avatar`} className="w-full h-full object-cover" />
+                ) : (
+                  student.name ? student.name.charAt(0).toUpperCase() : 'S'
+                )}
               </div>
 
               <h2 className="text-xl font-bold text-gray-900 mb-1">{student.name}</h2>
@@ -339,6 +454,34 @@ const StudentView = () => {
                   <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500' : 'bg-red-500'}`} />
                   {isActive ? 'ACTIVE' : 'INACTIVE'}
                 </span>
+              </div>
+
+              {/* Full Payment Status Toggle — fires its own PATCH call */}
+              <div className="border-t border-gray-50 px-6 pt-3 shrink-0">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Full Payment Status</p>
+                <button
+                  type="button"
+                  onClick={handleTogglePaymentStatus}
+                  disabled={paymentStatusSaving}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${isFullPayment
+                    ? 'bg-green-50 border-green-200 text-green-700'
+                    : 'bg-amber-50 border-amber-200 text-amber-700'
+                    }`}
+                >
+                  <span className="text-sm font-bold flex items-center gap-1.5">
+                    <CheckCircle2 size={14} className={isFullPayment ? 'text-green-500' : 'text-amber-400'} />
+                    {isFullPayment ? 'Fully Paid' : 'Payment Pending'}
+                  </span>
+                  <span
+                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isFullPayment ? 'bg-green-500' : 'bg-gray-300'
+                      }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${isFullPayment ? 'translate-x-4' : 'translate-x-0.5'
+                        }`}
+                    />
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -433,19 +576,12 @@ const StudentView = () => {
                 <p className="font-medium text-gray-900">{student.address || 'N/A'}</p>
               </div>
             </div>
-
-            {student.notes && (
-              <div className="mt-6 pt-6 border-t border-gray-50 shrink-0">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Notes</p>
-                <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl">{student.notes}</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
       {/* Belt Progression — full width, glass-card style to match student dashboard */}
-      <div className="bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-sm mb-6">
+      <div className="bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl overflow-x-auto rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-sm mb-6">
         <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 border-b border-white/50 dark:border-slate-800 flex items-center gap-2">
           <span className="w-8 h-8 rounded-xl bg-[#f97316]/10 text-[#f97316] flex items-center justify-center">
             <Award size={16} />
@@ -454,7 +590,7 @@ const StudentView = () => {
         </h4>
 
         {belts && (
-          <div className="grid grid-cols-1 py-4 px-3 lg:grid-cols-2 overflow-x-auto gap-6 items-start">
+          <div className="lg:grid lg:py-4 lg:px-3 w-full lg:grid-cols-2 overflow-x-auto lg:gap-6 items-start">
             <Belts belts={belts} />
           </div>
         )}
@@ -532,6 +668,20 @@ const StudentView = () => {
 
         </div>
       </div>
+      <div className="bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-3 md:p-6 border border-white/60 dark:border-slate-800 shadow-sm my-6">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 border-b border-white/50 dark:border-slate-800 flex items-center pb-4 gap-2">
+            <span className="w-8 h-8 rounded-xl bg-[#f97316]/10 text-[#f97316] flex items-center justify-center">
+              <IndianRupee size={16} />
+            </span>
+            Payment Details
+          </h4>
+
+          <span className=' px-2 text-nowrap lg:px-6 uppercase font-bold' >Total fee : <span>{student.total_fee}</span></span>
+        </div>
+        <PaymentDetails isAdmin={true} studentId={student.id} />
+        
+      </div>
 
       {/* VIEW ACHIEVEMENT MODAL */}
       <ViewAchievementModal
@@ -577,6 +727,13 @@ const StudentView = () => {
         message="Are you sure you want to delete this belt certification? This action cannot be undone."
         type="delete"
         isLoading={isDeletingBelt}
+      />
+      <FeeModal
+        isOpen={isFeeModalOpen}
+        onClose={handelfeeClose}
+        studentId={feeid}
+        editingFee={editingFee}
+        onSuccess={fetchStudent}
       />
 
     </div>

@@ -3,18 +3,23 @@ import { useAuth } from "../../context/AuthContext";
 import { useSearchParams } from "react-router-dom";
 import {
   User, LogOut, Sun, Moon, AlertCircle, Award, BookOpen,
-  Menu, X, FileText,
+  Menu, X, FileText, Camera, IndianRupee, CheckCircle2,
 } from "lucide-react";
 import axiosInstance from "../../api/axios.js";
 import { getBeltColor } from "../../components/CommonFormats.js";
 import { Link } from "react-router-dom";
-import logo from "../../assets/Logo_low.png";
+import logo from "../../assets/logo/Logo_low.png";
 
-import { Card, Chip, NoData, ProfileSkeleton, fmt } from "../../components/student/common";
+import { Card, Chip, NoData, ProfileSkeleton, fmt } from "../../components/student/Common.jsx";
 import ProfileTab from "../../components/student/Profile.jsx";
 import BatchTab from "../../components/student/Batch.jsx";
 import BeltTab from "../../components/student/Belt.jsx";
 import CertsTab from "../../components/student/Achievement.jsx";
+import PaymentDetails from "../../components/student/PaymentDetails.jsx";
+import PasswordResetModal from "../../components/PasswordResetModal.jsx";
+import AvatarPickerModal, { getAvatarUrlByName } from "../../components/student/AvatarPickerModal.jsx";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal.jsx";
+import toast from "react-hot-toast";
 
 export const getStudent = async (id) => {
   const res = await axiosInstance.get(`/students/${id}`);
@@ -30,6 +35,7 @@ const TABS = [
   { key: "Profile", label: "Profile", icon: <User size={15} /> },
   { key: "Batch", label: "Batch", icon: <BookOpen size={15} /> },
   { key: "Belt", label: "Belt", icon: <Award size={15} /> },
+  { key: "Payment", label: "Payments", icon: <IndianRupee size={15} /> },
   { key: "Certs", label: "Achievements", icon: <FileText size={15} /> },
 ];
 const VALID_TABS = TABS.map((t) => t.key);
@@ -50,6 +56,7 @@ export default function StudentDashboard() {
   };
 
   const [showLogoutConfirm, setShowLogout] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [student, setStudent] = useState(null);
@@ -70,6 +77,12 @@ export default function StudentDashboard() {
   const [certsLoading, setCertsLoading] = useState(false);
   const [certsError, setCertsError] = useState(null);
   const certsFetched = useRef(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  // ── avatar picker state ─────────────────────────────────────────────────────  
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [avatarSaving, setAvatarSaving] = useState(false);
 
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem("theme");
@@ -89,7 +102,8 @@ export default function StudentDashboard() {
         if (cancelled) return;
         setStudent(data);
         if (data?.batch) setBatch(data.batch);
-        if(data?.belts) setBeltRecords(data.belts)
+        if (data?.belts) setBeltRecords(data.belts);
+        if (data?.avatar) setSelectedAvatar(data.avatar);
       } catch (err) {
         if (!cancelled) setStudentError(err.response?.data?.message || "Failed to load your profile.");
       } finally {
@@ -119,7 +133,6 @@ export default function StudentDashboard() {
     };
     fetchMyBatch();
   }, [batch, studentLoading]);
-  
 
   // ── lazy certificate fetch — runs once, only when Certs tab is active ──────
   const fetchCerts = useCallback(async () => {
@@ -141,11 +154,10 @@ export default function StudentDashboard() {
     }
   }, [user?.id]);
 
-  // Trigger the lazy fetch exactly when its tab becomes active — this is also
-  // what makes a refresh on ?tab=Certs load only that tab's data right away
-  useEffect(() => {    
+
+  useEffect(() => {
     if (activeTab === "Certs") fetchCerts();
-  }, [activeTab , fetchCerts]);
+  }, [activeTab, fetchCerts]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -153,8 +165,36 @@ export default function StudentDashboard() {
   }, [isDark]);
 
   const handleLogoutAction = async () => {
-    try { await logout(); setShowLogout(false); }
-    catch (err) { console.error("Logout error:", err); }
+    try {
+      setLoggingOut(true);
+      await logout();
+      setShowLogout(false);
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast.error("Failed to sign out. Please try again.");
+    } finally {
+      setLoggingOut(false);
+    }
+  };
+
+  // ── avatar select/save ───────────────────────────────────────────────────────  
+  const handleAvatarSelect = async (name) => {
+    const previous = selectedAvatar;
+    setSelectedAvatar(name);
+    setIsAvatarModalOpen(false);
+
+    if (!user?.id) return;
+    try {
+      setAvatarSaving(true);
+      await axiosInstance.put(`/student/avatar/${user.id}`, { avatar: name });
+      setStudent((prev) => (prev ? { ...prev, avatar: name } : prev));
+      toast.success("Avatar updated");
+    } catch (err) {
+      setSelectedAvatar(previous); // roll back on failure
+      toast.error(err.response?.data?.message || "Failed to update avatar");
+    } finally {
+      setAvatarSaving(false);
+    }
   };
 
   // ── Derived display values ──────────────────────────────────────────────────
@@ -163,6 +203,9 @@ export default function StudentDashboard() {
   const displayStatus = student ? ((String(student.status) === '1' || student.status === true || String(student.status).toLowerCase() === 'active' || student.status === 'true') ? "Active" : "Inactive") : null;
   const displayJoined = fmt(student?.created_at);
   const displayId = student?.id ?? null;
+
+  // resolve the stored avatar NAME into a renderable image URL
+  const avatarImageUrl = selectedAvatar ? getAvatarUrlByName(selectedAvatar) : null;
 
   return (
     <div className="relative min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200 overflow-hidden">
@@ -174,25 +217,18 @@ export default function StudentDashboard() {
         <div className="absolute bottom-0 left-1/4 w-80 h-80 rounded-full bg-primary/15 blur-3xl" />
       </div>
 
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <Card className="max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center mx-auto">
-              <LogOut size={26} className="text-rose-500" />
-            </div>
-            <div>
-              <h3 className="text-base font-black text-slate-800 dark:text-slate-100">Sign out?</h3>
-              <p className="text-sm text-slate-400 mt-1">You'll be redirected to the login page.</p>
-            </div>
-            <div className="flex gap-3">
-              <button onClick={() => setShowLogout(false)} className="flex-1 py-2.5 rounded-xl bg-white/60 backdrop-blur-md border border-white/70 dark:bg-slate-800 hover:bg-white/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold transition-colors">Cancel</button>
-              <button onClick={handleLogoutAction} className="flex-1 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold transition-colors shadow-md shadow-rose-200">Sign Out</button>
-            </div>
-          </Card>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogout(false)}
+        onConfirm={handleLogoutAction}
+        title="Sign out?"
+        message="You'll be redirected to the login page."
+        type="logout"
+        isLoading={loggingOut}
+      />
 
       <header className="sticky top-0 z-50 bg-white/40 dark:bg-slate-900/80 backdrop-blur-xl border-b border-white/50 dark:border-slate-800">
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to='/'>
@@ -218,6 +254,7 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
+
         {mobileMenuOpen && (
           <div className="sm:hidden border-t border-white/50 dark:border-slate-800 bg-white/60 backdrop-blur-xl dark:bg-slate-900 px-4 py-3">
             <button onClick={() => { setShowLogout(true); setMobileMenuOpen(false); }} className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-600 font-bold text-sm">
@@ -229,23 +266,49 @@ export default function StudentDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 relative">
 
+
         {studentLoading ? <ProfileSkeleton /> : studentError ? (
           <Card className="p-6 flex items-center gap-3 border-rose-200/60">
             <AlertCircle size={20} className="text-rose-500 flex-shrink-0" />
             <p className="text-sm text-rose-500">{studentError}</p>
           </Card>
         ) : (
-          <Card className="p-6 sm:p-8">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-              <div className="w-28 h-28 rounded-2xl bg-primary/15 backdrop-blur-md border border-primary/30 flex items-center justify-center shadow-lg flex-shrink-0">
-                <span className="text-3xl font-black text-primary">
-                  {displayName ? displayName.charAt(0).toUpperCase() : "?"}
-                </span>
+          <Card className="p-6 sm:p-8 flex flex-col md:flex-row md:items-start gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start w-full md:flex-1 gap-6">
+
+              {/* Avatar — click to open picker */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  disabled={avatarSaving}
+                  className="group relative w-28 h-28 rounded-2xl bg-primary/15 backdrop-blur-md border border-primary/30 flex items-center justify-center shadow-lg flex-shrink-0 overflow-hidden disabled:opacity-70"
+                >
+                  {avatarImageUrl ? (
+                    <img src={avatarImageUrl} alt="Profile avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-3xl font-black text-primary">
+                      {displayName ? displayName.charAt(0).toUpperCase() : "?"}
+                    </span>
+                  )}
+
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+                    <Camera size={18} className="text-white" />
+                    <span className="text-[10px] font-bold text-white uppercase tracking-wider">Change</span>
+                  </div>
+
+                  {avatarSaving && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    </div>
+                  )}
+                </button>
+                <span className="font-bold lg:hidden text-primary2 text-[12px]">Click To Change Avatar</span>
               </div>
 
-              <div className="flex-1 text-center sm:text-left min-w-0">
+              <div className="flex-1 text-center sm:text-left min-w-0 w-full">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-800 dark:text-slate-100">
+                  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-800 dark:text-slate-100 break-words">
                     {displayName ?? <NoData />}
                   </h1>
                   {displayStatus && (
@@ -265,7 +328,7 @@ export default function StudentDashboard() {
                 <p className="text-xs text-slate-400 mb-1 font-medium">
                   ID: {displayId ?? "—"} · Joined {displayJoined ?? "—"}
                 </p>
-                <p className="text-xs text-slate-400 mb-1 font-medium">
+                <p className="text-xs text-slate-400 mb-1 font-medium break-all">
                   Email ID: {displayEmail ?? "—"}
                 </p>
 
@@ -284,7 +347,29 @@ export default function StudentDashboard() {
                 </div>
               </div>
             </div>
+
+            <div className="w-full md:w-auto flex flex-col gap-4 justify-center md:justify-end md:items-start">
+              <button
+                onClick={() => setIsPasswordModalOpen(true)}
+                className="w-full sm:w-auto px-5 py-3 bg-primary2 hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
+              >
+                Reset Password
+              </button>
+              <div>
+                {student?.is_full_payment == 1 ? (
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-green-100 text-green-700">
+                    <CheckCircle2 size={14} className="text-green-500" />
+                    Full Payment Completed
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-amber-100 text-amber-700">
+                    Full Payment Pending
+                  </span>
+                )}
+              </div>
+            </div>
           </Card>
+
         )}
 
         <div className="space-y-5">
@@ -305,9 +390,32 @@ export default function StudentDashboard() {
           {activeTab === "Profile" && <ProfileTab student={student} />}
           {activeTab === "Batch" && <BatchTab batch={batch} loading={batchLoading} error={batchError} />}
           {activeTab === "Belt" && <BeltTab beltRecords={beltRecords} loading={beltsLoading} error={beltsError} />}
-           {activeTab === "Certs" && <CertsTab certs={certs} loading={certsLoading} error={certsError} />}
-         </div>
-       </main>
-     </div>
-   );
- }
+          {activeTab === "Certs" && <CertsTab certs={certs} loading={certsLoading} error={certsError} />}
+          {activeTab === "Payment" && (
+            <Card className="p-6">
+              <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 border-b border-white/50 dark:border-slate-800 flex items-center pb-4 gap-2">
+                <span className="w-8 h-8 rounded-xl bg-[#f97316]/10 text-[#f97316] flex items-center justify-center">
+                  <IndianRupee size={16} />
+                </span>
+                Payment Details
+              </h4>
+              <PaymentDetails studentId={user?.id} />
+            </Card>
+          )}
+        </div>
+
+      </main>
+      <PasswordResetModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSuccess={() => { "Password Reset Successfully" }}
+      />
+      <AvatarPickerModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        currentAvatar={selectedAvatar}
+        onSelect={handleAvatarSelect}
+      />
+    </div>
+  );
+}

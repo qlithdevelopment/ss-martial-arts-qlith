@@ -257,7 +257,7 @@ const Hero = () => {
               </button>
             </Link>
             {/* BTN 2 */}
-            <Link to="/services">
+            <Link to="/programs">
               <button
                 className="
                 px-6 lg:px-8

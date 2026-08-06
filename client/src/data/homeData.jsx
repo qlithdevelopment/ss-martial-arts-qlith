@@ -1,14 +1,16 @@
 import React from 'react';
 
-// Programs Images
-import membershipsImg from "../assets/memberships.png";
-import personalTrainingImg from "../assets/personal_training.png";
-import groupClassesImg from "../assets/group_classes.png";
-
-// Trainer Images
-import generatedTrainerImg from "../assets/master_kick_bgrm.png";
-import generatedTrainer2Img from "../assets/generated_trainer2.png";
-import generatedTrainer3Img from "../assets/yoga_master_bgrm.png";
+import karateimg from "../assets/programs/Karate.png"
+import taekwondoimg from "../assets/programs/Taekwondo.png"
+import boxingimg from "../assets/programs/Boxing.png"
+import kikboxingimg from "../assets/programs/Kickboxing.png"
+import mmaimg from "../assets/programs/mma.jpg"
+import self_defenseimg from "../assets/programs/Self-Defense.png"
+import judoimg from "../assets/programs/Judo_Wushu.png"
+import shaolin_kungfuimg from "../assets/programs/ShaolinKung-fu.png"
+import pencak_silatimg from "../assets/programs/pencak_silat.jpg"
+import gymnasticsimg from "../assets/programs/Gymnastics.png"
+import weapons_muay_thaiimg from "../assets/programs/WeaponsMuayThai.png"
 
 // ==========================================
 // PROGRAMS DATA
@@ -18,521 +20,297 @@ export const programsData = [
     id: 1,
     tag: "karate classes near me",
     title: "Karate",
-    shortDescription: "Traditional striking and belt-ranked progression for all ages.",
-    description: "sjfhhhhggooierijttututisjfhhhhggooierijttututisjfhhhhggooierijttututi",
+    shortDescription: "Traditional Karate classes near me for kids and adults — build discipline, technique, and confidence through structured belt-ranked training.",
+    description: "Our Karate program blends traditional striking technique with a proven belt-ranked progression system, making it one of the top karate classes near me for families and adults alike. Students develop sharp technique, discipline, and self-confidence through structured drills, kata, and sparring in a safe, supportive dojo environment. Whether you're a complete beginner or returning to the mats, our certified instructors tailor every class to your skill level. Enroll today and start your journey toward a black belt.",
     bullets: [
-      "Structured Karate training for kids and adults",
-      "focusing on discipline, technique, and belt",
-      "progression — ideal for anyone searching for"
+      "Beginner-friendly Karate training for kids and adults",
+      "Belt-ranked progression system with certified instructors",
+      "Builds discipline, focus, and self-defense confidence"
     ],
     faqs: [
       {
-        question: "What age can my child start Karate?",
-        answer: "Most academies welcome kids from age 4-5 onward, with classes grouped by age and skill level so training stays age-appropriate and safe."
+        question: "Is karate good for self-defense?",
+        answer: "Yes. Karate builds strong striking fundamentals — punches, kicks, and blocks — along with the timing and reflexes needed to react under pressure, which is why many schools frame it as a practical self-defense system rather than only a sport."
       },
       {
-        question: "How long does it take to earn a black belt?",
-        answer: "With consistent training, most students reach black belt in about 3-5 years, depending on practice frequency and how quickly they master each belt's requirements."
+        question: "What age can a child start karate?",
+        answer: "Most academies accept children from around 4–6 years old, with classes structured by age group so younger kids focus on coordination, discipline, and basic movement before progressing to technical striking."
       },
       {
-        question: "Do I need any prior experience to join?",
-        answer: "No prior experience is required — beginners start with fundamentals like stances, blocks, and basic strikes before progressing to more advanced techniques."
+        question: "Do I need to be fit before joining karate classes?",
+        answer: "No. Karate is designed to build fitness rather than require it — beginners train at their own pace, and strength, flexibility, and stamina develop naturally over weeks of regular practice."
       }
     ],
-    image: membershipsImg,
+    image: karateimg,
   },
   {
     id: 2,
     tag: "taekwondo classes near me",
     title: "Taekwondo",
-    shortDescription: "High-kick, high-energy training built for speed and flexibility.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "High-energy Taekwondo classes near me focused on powerful kicks, speed, and flexibility for all ages and skill levels.",
+    description: "Searching for taekwondo classes near me? Our program delivers dynamic, kick-focused training designed to build explosive speed, flexibility, and full-body coordination. Students progress through a structured curriculum covering forms (poomsae), sparring, and board-breaking, all while developing the discipline and confidence Taekwondo is known for. Classes are suited to beginners and competitive athletes alike, with pathways to regional and national tournaments for those who want to test their skills. Join a welcoming dojang and start kicking toward your goals today.",
     bullets: [
-      "Dynamic, kick-focused Taekwondo classes that",
-      "build flexibility, speed, and confidence — a top",
-      "choice for taekwondo classes near me searches"
+      "Kick-focused Taekwondo training for speed and flexibility",
+      "Structured forms, sparring, and board-breaking curriculum",
+      "Competitive tournament pathway for advancing students"
     ],
     faqs: [
       {
-        question: "Is Taekwondo good for improving flexibility?",
-        answer: "Yes, the emphasis on high kicks and dynamic footwork makes Taekwondo one of the best martial arts for building flexibility and leg strength over time."
+        question: "What is taekwondo good for?",
+        answer: "Taekwondo builds fitness, flexibility, discipline, and self-defense skills, and is especially known for its fast, high kicks alongside hand strikes and blocks."
       },
       {
-        question: "What equipment do I need to get started?",
-        answer: "A uniform (dobok) and basic sparring gear like shin guards, gloves, and a mouthguard are usually all you need — most academies can help you get set up."
+        question: "Is taekwondo suitable for adults with no experience?",
+        answer: "Yes. Adults of any age can start taekwondo — training scales to fitness level, and many adults join specifically to improve fitness, learn self-defense, or build confidence."
       },
       {
-        question: "Are there competitive opportunities available?",
-        answer: "Yes, students who want to compete can take part in regional and national tournaments once they reach an appropriate skill and belt level."
+        question: "How often should a beginner attend taekwondo classes?",
+        answer: "Two to three sessions a week is generally recommended for steady progress, giving the body enough recovery time between classes while keeping skills fresh."
       }
     ],
-    image: personalTrainingImg,
+    image: taekwondoimg,
   },
   {
     id: 3,
-    tag: "",
+    tag: "boxing classes near me",
     title: "Boxing",
-    shortDescription: "Footwork, power, and conditioning in every round.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "High-intensity boxing classes near me covering footwork, striking technique, and conditioning for fitness or competition.",
+    description: "Our boxing program is built for anyone searching for boxing classes near me who wants real results — whether that's weight loss, stress relief, or competitive skill. Training covers fundamental footwork, punch technique, defensive movement, and pad work, all wrapped into high-intensity conditioning that torches calories while sharpening reflexes. Sparring is optional and only introduced once technique and confidence are solid, so total beginners are always welcome. Coaches design each session to push you at your own pace, whether your goal is fitness or the ring.",
     bullets: [
-      "High-energy boxing training covering footwork",
-      "striking technique, and conditioning for fitness",
-      "competition alike"
+      "Fundamental boxing footwork, punches, and defense",
+      "High-intensity conditioning for fat loss and fitness",
+      "Optional sparring path for competitive boxers"
     ],
     faqs: [
       {
-        question: "Is boxing training suitable for pure fitness, not competition?",
-        answer: "Absolutely — many students join purely for the cardio and conditioning benefits, with no requirement to ever step into a competitive ring."
+        question: "Do I need boxing experience to join a beginner class?",
+        answer: "No experience is required — beginner boxing classes are built around teaching stance, footwork, and basic punches from scratch, with coaches adjusting pace for newcomers."
       },
       {
-        question: "Will I have to spar with other students?",
-        answer: "Sparring is optional and only introduced once you've built solid technique and confidence; many students train for years without ever sparring."
+        question: "Will I have to spar on my first day of boxing?",
+        answer: "No. Sparring is reserved for more experienced students; first-time boxers focus on technique, bag work, and conditioning drills instead."
       },
       {
-        question: "How many times a week should I train for results?",
-        answer: "Training 2-3 times a week is enough to see noticeable improvements in fitness, technique, and confidence within a few months."
+        question: "Is boxing a good workout for weight loss and fitness?",
+        answer: "Yes. Boxing combines aerobic and anaerobic training that works the core, legs, and arms, making it an effective full-body workout even without ever competing."
       }
     ],
-    image: groupClassesImg,
+    image: boxingimg,
   },
   {
     id: 4,
-    tag: "Group Sessions",
+    tag: "kickboxing classes near me",
     title: "Kickboxing",
-    shortDescription: "Full-body striking and cardio with real self-defense value.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Full-body Kickboxing classes near me combining striking and cardio conditioning for fitness and practical self-defense.",
+    description: "Looking for kickboxing classes near me that deliver both a serious workout and real self-defense skill? Our program blends punches, kicks, and combination striking with high-energy cardio conditioning to torch calories while sharpening reflexes and coordination. Group sessions are paced for every level, with instructors offering modifications for beginners and progressions for advanced students. You'll build strength, stamina, and confidence in every class, all while learning practical striking combinations you can rely on. No experience needed — just bring comfortable athletic wear and a willingness to work hard.",
     bullets: [
-      "A powerful blend of striking and cardio",
-      "conditioning, perfect for those wanting a full-body",
-      "workout with real self-defense value"
+      "Punch-and-kick combinations for full-body conditioning",
+      "Group classes paced for beginners through advanced levels",
+      "Practical self-defense striking skills in every session"
     ],
     faqs: [
       {
-        question: "Is Kickboxing more about fitness or self-defense?",
-        answer: "It's both — classes are structured to deliver a serious cardio workout while also teaching practical striking combinations you can use for self-defense."
+        question: "Do I need to be in shape to start kickboxing?",
+        answer: "No — this is one of the most common misconceptions. Kickboxing classes are designed to build fitness progressively, so beginners of any fitness level can start and improve over time."
       },
       {
-        question: "Do group sessions suit beginners?",
-        answer: "Yes, group sessions are paced to include all levels, with instructors offering modifications for beginners and progressions for more experienced students."
+        question: "What is a typical kickboxing class like?",
+        answer: "Classes usually combine a warm-up, technique drills for punches and kicks, pad or bag work, and conditioning exercises, with most beginner classes being non-contact or lightly controlled."
       },
       {
-        question: "What should I wear to my first class?",
-        answer: "Comfortable athletic wear and training shoes are fine to start — gloves and wraps can be added once you decide to continue."
+        question: "How many calories does a kickboxing class burn?",
+        answer: "A single high-intensity kickboxing session can burn roughly 700–1,000 calories, depending on intensity and the individual, making it a popular choice for fitness-focused students."
       }
     ],
-    image: groupClassesImg,
+    image: kikboxingimg,
   },
   {
     id: 5,
     tag: "mma classes near me",
     title: "MMA (Mixed Martial Arts)",
-    shortDescription: "Striking and grappling combined into one well-rounded system.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Well-rounded MMA classes near me blending striking and grappling for complete beginners and experienced fighters alike.",
+    description: "Our MMA program is one of the most complete mma classes near me offers — combining striking, clinch work, and ground grappling into a single, structured curriculum. Students build a well-rounded skill set by training boxing and kickboxing fundamentals alongside wrestling and jiu-jitsu-based grappling, learning how each discipline connects in a real fight scenario. Contact is introduced gradually with proper coaching and protective gear, so beginners develop technique safely before any live sparring. Whether your goal is fitness, self-defense, or competition, our coaches build a training plan around you.",
     bullets: [
-      "Comprehensive training that blends striking",
-      "and grappling — for students who search for",
-      "mma classes near me and want well-rounded combat skills"
+      "Combined striking and grappling curriculum for all levels",
+      "Gradual, safety-first introduction to live contact training",
+      "Builds well-rounded, real-world fighting fundamentals"
     ],
     faqs: [
       {
-        question: "Do I need to know striking and grappling before joining MMA?",
-        answer: "No prior experience is needed — MMA classes are built to introduce both striking and grappling fundamentals from the ground up."
-      },
-      {
-        question: "How is MMA different from training just Boxing or BJJ alone?",
-        answer: "MMA combines multiple disciplines into one curriculum, so you learn how strikes, clinches, and ground grappling connect in a real fight scenario."
+        question: "What disciplines does MMA training combine?",
+        answer: "MMA blends striking arts like boxing, kickboxing, and Muay Thai with grappling arts like wrestling and Brazilian Jiu-Jitsu, giving students a well-rounded skill set for both standing and ground situations."
       },
       {
         question: "Is MMA safe for beginners?",
-        answer: "Yes, contact is introduced gradually with proper coaching and protective gear, so beginners build skills safely before any live sparring or grappling."
+        answer: "Yes, when taught properly — beginner MMA classes emphasize technique, safety protocols, and controlled drilling rather than full-contact sparring, which is introduced gradually as skill develops."
+      },
+      {
+        question: "Will I have to spar as a beginner in MMA?",
+        answer: "Not right away. New students typically spend their first weeks or months on technique and controlled drilling before any sparring is introduced, and even then it's supervised and paced to skill level."
       }
     ],
-    image: groupClassesImg,
+    image: mmaimg,
   },
   {
     id: 6,
-    tag: "",
+    tag: "self-defense classes near me",
     title: "Self-Defense",
-    shortDescription: "Practical, everyday safety skills for every age group.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Practical self-defense classes near me teaching real-world safety skills and confidence for every age group.",
+    description: "Our self-defense classes are designed for anyone searching for self-defense classes near me who wants practical, easy-to-learn protection skills — no martial arts background required. Training covers situational awareness, verbal de-escalation, escaping common grabs and holds, and simple, effective strikes for close-range safety. Sessions are welcoming to all ages and fitness levels, with instructors focused on building real confidence alongside physical technique. You'll leave every class better prepared to recognize risk and respond calmly under pressure. Start building everyday safety skills that last a lifetime.",
     bullets: [
-      "Practical, real-world self-defense classes for all ages",
-      "designed for everyday safety and personal confidence.",
-      ""
+      "Real-world techniques for escapes, grabs, and holds",
+      "Situational awareness and de-escalation training",
+      "Beginner-friendly classes for all ages and fitness levels"
     ],
     faqs: [
       {
-        question: "Is this class suitable for someone with no martial arts background?",
-        answer: "Yes, self-defense classes are specifically designed for beginners and focus on practical, easy-to-learn techniques rather than complex martial arts forms."
+        question: "Do I need to be fit or experienced to take a self-defense class?",
+        answer: "No. Self-defense training is designed to meet students where they are — no prior fitness or martial arts background is needed to start learning practical protection skills."
       },
       {
-        question: "What situations does the training cover?",
-        answer: "Classes typically cover awareness, de-escalation, escaping common grabs and holds, and basic strikes for close-range protection."
+        question: "Is self-defense training different from learning a traditional martial art?",
+        answer: "Yes. While martial arts take years to master, dedicated self-defense classes focus on a smaller set of practical techniques — awareness, escapes, and simple strikes — meant to be usable relatively quickly in real situations."
       },
       {
-        question: "Can this class help build confidence, not just physical skills?",
-        answer: "Yes, alongside physical technique, students build situational awareness and confidence that carries over into everyday life."
+        question: "What will I actually learn in a self-defense class?",
+        answer: "Typical classes cover situational awareness, verbal de-escalation, basic strikes and escapes from common grabs or holds, and simple strategies for creating distance and getting to safety."
       }
     ],
-    image: groupClassesImg,
+    image: self_defenseimg,
   },
   {
     id: 7,
     tag: "judo classes near me",
     title: "Judo / Wushu",
-    shortDescription: "Throws, forms, and full-body coordination in one program.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Judo classes near me combining throw-based grappling and Wushu forms for balance, control, and full-body coordination.",
+    description: "Our combined Judo and Wushu program is a standout choice among judo classes near me for students who want variety alongside serious skill development. Judo training focuses on throws, grips, and ground control, sharpening balance, timing, and body awareness in ways few other martial arts can match. Wushu complements this with striking forms and acrobatic movement, building flexibility and full-body coordination over time. Classes are structured for beginners of any fitness level, with stances and fundamentals taught before progressing to more advanced technique. Discover the discipline and control that make this dual program so effective.",
     bullets: [
-      "Throw-based Judo and striking-and-forms Wushu",
-      "training for balance, control, and full-body",
-      "coordination"
+      "Throw-based Judo training for balance and control",
+      "Wushu forms and acrobatic movement for coordination",
+      "Beginner-friendly progression at any fitness level"
     ],
     faqs: [
       {
-        question: "What's the difference between Judo and Wushu training?",
-        answer: "Judo focuses on throws, grips, and ground control, while Wushu emphasizes striking forms and acrobatic movement — classes may cover one or both depending on the program."
+        question: "Is judo effective for self-defense?",
+        answer: "Yes. Judo focuses on using an opponent's weight, balance, and momentum against them through throws, pins, and control holds, making it a highly practical defensive style, especially against grabs and close-range attacks."
       },
       {
-        question: "Is Judo good for improving balance and coordination?",
-        answer: "Yes, the throw-based nature of Judo trains balance, timing, and body awareness in a way few other martial arts can match."
+        question: "Is wushu good for fitness and flexibility?",
+        answer: "Yes. Wushu training combines flexibility drills, acrobatic movement, strength conditioning, and form practice, making it excellent for building both athleticism and body control."
       },
       {
-        question: "Do I need to be flexible to start Wushu?",
-        answer: "No, flexibility develops through consistent training — beginners start with basic stances and forms and build flexibility over time."
+        question: "Do I need a martial arts background to start wushu?",
+        answer: "No. Wushu schools accept complete beginners of any age and background, with initial classes focused on stances, basic kicks, and coordination."
       }
     ],
-    image: groupClassesImg,
+    image: judoimg,
   },
   {
     id: 8,
     tag: "shaolin kung-fu classes near me",
     title: "Shaolin Kung-fu",
-    shortDescription: "Traditional forms and conditioning rooted in centuries-old technique.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Traditional Shaolin Kung-fu classes near me teaching centuries-old forms, conditioning, and discipline for all ages.",
+    description: "For students seeking authentic shaolin kung-fu classes near me, our program delivers traditional forms (taolu), stance training, and rigorous conditioning rooted in centuries-old Shaolin technique. Every class builds discipline, agility, and strength through a curriculum adapted to each student's fitness level, so adults starting later in life train safely and progress at their own pace. Beginners typically learn their first basic form within a few months, with more advanced sequences introduced as strength and technique improve. Step onto the mats and connect with one of the world's oldest and most respected martial arts traditions.",
     bullets: [
-      "Traditional Shaolin Kung-fu forms and conditioning",
-      "for discipline, agility, and strength — rooted in",
-      "centuries-old technique"
+      "Traditional Shaolin forms (taolu) and stance training",
+      "Conditioning drills for discipline, agility, and strength",
+      "Training adapted for all ages and fitness levels"
     ],
     faqs: [
       {
-        question: "Is Shaolin Kung-fu suitable for adults starting later in life?",
-        answer: "Yes, training is adapted to the student's fitness level, so adults of any age can start and progress safely at their own pace."
+        question: "What is Shaolin Kung Fu known for?",
+        answer: "Shaolin Kung Fu is one of the oldest recognized Chinese martial arts, rooted in Buddhist tradition, and is known for building physical strength, flexibility, mental discipline, and inner focus alongside its striking and stance work."
       },
       {
-        question: "What does a typical class involve?",
-        answer: "Classes typically include conditioning drills, traditional forms (taolu), stance training, and technique practice rooted in classical Shaolin methods."
+        question: "Do I need to be in shape to start Shaolin Kung Fu?",
+        answer: "No. Beginners are taught foundational stances and movements first, with conditioning building naturally as training becomes part of a regular routine."
       },
       {
-        question: "How long before I learn a full form?",
-        answer: "Beginners usually learn their first basic form within a few months, with more advanced forms introduced as strength and technique improve."
+        question: "How long does it take to see results from Shaolin Kung Fu training?",
+        answer: "Many schools report noticeable changes around the three-month mark, with more significant strength, flexibility, and skill improvements building by six months of consistent practice."
       }
     ],
-    image: groupClassesImg,
+    image: shaolin_kungfuimg,
   },
   {
     id: 9,
     tag: "pencak silat classes near me",
     title: "Pencak Silat",
-    shortDescription: "Strikes, joint locks, and weapon awareness for practical defense.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Authentic Pencak Silat classes near me combining strikes, joint locks, and weapon awareness for practical self-defense.",
+    description: "Our Pencak Silat program is a unique find among pencak silat classes near me, teaching this traditional Indonesian martial art's blend of strikes, joint locks, and weapon awareness for genuinely practical self-defense. Students first build a strong foundation in empty-hand technique, learning how strikes and locks flow together in real-world scenarios, before weapon awareness is introduced gradually. Training builds strength and flexibility over time, but every session is scaled to the student's fitness level so beginners are never overwhelmed. Discover a martial art that prizes practicality and efficiency above all else.",
     bullets: [
-      "Indonesian martial art blending strikes, joint",
-      "locks, and weapon awareness for practical",
-      "self-defense"
+      "Strikes, joint locks, and weapon awareness training",
+      "Empty-hand foundation before traditional weapons work",
+      "Scaled to fitness level for safe, steady progression"
     ],
     faqs: [
       {
-        question: "What makes Pencak Silat different from other martial arts?",
-        answer: "Pencak Silat blends striking, joint locks, and weapon awareness into a single practical system, making it especially useful for real-world self-defense."
+        question: "What is Pencak Silat?",
+        answer: "Pencak Silat is a traditional martial art from the Indonesian and Malay archipelago that combines striking, grappling, throws, and weapon work into a complete self-defense and cultural discipline."
       },
       {
-        question: "Will I train with weapons as a beginner?",
-        answer: "Weapon awareness is introduced gradually — beginners first build a foundation in empty-hand technique before moving into traditional weapons training."
+        question: "Does Pencak Silat include weapons training?",
+        answer: "Yes. Many Pencak Silat styles incorporate traditional weapons alongside empty-hand techniques, reflecting its roots as a complete regional fighting system."
       },
       {
-        question: "Is Pencak Silat physically demanding?",
-        answer: "It builds strength and flexibility over time, but training is scaled to the student's fitness level, so beginners aren't overwhelmed early on."
+        question: "Is Pencak Silat suitable for beginners with no martial arts background?",
+        answer: "Yes. Like most traditional martial arts, Pencak Silat starts new students on fundamentals — stances, basic strikes, and footwork — before progressing to more advanced combinations."
       }
     ],
-    image: groupClassesImg,
+    image: pencak_silatimg,
   },
   {
     id: 10,
     tag: "gymnastics classes near me",
     title: "Gymnastics (Only Flips)",
-    shortDescription: "Flip-focused training for air awareness and explosive power.",
-    description: "sjfhhhhggooierijttututi",
+    shortDescription: "Flip-focused gymnastics classes near me building air awareness, body control, and explosive power for tricking and martial arts.",
+    description: "If you're searching for gymnastics classes near me focused specifically on flips and tumbling, this program is built for exactly that. Students develop body control, air awareness, and explosive power through progressive tumbling drills, building toward standing and running flips in a safe, supervised environment. No prior gymnastics experience is required — training starts with fundamentals like body positioning and basic tumbling before advancing to aerial skills. Proper spotting and matting ensure flips are learned safely at every stage, making this a great fit for kids and teens alike. The skills built here carry directly into kicks, throws, and overall athleticism across other martial arts.",
     bullets: [
-      "Flip-focused gymnastics training to build",
-      "body control, air awareness, and explosive",
-      "power for tricking and martial arts alike"
+      "Progressive tumbling drills leading to flips and aerials",
+      "Builds body control, air awareness, and explosive power",
+      "Safe, supervised training with proper spotting and matting"
     ],
     faqs: [
       {
-        question: "Do I need prior gymnastics experience to join?",
-        answer: "No, classes start with fundamentals like body control and basic tumbling before progressing to flips, so complete beginners are welcome."
+        question: "What age can a child start tumbling or flip training?",
+        answer: "Many programs accept children as young as 4, starting with basic rolls, handstands, and cartwheels before progressing toward flips as strength and coordination develop."
       },
       {
-        question: "How does this class benefit martial arts training?",
-        answer: "Flip and tumbling training builds air awareness, explosive power, and body control that directly carry over into kicks, throws, and overall athleticism."
+        question: "Do you need to already be flexible or athletic to start tumbling?",
+        answer: "No. Beginners start with fundamental movements like forward and backward rolls and bridges, and flexibility, strength, and coordination build up through consistent practice."
       },
       {
-        question: "Is this class safe for kids?",
-        answer: "Yes, training is progressive and supervised, with proper spotting and matting to ensure flips are learned safely at each skill stage."
+        question: "Is tumbling training safe for beginners?",
+        answer: "Yes, when taught progressively with spotting and proper technique — coaches guide students through a structured skill sequence so flips are only attempted once the required strength and control are in place."
       }
     ],
-    image: groupClassesImg,
+    image: gymnasticsimg,
   },
   {
     id: 11,
     tag: "weapons training near me",
-    title: "Weapons,Muay Thai",
-    shortDescription: "Precision handling and forms beyond empty-hand technique.",
-    description: "sjfhhhhggooierijttututi",
+    title: "Weapons, Muay Thai",
+    shortDescription: "Weapons training and Muay Thai classes near me covering precision handling, striking, and discipline beyond empty-hand technique.",
+    description: "Combine two powerful disciplines in one program — traditional weapons training and Muay Thai striking — designed for students searching for weapons training near me who want to go beyond empty-hand technique. Weapons instruction covers handling, forms, and control using traditional tools like staffs, swords, and nunchaku, building precision and discipline through controlled, low-risk drills. Muay Thai striking adds powerful punches, kicks, elbows, and knees for a complete stand-up fighting skill set and serious conditioning benefit. No empty-hand martial arts background is required to start — beginners are introduced to basic handling and stances alongside foundational striking. Build discipline, power, and control in every session.",
     bullets: [
-      "Traditional weapons training covering handling,",
-      "forms, and control — building precision and",
-      "discipline beyond empty-hand techniques"
+      "Traditional weapons handling: staffs, swords, and nunchaku",
+      "Muay Thai striking with punches, kicks, elbows, and knees",
+      "Controlled, low-risk drills built for beginners"
     ],
     faqs: [
       {
-        question: "What weapons are typically covered in training?",
-        answer: "Programs commonly include traditional weapons such as staffs, swords, and nunchaku, with specific weapons depending on the academy's curriculum."
+        question: "What weapons are commonly taught in martial arts weapons training?",
+        answer: "Common training weapons include the bo staff, nunchaku, sai, and sword, with the specific weapons taught depending on the martial arts style and school tradition."
       },
       {
-        question: "Do I need an empty-hand martial arts background first?",
-        answer: "It's helpful but not required — many academies introduce basic weapon handling alongside foundational stances for complete beginners."
+        question: "Do I need martial arts experience before starting weapons training?",
+        answer: "Generally yes — most schools introduce weapons training after a student has built a foundation in empty-hand technique, since weapon work reinforces the same balance, timing, and control skills."
       },
       {
-        question: "Is weapons training safe for beginners?",
-        answer: "Yes, training starts with controlled, low-risk drills to build proper handling and discipline before progressing to faster or more complex forms."
+        question: "Do I need to be in shape to start Muay Thai?",
+        answer: "No. Muay Thai classes are built to develop fitness through training — beginners are eased in with basic stance, footwork, and pad work, and conditioning builds naturally over the first few weeks."
       }
     ],
-    image: groupClassesImg,
+    image: weapons_muay_thaiimg,
   },
-];
-
-
-// ==========================================
-// SERVICES DATA
-// ==========================================
-export const servicesCategories = ["ALL", "BODY CONDITIONING", "COMBAT SPORTS", "WEAPONS TRAINING"];
-
-export const allServices = [
-  {
-    id: 1,
-    category: "COMBAT SPORTS",
-    title: "Mixed Martial Arts",
-    subtitle: "Learn striking and grappling",
-    image: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800&q=80",
-    badge: "COMBAT SPORTS"
-  },
-  {
-    id: 2,
-    category: "COMBAT SPORTS",
-    title: "Muay Thai & Boxing",
-    subtitle: "The art of eight limbs",
-    image: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800&q=80",
-    badge: "COMBAT SPORTS"
-  },
-  {
-    id: 3,
-    category: "BODY CONDITIONING",
-    title: "Strength & Agility",
-    subtitle: "Build explosive power",
-    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
-    badge: "BODY CONDITIONING"
-  },
-  {
-    id: 4,
-    category: "WEAPONS TRAINING",
-    title: "Traditional Kobudo",
-    subtitle: "Master ancient weaponry",
-    image: "https://images.unsplash.com/photo-1552872673-9b7b99711ebb?w=800&q=80",
-    badge: "WEAPONS TRAINING"
-  },
-  {
-    id: 5,
-    category: "COMBAT SPORTS",
-    title: "Brazilian Jiu-Jitsu",
-    subtitle: "Ground fighting mastery",
-    image: "https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800&q=80",
-    badge: "COMBAT SPORTS"
-  }
-];
-
-// ==========================================
-// EVENTS DATA
-// ==========================================
-export const featuredEvents = [
-  {
-    id: 1,
-    date: "15 August • 09:00 AM",
-    title: "National Martial Arts Championship"
-  },
-  {
-    id: 2,
-    date: "28 September • 10:00 AM",
-    title: "Youth Sports Camp - 20yo"
-  },
-  {
-    id: 3,
-    date: "10 November • 04:00 PM",
-    title: "Obstacle Course Race"
-  },
-  {
-    id: 4,
-    date: "05 December • 08:00 AM",
-    title: "Sport x Game Day"
-  }
-];
-
-export const eventsList = [
-  {
-    id: 1,
-    title: "Women's Self Defense Seminar",
-    desc: "Join our dedicated seminar focusing on practical defense techniques. Free entry and tailored for beginners.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    )
-  },
-  {
-    id: 2,
-    title: "Belt Grading & Ceremony",
-    desc: "Testing ceremony for all belts. Bring your family and celebrate your progression to the next level of mastery.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <circle cx="12" cy="8" r="5" />
-        <path d="M3 21v-2a7 7 0 0 1 14 0v2" />
-      </svg>
-    )
-  },
-  {
-    id: 3,
-    title: "Sport x Game Day",
-    desc: "Friendly matches, sparring, and refreshments. A great opportunity to network and meet other martial artists.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    )
-  }
-];
-
-// ==========================================
-// GALLERY DATA
-// ==========================================
-import gallery1 from "../assets/event_seminar.png";
-import gallery2 from "../assets/event_tournament.png";
-import gallery3 from "../assets/master_kick.png";
-import gallery4 from "../assets/female_mma.png";
-import gallery5 from "../assets/masters_group.png";
-
-export const galleryImages = [
-  { src: gallery1, spanClasses: "md:col-span-2 md:row-span-1" },
-  { src: gallery2, spanClasses: "md:col-span-1 md:row-span-2" },
-  { src: gallery3, spanClasses: "md:col-span-1 md:row-span-2" },
-  { src: gallery4, spanClasses: "md:col-span-1 md:row-span-1" },
-  { src: gallery5, spanClasses: "md:col-span-1 md:row-span-1" },
-];
-
-// ==========================================
-// TESTIMONIALS DATA
-// ==========================================
-export const testimonialsData = [
-  {
-    id: 1,
-    type: "quote-box",
-    text: "\"The discipline I've learned here carries over into my professional life. It's more than just physical training.\"",
-    name: "Michael Chen",
-    role: "Executive",
-    image: "https://randomuser.me/api/portraits/men/86.jpg",
-  },
-  {
-    id: 2,
-    type: "square-text",
-    text: "\"An incredible environment for kids to learn respect, discipline, and physical fitness. My children look forward to every single class with excitement.\"",
-    name: "Emily R.",
-    role: "Parent",
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
-  },
-  {
-    id: 3,
-    type: "bubble-down-avatars",
-    title: "I was very impressed!",
-    text: "The community and the instructors are absolutely world-class.",
-    avatars: [
-      "https://randomuser.me/api/portraits/men/32.jpg",
-      "https://randomuser.me/api/portraits/women/44.jpg",
-      "https://randomuser.me/api/portraits/women/65.jpg"
-    ]
-  },
-  {
-    id: 4,
-    type: "tall-card",
-    title: "I really appreciate it!",
-    text: "Joining this academy completely transformed my approach to fitness and self-defense. Absolutely stellar experience.",
-    image: "https://randomuser.me/api/portraits/women/90.jpg",
-    stars: 5,
-  },
-  {
-    id: 5,
-    type: "large-image",
-    text: "A year from now, will I feel like I've learned enough? Absolutely. The coaching is unmatched.",
-    image: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 6,
-    type: "bubble-down-small",
-    text: "\"Believe in yourself and the incredible coaches here will take care of the rest!\"",
-    image: "https://randomuser.me/api/portraits/women/24.jpg",
-    stars: 4,
-  },
-  {
-    id: 7,
-    type: "wide-top",
-    name: "Sarah Jenkins",
-    text: "Empowered and confident. The best decision I've ever made for my personal fitness journey.",
-    image: "https://randomuser.me/api/portraits/women/12.jpg",
-    stars: 5,
-  },
-  {
-    id: 8,
-    type: "wide-middle",
-    text: "\"From chaos to strategic consistency. A true martial arts school.\"",
-    image: "https://randomuser.me/api/portraits/men/62.jpg",
-  },
-  {
-    id: 9,
-    type: "wide-bottom",
-    text: "Every detail is meticulously planned. Never thought I'd find such a professional gym setup.",
-    name: "David G.",
-    image: "https://randomuser.me/api/portraits/men/44.jpg",
-  }
-];
-
-// ==========================================
-// PARTNERS LOGOS
-// ==========================================
-import Logo from '../assets/Logo_compress.png';
-
-export const row1Logos = [
-  Logo,
-  "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/e/ea/Puma_logo.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/4/44/Under_armour_logo.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/1/11/Reebok_2019_logo.svg",
-];
-
-export const row2Logos = [
-  Logo,
-  "https://upload.wikimedia.org/wikipedia/commons/b/b3/Gatorade_logo.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/6/69/UFC_Logo.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg",
-  "https://upload.wikimedia.org/wikipedia/commons/e/ea/Puma_logo.svg",
 ];

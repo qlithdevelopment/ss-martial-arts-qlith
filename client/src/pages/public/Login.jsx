@@ -3,9 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
-import Logo from "../../assets/Logo_compress.png";
+import Logo from "../../assets/logo/Logo_compress.png";
 
-import silhouetteImg from "../../assets/samurai_shadow.png";
+import silhouetteImg from '../../assets/contact/samurai_shadow.png'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -139,11 +139,12 @@ const Login = () => {
             
             {/* Email */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[#000000] text-[10px] font-bold uppercase tracking-widest pl-1">Email Address</label>
+              <label className="text-[#000000] text-[10px] font-bold uppercase tracking-widest pl-1">REGISTRATION NO</label>
               <input
                 type="email"
                 name="email"
-                placeholder="john@example.com"
+                required
+                placeholder="ABC123"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full bg-[#26c0ff]/5 border-2 border-[#26c0ff]/20 rounded-xl px-4 py-3.5 text-[#000000] font-medium text-sm placeholder-gray-300 focus:outline-none focus:bg-white focus:border-[#26c0ff] transition-all"

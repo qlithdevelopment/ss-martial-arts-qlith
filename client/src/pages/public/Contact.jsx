@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
-import silhouetteImg from '../../assets/samurai_shadow.png';
+import silhouetteImg from '../../assets/contact/samurai_shadow.png';
 import SectionHeader from '../../components/SectionHeader';
 
 const Contact = () => {

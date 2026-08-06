@@ -26,14 +26,16 @@ use Laravel\Sanctum\HasApiTokens;
     'password',
     'role',
     'batch_id',
-    'branch_id', // Admission Dojo (branch)
-    'sensei', // Teacher/Coach
-    'belt', // Dynamic optional string mapping
+    'branch_id', 
+    'sensei', 
+    'belt', 
     'total_fee',
     'notes',
     'id_proof_name',
     'id_proof_number',
     'status',
+    'avatar',
+    'is_full_payment',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

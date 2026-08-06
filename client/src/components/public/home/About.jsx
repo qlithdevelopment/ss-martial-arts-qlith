@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import Silhouette from "../../../assets/new_silhouette.png";
+import Silhouette from "../../../assets/about/new_silhouette.png";
 
 const About = () => {
   return (

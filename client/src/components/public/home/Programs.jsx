@@ -9,7 +9,7 @@ const containerVariants = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2
+      staggerChildren: 0
     }
   }
 };
@@ -19,7 +19,6 @@ const cardVariants = {
   show: {
     opacity: 1,
     y: 0,
-    // transition: { type: "spring", stiffness: 80, damping: 15 }
   }
 };
 
@@ -99,11 +98,11 @@ const Programs = () => {
                       {program.title}
                     </h3>
                     <span className='text-black text-[15px] uppercase font-bold leading-tight mb-1'>
-                      Description
+                      
                     </span>
 
-                    <p className="text-gray-500 max-h-30 w-full break-words text-[13px] md:text-sm font-medium leading-relaxed mb-6 line-clamp-3">
-                      {program.description}
+                    <p className="text-gray-500 max-h-30 w-full break-words text-[13px] md:text-[13px] pl-3 pt-2 font-medium leading-relaxed mb-6 line-clamp-3">
+                      {program.shortDescription}
                     </p>
 
 

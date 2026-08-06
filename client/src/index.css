@@ -431,3 +431,23 @@
 #ninja001-idle {
   cursor: pointer;
 }
+.overflow-x-auto {
+ overflow-x: auto;
+ scrollbar-width: thin; 
+}
+.overflow-y-auto {
+ overflow-y: auto;
+ scrollbar-width: thin; 
+}
+.overflow-scroll {
+ overflow: scroll;
+ scrollbar-width: thin;
+}
+.overflow-y-scroll {
+ overflow-y: scroll;
+ scrollbar-width: thin;
+}
+.overflow-x-scroll {
+ overflow-x: scroll;
+ scrollbar-width: thin;
+}

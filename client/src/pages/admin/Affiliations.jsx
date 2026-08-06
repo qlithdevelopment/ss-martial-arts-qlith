@@ -104,8 +104,8 @@ const Affiliations = () => {
   return (
     <div className="">
       {/* Header section */}
-      <div className="flex w-full flex-col justify-end md:flex-row items-end md:items-center gap-4 mb-3">
-        <div className="flex w-full md:w-auto items-center gap-4">          
+      <div className="flex w-full justify-end flex-row items-end md:items-center gap-4 mb-3">
+        <div className="flex w-auto md:w-auto items-center gap-4">          
           <button
             onClick={openCreateModal}
             className="shrink-0  flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-lg text-sm font-bold transition-all shadow-md shadow-orange-500/20"

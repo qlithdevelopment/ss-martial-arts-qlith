@@ -2,15 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, X, ImageIcon, ChevronRight } from 'lucide-react';
 
-import eventSeminarImg from "../../assets/event_seminar.png";
-import eventTournamentImg from "../../assets/event_tournament.png";
-import masterKickImg from "../../assets/master_kick.png";
-import femaleMmaImg from "../../assets/female_mma.png";
-import yogaMasterImg from "../../assets/yoga_master.png";
-import mastersGroupImg from "../../assets/masters_group.png";
-import trainer1Img from "../../assets/group_classes.png";
-import trainer2Img from "../../assets/generated_trainer2.png";
-import trainer3Img from "../../assets/personal_training.png";
 import PaginationComponent from '../../components/PaginationComponent';
 import SectionHeader from '../../components/SectionHeader';
 
@@ -100,11 +91,11 @@ const GalleryPage = () => {
 
       {/* MASSIVE BACKGROUND TEXT */}
       <div className="fixed top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[16vw] font-black text-black/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
-          Gallery
-        </div>
+        Gallery
+      </div>
 
       <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-22 ">
-      {/* <div className="global-container lg:!px-14 relative z-10"> */}
+        {/* <div className="global-container lg:!px-14 relative z-10"> */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
@@ -113,7 +104,7 @@ const GalleryPage = () => {
           <div className="mb-12">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-0">
 
-              <SectionHeader                
+              <SectionHeader
                 label="Gallery"
                 title="OUR"
                 titleColor="text-black"
@@ -121,9 +112,7 @@ const GalleryPage = () => {
               />
             </div>
 
-            {/* <p className="text-gray-600 mt-4 max-w-xl font-medium text-lg">
-                  Relive the unforgettable moments from our championships, seminars, and academy gatherings. Select an album to view all photos.
-                </p> */}
+
           </div>
         </motion.div>
 
@@ -161,6 +150,11 @@ const GalleryPage = () => {
                       </div>
                     </div>
                   ))
+                ) : albumsData.length === 0 ? (
+                  <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
+                    <ImageIcon className="text-gray-600 mb-4" size={40} />
+                    <p className="text-gray-400 font-medium">No albums to show right now.</p>
+                  </div>
                 ) : albumsData.map((album, idx) => (
                   <motion.div
                     key={album.id}
