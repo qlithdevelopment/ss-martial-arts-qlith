@@ -1,21 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, Mail, IndianRupee, IdCard, X, Save, Type, Lock, Activity, FileText, Eye, EyeOff, Award, RefreshCw, User, Users, Calendar, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
-import api from '../../api/axios';
-import PaginationComponent from '../../components/PaginationComponent';
-import ConfirmModal from '../../components/admin/reusecomponents/ConfirmationModal';
-import AdminTable from '../../components/admin/reusecomponents/AdminTable';
-import { getAvatarUrlByName } from '../../components/student/AvatarPickerModal';
-import FeeModal from '../../components/admin/student/FeeModal';
-
+import React, { useState, useEffect } from "react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Search,
+  Mail,
+  IndianRupee,
+  IdCard,
+  X,
+  Save,
+  Type,
+  Lock,
+  Activity,
+  FileText,
+  Eye,
+  EyeOff,
+  Award,
+  RefreshCw,
+  User,
+  Users,
+  Calendar,
+  Ruler,
+  Weight,
+  MapPin,
+  Phone,
+  Building2,
+  UserCog,
+  ScanLine,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
+import api from "../../api/axios";
+import PaginationComponent from "../../components/PaginationComponent";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
+import AdminTable from "../../components/admin/reusecomponents/AdminTable";
+import { getAvatarUrlByName } from "../../components/student/AvatarPickerModal";
+import FeeModal from "../../components/admin/student/FeeModal";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
   const [batches, setBatches] = useState([]);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
@@ -35,35 +62,35 @@ const Students = () => {
   const [page, setPage] = useState(1);
 
   const emptyFormData = {
-    name: '',
-    father_name: '',
-    mother_name: '',
-    gender: '',
-    date_of_birth: '',
-    height: '',
-    weight: '',
-    address: '',
-    mobile_number: '',
-    joining_date: '',
-    email: '',
-    reg_no: '',
-    password: '',
-    batch_id: '',
-    branch_id: '',
-    sensei: '',
-    belt: '',
-    total_fee: '',
+    name: "",
+    father_name: "",
+    mother_name: "",
+    gender: "",
+    date_of_birth: "",
+    height: "",
+    weight: "",
+    address: "",
+    mobile_number: "",
+    joining_date: "",
+    email: "",
+    reg_no: "",
+    password: "",
+    batch_id: "",
+    branch_id: "",
+    sensei: "",
+    belt: "",
+    total_fee: "",
     status: 1,
-    notes: '',
-    id_proof_name: '',
-    id_proof_number: ''
+    notes: "",
+    id_proof_name: "",
+    id_proof_number: "",
   };
 
   const [formData, setFormData] = useState(emptyFormData);
 
   const openCreateModal = () => {
     setSelectedStudent(null);
-    setSearch('');
+    setSearch("");
     fetchBatches();
     setFormData(emptyFormData);
     setPasswordTouched(false);
@@ -76,8 +103,14 @@ const Students = () => {
     setFormData({
       ...emptyFormData,
       ...student,
-      password: '',
-      status: (student.status == '1' || student.status === true || student.status === 'true' || student.status === 'active') ? 1 : 0
+      password: "",
+      status:
+        student.status == "1" ||
+        student.status === true ||
+        student.status === "true" ||
+        student.status === "active"
+          ? 1
+          : 0,
     });
     setPasswordTouched(false);
     setIsModalOpen(true);
@@ -93,7 +126,7 @@ const Students = () => {
 
   useEffect(() => {
     setPage(1); // reset to page 1 whenever the search term changes
-  }, [debouncedSearch])
+  }, [debouncedSearch]);
 
   // Fetch students whenever the page changes
   useEffect(() => {
@@ -104,39 +137,51 @@ const Students = () => {
     if (selectedStudent) return;
     if (passwordTouched) return;
 
-    const digitsOnly = (formData.mobile_number || '').replace(/\D/g, '');
+    const digitsOnly = (formData.mobile_number || "").replace(/\D/g, "");
     const last4 = digitsOnly.slice(-4);
-    const [year, month, day] = formData.date_of_birth.split('-');
-    const birthDay = day;     
+    const [year, month, day] = formData.date_of_birth.split("-");
+    const birthDay = day;
     const birthMonth = month;
     const birthDayMonth = `${birthDay}` + `${birthMonth}`;
-    
 
     if (last4.length === 4 && birthDayMonth && !Number.isNaN(birthDayMonth)) {
       const generated = `${birthDayMonth}${last4}`;
-      setFormData(prev => (prev.password === generated ? prev : { ...prev, password: generated }));
+      setFormData((prev) =>
+        prev.password === generated ? prev : { ...prev, password: generated },
+      );
     }
-  }, [formData.mobile_number, formData.date_of_birth, selectedStudent, passwordTouched]);
+  }, [
+    formData.mobile_number,
+    formData.date_of_birth,
+    selectedStudent,
+    passwordTouched,
+  ]);
 
   const fetchBatches = async () => {
     try {
       const res = await api.get(`/batches`);
       setBatches(res?.data?.data || res.data || []);
     } catch (err) {
-      toast.error('Failed to load batches');
+      toast.error("Failed to load batches");
     }
   };
 
   const fetchStudents = async () => {
     try {
       setIsLoadingData(true);
-      const res = await api.get(`/students?page=${page}&search=${debouncedSearch}`);
+      const res = await api.get(
+        `/students?page=${page}&search=${debouncedSearch}`,
+      );
       const rawStudents = res.data?.data || res.data;
       setPagination(res.data?.pagination || {});
-      setStudents([...(Array.isArray(rawStudents) ? rawStudents : [])].sort((a, b) => b.id - a.id));
+      setStudents(
+        [...(Array.isArray(rawStudents) ? rawStudents : [])].sort(
+          (a, b) => b.id - a.id,
+        ),
+      );
     } catch (err) {
       console.error(err);
-      toast.error('Failed to load students');
+      toast.error("Failed to load students");
     } finally {
       setIsLoadingData(false);
     }
@@ -148,16 +193,16 @@ const Students = () => {
     try {
       if (selectedStudent) {
         await api.put(`/students/${selectedStudent.id}`, formData);
-        toast.success('Student updated successfully');
+        toast.success("Student updated successfully");
       } else {
-        await api.post('/students/register', formData);
-        toast.success('Student registered successfully');
+        await api.post("/students/register", formData);
+        toast.success("Student registered successfully");
       }
       setIsModalOpen(false);
-      setSearch('');
+      setSearch("");
       fetchStudents();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to save student');
+      toast.error(error.response?.data?.message || "Failed to save student");
     } finally {
       setLoading(false);
     }
@@ -172,12 +217,12 @@ const Students = () => {
     try {
       setIsDeleting(true);
       await api.delete(`/students/${studentToDelete}`);
-      setStudents(prev => prev.filter(s => s.id !== studentToDelete));
-      toast.success('Student deleted successfully');
+      setStudents((prev) => prev.filter((s) => s.id !== studentToDelete));
+      toast.success("Student deleted successfully");
       setIsDeleteModalOpen(false);
       setStudentToDelete(null);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to delete student');
+      toast.error(error.response?.data?.message || "Failed to delete student");
     } finally {
       setIsDeleting(false);
     }
@@ -186,15 +231,15 @@ const Students = () => {
     setId(id);
     setEditingFee(null);
     setIsFeeModalOpen(true);
-  }
+  };
   const handelfeeClose = () => {
     setIsFeeModalOpen(false);
     setId(null);
-  }
+  };
 
   const COLUMNS = [
     {
-      header: 'Student Info',
+      header: "Student Info",
       skeleton: () => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-200"></div>
@@ -205,28 +250,29 @@ const Students = () => {
         </div>
       ),
       render: (_, row) => {
-        const avatarImageUrl = row.avatar ? getAvatarUrlByName(row.avatar) : null;
+        const avatarImageUrl = row.avatar
+          ? getAvatarUrlByName(row.avatar)
+          : null;
         return (
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden">
               {avatarImageUrl ? (
-                <img src={avatarImageUrl} alt={row.name} className="w-full h-full object-cover" />
+                <img
+                  src={avatarImageUrl}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 row.name?.charAt(0)
               )}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-gray-400">#{row.id}</span>
                 <p className="font-bold text-gray-900" title={row.name}>
-                  {row.name?.split(' ').length > 4
-                    ? row.name.split(' ').slice(0, 4).join(' ') + '...'
+                  {row.name?.split(" ").length > 4
+                    ? row.name.split(" ").slice(0, 4).join(" ") + "..."
                     : row.name}
                 </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                <Mail size={12} />
-                {row.email}
               </div>
             </div>
           </div>
@@ -234,28 +280,29 @@ const Students = () => {
       },
     },
     {
-      header: 'Assigned Batch',
-      accessor: 'batch_id',
+      header: "Assigned Batch",
+      accessor: "batch_id",
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
       render: (_, row) => (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-semibold">
-          {row.batch_name || 'Unassigned'}
+          {row.batch_name || "Unassigned"}
         </span>
       ),
     },
     {
-      header: 'Branch / Dojo',
-      accessor: 'branch_id',
+      header: "Mobile Number",
+      accessor: "mobile_number",
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
-      render: (_, row) => (
-        <span className="inline-flex items-center gap-1 px-1 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-semibold">
-          {row.branch_name || 'Unassigned'}
-        </span>
-      ),
     },
     {
-      header: 'Total Fee',
-      accessor: 'total_fee',
+      header: "Registration No",
+      accessor: "reg_no",
+      skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
+    },
+
+    {
+      header: "Total Fee",
+      accessor: "total_fee",
       skeleton: () => <div className="h-5 bg-gray-200 rounded w-16"></div>,
       render: (value) => (
         <div className="flex items-center gap-1 font-semibold text-gray-900">
@@ -265,21 +312,27 @@ const Students = () => {
       ),
     },
     {
-      header: 'Status',
-      accessor: 'status',
+      header: "Status",
+      accessor: "status",
       skeleton: () => <div className="h-6 bg-gray-200 rounded-full w-20"></div>,
       render: (value) => {
-        const isActive = String(value) === '1' || value === true || value === 'true' || value === 'active';
+        const isActive =
+          String(value) === "1" ||
+          value === true ||
+          value === "true" ||
+          value === "active";
         return (
-          <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-            {isActive ? 'ACTIVE' : 'INACTIVE'}
+          <span
+            className={`px-2.5 py-1 text-xs font-bold rounded-full ${isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+          >
+            {isActive ? "ACTIVE" : "INACTIVE"}
           </span>
         );
       },
     },
     {
-      header: 'Actions',
-      className: 'text-right',
+      header: "Actions",
+      className: "text-right",
       skeleton: () => (
         <div className="flex justify-end gap-2">
           <div className="w-8 h-8 rounded-lg bg-gray-200"></div>
@@ -326,19 +379,21 @@ const Students = () => {
       {/* Action Bar */}
       <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+          <Search
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            size={18}
+          />
           <input
             type="text"
             name="student_search_query"
             autoComplete="off"
-            placeholder="Search students by name, email, belt, or batch..."
+            placeholder="Search students by name, email, or batch..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 shadow-sm"
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-
           <button
             onClick={openCreateModal}
             className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
@@ -382,7 +437,7 @@ const Students = () => {
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              transition={{ type: 'spring', duration: 0.5, bounce: 0 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
             >
               <div
@@ -392,10 +447,12 @@ const Students = () => {
                 <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-100 shrink-0">
                   <div>
                     <h3 className="text-xl font-black text-gray-900 tracking-tight">
-                      {selectedStudent ? 'Edit Student' : 'Add New Student'}
+                      {selectedStudent ? "Edit Student" : "Add New Student"}
                     </h3>
                     <p className="text-xs text-gray-500 font-medium mt-0.5">
-                      {selectedStudent ? 'Update student records and assignments' : 'Enroll a new student'}
+                      {selectedStudent
+                        ? "Update student records and assignments"
+                        : "Enroll a new student"}
                     </p>
                   </div>
                   <button
@@ -406,17 +463,22 @@ const Students = () => {
                   </button>
                 </div>
 
-                <form onSubmit={handleSave} className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
+                <form
+                  onSubmit={handleSave}
+                  className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                     {/* ===== PERSONAL DETAILS ===== */}
                     <div className="md:col-span-2">
-                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">Personal Details</p>
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">
+                        Personal Details
+                      </p>
                     </div>
 
                     <div className="md:col-span-2 flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Type size={12} className="text-[#f97316]" /> FULL NAME *
+                        <Type size={12} className="text-[#f97316]" /> FULL NAME
+                        *
                       </label>
                       <input
                         type="text"
@@ -425,33 +487,47 @@ const Students = () => {
                         required
                         placeholder="e.g. John Doe"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <User size={12} className="text-[#f97316]" /> FATHER'S NAME
+                        <User size={12} className="text-[#f97316]" /> FATHER'S
+                        NAME
                       </label>
                       <input
                         type="text"
                         placeholder="e.g. Robert Doe"
                         value={formData.father_name}
-                        onChange={(e) => setFormData({ ...formData, father_name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            father_name: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Users size={12} className="text-[#f97316]" /> MOTHER'S NAME
+                        <Users size={12} className="text-[#f97316]" /> MOTHER'S
+                        NAME
                       </label>
                       <input
                         type="text"
                         placeholder="e.g. Jane Doe"
                         value={formData.mother_name}
-                        onChange={(e) => setFormData({ ...formData, mother_name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            mother_name: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
@@ -462,7 +538,9 @@ const Students = () => {
                       </label>
                       <select
                         value={formData.gender}
-                        onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, gender: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
                       >
                         <option value="">Select Gender</option>
@@ -474,19 +552,26 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#f97316]" /> DATE OF BIRTH
+                        <Calendar size={12} className="text-[#f97316]" /> DATE
+                        OF BIRTH
                       </label>
                       <input
                         type="date"
                         value={formData.date_of_birth}
-                        onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            date_of_birth: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Ruler size={12} className="text-[#f97316]" /> HEIGHT (cm)
+                        <Ruler size={12} className="text-[#f97316]" /> HEIGHT
+                        (cm)
                       </label>
                       <input
                         type="number"
@@ -494,14 +579,17 @@ const Students = () => {
                         step="0.1"
                         placeholder="e.g. 165"
                         value={formData.height}
-                        onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, height: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Weight size={12} className="text-[#f97316]" /> WEIGHT (kg)
+                        <Weight size={12} className="text-[#f97316]" /> WEIGHT
+                        (kg)
                       </label>
                       <input
                         type="number"
@@ -509,21 +597,29 @@ const Students = () => {
                         step="0.1"
                         placeholder="e.g. 60"
                         value={formData.weight}
-                        onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, weight: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Phone size={12} className="text-[#f97316]" /> MOBILE NUMBER *
+                        <Phone size={12} className="text-[#f97316]" /> MOBILE
+                        NUMBER *
                       </label>
                       <input
                         type="tel"
                         required
                         placeholder="+91 98765 43210"
                         value={formData.mobile_number}
-                        onChange={(e) => setFormData({ ...formData, mobile_number: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            mobile_number: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
@@ -536,77 +632,109 @@ const Students = () => {
                         rows="2"
                         placeholder="Full residential address"
                         value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, address: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       ></textarea>
                     </div>
 
                     {/* ===== IDENTITY PROOF ===== */}
                     <div className="md:col-span-2 pt-2">
-                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">Identity Proof</p>
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">
+                        Identity Proof
+                      </p>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <ScanLine size={12} className="text-[#f97316]" /> ID PROOF NAME
+                        <ScanLine size={12} className="text-[#f97316]" /> ID
+                        PROOF NAME
                       </label>
                       <input
                         type="text"
                         placeholder="e.g. Aadhar Card"
                         value={formData.id_proof_name}
-                        onChange={(e) => setFormData({ ...formData, id_proof_name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            id_proof_name: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IdCard size={12} className="text-[#f97316]" /> ID PROOF NUMBER
+                        <IdCard size={12} className="text-[#f97316]" /> ID PROOF
+                        NUMBER
                       </label>
                       <input
                         type="text"
                         placeholder="e.g. XXXX-XXXX-XXXX"
                         value={formData.id_proof_number}
-                        onChange={(e) => setFormData({ ...formData, id_proof_number: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            id_proof_number: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     {/* ===== ACCOUNT & ACADEMY DETAILS ===== */}
                     <div className="md:col-span-2 pt-2">
-                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">Account & Academy Details</p>
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">
+                        Account & Academy Details
+                      </p>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Mail size={12} className="text-[#f97316]" /> EMAIL ADDRESS
+                        <Mail size={12} className="text-[#f97316]" /> EMAIL
+                        ADDRESS
                       </label>
                       <input
                         type="email"
                         placeholder="john@example.com"
                         value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IdCard size={12} className="text-[#f97316]" /> REGISTRATION NO *
+                        <IdCard size={12} className="text-[#f97316]" />{" "}
+                        REGISTRATION NO *
                       </label>
                       <input
                         type="text"
                         required
                         placeholder="ABC234"
                         value={formData.reg_no}
-                        onChange={(e) => setFormData({ ...formData, reg_no: e.target.value.toUpperCase() })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reg_no: e.target.value.toUpperCase(),
+                          })
+                        }
                         className="w-full bg-gray-50 uppercase border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Lock size={12} className="text-[#f97316]" /> PASSWORD {selectedStudent && <span className="text-gray-400 normal-case tracking-normal">(Leave blank to keep)</span>}
+                        <Lock size={12} className="text-[#f97316]" /> PASSWORD{" "}
+                        {selectedStudent && (
+                          <span className="text-gray-400 normal-case tracking-normal">
+                            (Leave blank to keep)
+                          </span>
+                        )}
                       </label>
                       <div className="relative">
                         <input
@@ -617,7 +745,10 @@ const Students = () => {
                           value={formData.password}
                           onChange={(e) => {
                             setPasswordTouched(true);
-                            setFormData({ ...formData, password: e.target.value });
+                            setFormData({
+                              ...formData,
+                              password: e.target.value,
+                            });
                           }}
                           className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-11 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                         />
@@ -627,53 +758,82 @@ const Students = () => {
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#f97316] transition-colors"
                           tabIndex={-1}
                         >
-                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                          {showPassword ? (
+                            <EyeOff size={16} />
+                          ) : (
+                            <Eye size={16} />
+                          )}
                         </button>
                       </div>
-                      {!selectedStudent && !passwordTouched && formData.password && (
-                        <p className="text-[11px] text-gray-400 mt-0.5">
-                          Auto-generated from mobile number + birth year — click to edit.
-                        </p>
-                      )}
+                      {!selectedStudent &&
+                        !passwordTouched &&
+                        formData.password && (
+                          <p className="text-[11px] text-gray-400 mt-0.5">
+                            Auto-generated from DOB (DDMM) + last 4 digits of
+                            mobile number.
+                          </p>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#f97316]" /> JOINING DATE
+                        <Calendar size={12} className="text-[#f97316]" />{" "}
+                        JOINING DATE
                       </label>
                       <input
                         type="date"
                         value={formData.joining_date}
-                        onChange={(e) => setFormData({ ...formData, joining_date: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            joining_date: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#f97316]" /> ASSIGN BATCH *
+                        <Activity size={12} className="text-[#f97316]" /> ASSIGN
+                        BATCH *
                       </label>
                       <select
                         required
                         value={formData.batch_id}
-                        onChange={(e) => setFormData({ ...formData, batch_id: e.target.value ? parseInt(e.target.value) : '' })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            batch_id: e.target.value
+                              ? parseInt(e.target.value)
+                              : "",
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none"
                       >
                         <option value="">Select a Batch</option>
-                        {batches.map(batch => (
-                          <option key={batch.id} value={batch.id}>{batch.name}</option>
+                        {batches.map((batch) => (
+                          <option key={batch.id} value={batch.id}>
+                            {batch.name}
+                          </option>
                         ))}
                       </select>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Building2 size={12} className="text-[#f97316]" /> ADMISSION DOJO (BRANCH)
+                        <Building2 size={12} className="text-[#f97316]" />{" "}
+                        ADMISSION DOJO (BRANCH)
                       </label>
                       <input
                         type="text"
-                        value={formData.branch_id || ''}
-                        onChange={(e) => setFormData({ ...formData, branch_id: e.target.value })}
+                        value={formData.branch_id || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            branch_id: e.target.value,
+                          })
+                        }
                         placeholder="Enter branch name"
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
                       />
@@ -681,24 +841,30 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <UserCog size={12} className="text-[#f97316]" /> SENSEI (COACH)
+                        <UserCog size={12} className="text-[#f97316]" /> SENSEI
+                        (COACH)
                       </label>
                       <input
                         type="text"
                         placeholder="e.g. Siddharth Kumar Sahoo"
                         value={formData.sensei}
-                        onChange={(e) => setFormData({ ...formData, sensei: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, sensei: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Award size={12} className="text-[#f97316]" /> CURRENT BELT
+                        <Award size={12} className="text-[#f97316]" /> CURRENT
+                        BELT
                       </label>
                       <select
-                        value={formData.belt || ''}
-                        onChange={(e) => setFormData({ ...formData, belt: e.target.value })}
+                        value={formData.belt || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, belt: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
                       >
                         <option value="">Select a Belt</option>
@@ -716,7 +882,8 @@ const Students = () => {
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IndianRupee size={12} className="text-[#f97316]" /> TOTAL FEE *
+                        <IndianRupee size={12} className="text-[#f97316]" />{" "}
+                        TOTAL FEE *
                       </label>
                       <input
                         type="number"
@@ -725,20 +892,31 @@ const Students = () => {
                         step="0.01"
                         placeholder="e.g. 500.00"
                         value={formData.total_fee}
-                        onChange={(e) => setFormData({ ...formData, total_fee: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            total_fee: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#f97316]" /> STATUS *
+                        <Activity size={12} className="text-[#f97316]" /> STATUS
+                        *
                       </label>
                       <select
                         value={String(formData.status)}
                         disabled={!selectedStudent}
-                        onChange={(e) => setFormData({ ...formData, status: parseInt(e.target.value) })}
-                        className={`${!selectedStudent ? 'cursor-not-allowed' : 'cursor-pointer'} w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none`}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            status: parseInt(e.target.value),
+                          })
+                        }
+                        className={`${!selectedStudent ? "cursor-not-allowed" : "cursor-pointer"} w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none`}
                       >
                         <option value="1">Active</option>
                         <option value="0">Inactive</option>
@@ -753,11 +931,12 @@ const Students = () => {
                         rows="2"
                         placeholder="Any additional information..."
                         value={formData.notes}
-                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, notes: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       ></textarea>
                     </div>
-
                   </div>
 
                   <div className="pt-6 mt-4 border-t border-gray-100 flex justify-end gap-3">

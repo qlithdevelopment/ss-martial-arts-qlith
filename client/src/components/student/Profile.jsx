@@ -59,7 +59,7 @@ export default function ProfileTab({ student }) {
                     <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary dark:text-slate-400 flex-shrink-0 mt-0.5">
                         <MapPin size={14} />
                     </div>
-                    <p className="text-xs font-semibold text-primary2 dark:text-slate-200 leading-relaxed">
+                    <p className="text-xs font-semibold text-gray-800 dark:text-slate-200 leading-relaxed">
                         {address ?? <NoData />}
                     </p>
                 </div>

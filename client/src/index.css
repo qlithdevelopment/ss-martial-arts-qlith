@@ -10,6 +10,10 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+button{
+  @apply cursor-pointer;
+}
+
 @layer utilities {
   .global-container {
     @apply w-full max-w-[1440px] mx-auto px-[20px] sm:px-[24px] md:px-[40px] lg:px-[80px] xl:px-[120px];

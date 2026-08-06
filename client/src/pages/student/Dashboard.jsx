@@ -34,7 +34,7 @@ export const getMyBatch = async () => {
 const TABS = [
   { key: "Profile", label: "Profile", icon: <User size={15} /> },
   { key: "Batch", label: "Batch", icon: <BookOpen size={15} /> },
-  { key: "Belt", label: "Belt", icon: <Award size={15} /> },
+  { key: "Belt", label: "Belts", icon: <Award size={15} /> },
   { key: "Payment", label: "Payments", icon: <IndianRupee size={15} /> },
   { key: "Certs", label: "Achievements", icon: <FileText size={15} /> },
 ];
@@ -372,7 +372,7 @@ export default function StudentDashboard() {
 
         )}
 
-        <div className="space-y-5">
+        <div className="space-y-5 ">
           <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {TABS.map((tab) => (
               <button
@@ -380,7 +380,7 @@ export default function StudentDashboard() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 backdrop-blur-md border ${activeTab === tab.key
                   ? "bg-primary text-white border-primary shadow-md shadow-primary/30"
-                  : "bg-white/40 text-slate-500 border-white/60 hover:border-primary/40 hover:text-primary dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:border-slate-700"
+                  : "bg-white text-gray-800 border-white/60 hover:border-primary/40 hover:text-primary dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800 dark:hover:border-slate-700"
                   }`}
               >
                 {tab.icon}{tab.label}

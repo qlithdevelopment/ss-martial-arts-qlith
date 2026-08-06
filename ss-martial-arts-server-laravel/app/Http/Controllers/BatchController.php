@@ -22,6 +22,7 @@ class BatchController extends Controller
                 ->when($search, function ($query, $search) {
                     return $query->where('name', 'LIKE', '%' . $search . '%');
                 })
+                ->orderBy('created_at', 'desc')
                 ->paginate($perPage);
 
             return response()->json([

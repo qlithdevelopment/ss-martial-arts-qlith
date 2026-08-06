@@ -3,19 +3,20 @@ import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
-import Logo from "../../assets/logo/Logo_compress.png";
-
-import silhouetteImg from '../../assets/contact/samurai_shadow.png'
+import Logo from "../../assets/logo/Full_Logo.png";
+import loginbg from "../../assets/loginbg1.png";
 
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  
+
+  const silhouetteImg = loginbg;
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -50,12 +51,12 @@ const Login = () => {
     try {
       setLoading(true);
       loadingToast = toast.loading("Logging in...");
-      
+
       const user = await login(formData);
-      
+
       toast.dismiss(loadingToast);
       toast.success("Login successful");
-      
+
       if (user.role === "admin") {
         navigate("/admin/dashboard");
       } else {
@@ -63,7 +64,11 @@ const Login = () => {
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      const message = error?.response?.data?.message || error?.message || "Something went wrong";
+
+      const message =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Something went wrong";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -71,89 +76,52 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col md:flex-row font-sans">
-      
-      {/* LEFT SIDE: Simple & Aesthetic Brand Area */}
-      <div className="w-full md:w-[45%] lg:w-[40%] min-h-[40vh] md:min-h-screen bg-[#0b1b24] p-8 md:p-12 lg:p-20 flex flex-col justify-between relative overflow-hidden">
-        
-        {/* Subtle Background Elements */}
-        <div className="absolute top-[-20%] left-[-20%] w-[70%] h-[70%] rounded-full bg-[#26c0ff] opacity-10 blur-[50px] md:blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#f97316] opacity-10 blur-[50px] md:blur-[100px]"></div>
-
-        {/* Logo Area */}
-        <div className="relative z-10 flex items-center gap-3">
-          <Link to="/">
-            <img src={Logo} alt="SS Martial Arts Logo" className="w-16 md:w-20 h-auto drop-shadow-lg" />
-          </Link>
-          <div className="flex flex-col">
-            <span className="text-white font-black tracking-widest text-lg leading-tight">SS MARTIAL</span>
-            <span className="text-[#26c0ff] font-bold tracking-[0.3em] text-xs">ARTS</span>
-          </div>
-        </div>
-
-        {/* Inspirational Text */}
-        <div className="relative z-10 mt-12 md:mt-0">
-          <div className="w-12 h-1 bg-[#26c0ff] mb-6"></div>
-          <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.1] tracking-tight uppercase">
-            Master your <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#26c0ff] to-[#f97316]">Mind & Body.</span>
-          </h2>
-          <p className="text-gray-400 font-medium mt-6 text-sm md:text-base max-w-sm leading-relaxed">
-            Welcome back. Enter your credentials to access your dashboard, track your progress, and continue your martial arts journey with us.
-          </p>
-        </div>
-        
-        {/* Bottom copyright / aesthetic footer */}
-        <div className="relative z-10 hidden md:block mt-12">
-          <p className="text-gray-500 text-xs font-bold tracking-widest uppercase">
-            &copy; {new Date().getFullYear()} SS Martial Arts
-          </p>
-        </div>
-
+    <div className="w-full min-h-screen relative flex flex-col md:flex-row font-sans overflow-x-hidden text-white">
+      {/* BACKGROUND IMAGE / SILHOUETTE LAYER */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={silhouetteImg}
+          alt="Background"
+          className="w-full h-full object-cover object-center contrast-125"
+        />
       </div>
 
-      {/* RIGHT SIDE: Clean Login Form */}
-      <div className="w-full md:w-[55%] lg:w-[60%] min-h-[60vh] md:min-h-screen flex flex-col justify-center items-center px-6 py-12 md:px-12 lg:px-24 bg-white relative overflow-hidden">
-        
-        {/* Subtle Samurai Watermark */}
-        <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-end overflow-hidden opacity-15">
-          <img 
-            src={silhouetteImg} 
-            alt="Samurai Background" 
-            className="w-auto h-[120%] object-contain object-right-bottom translate-x-[15%] translate-y-[10%]"
-          />
-        </div>
+      {/* LEFT SIDE: Subtle Visual Area (Desktop Only) */}
+      <div className="hidden md:flex md:w-1/2 min-h-screen relative z-10 border-r border-white/10" />
 
-        <div className="w-full max-w-sm relative z-10">
+      {/* RIGHT SIDE: Dark Glassmorphic Form Container */}
+      <div className="w-full md:w-1/2 min-h-screen flex flex-col justify-center items-center px-4 sm:px-8 py-8 md:px-12 lg:px-24 bg-black/40 backdrop-blur-md relative z-10">
+        <div className="w-full max-w-sm sm:max-w-md my-auto">
           {/* Header */}
-          <div className="mb-10 md:mb-12">
-            <h1 className="text-3xl md:text-4xl font-black text-[#26c0ff] mb-3 tracking-tight uppercase">
-              Sign in
+          <div className="mb-6 sm:mb-10 text-center">
+            <Link to="/">
+              <img src={Logo} alt="Logo" className="h-20 sm:h-28 md:h-32 m-auto object-contain" />
+            </Link>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-normal text-white mb-2 tracking-tight">
+              Welcome back
             </h1>
-            <p className="text-sm text-gray-500 font-medium">
-              Don't have an account? <Link to="/contact" className="text-[#26c0ff] font-bold hover:underline">Sign up</Link>
+            <p className="text-xs sm:text-sm text-gray-400 font-normal">
+              Please enter your credentials.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            
-            {/* Email */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[#000000] text-[10px] font-bold uppercase tracking-widest pl-1">REGISTRATION NO</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-6">
+            {/* E-mail / Registration Input */}
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              <label className="text-white text-xs sm:text-sm font-medium">Registration Number</label>
               <input
-                type="email"
                 name="email"
                 required
-                placeholder="ABC123"
+                placeholder="Enter your registration Number"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full bg-[#26c0ff]/5 border-2 border-[#26c0ff]/20 rounded-xl px-4 py-3.5 text-[#000000] font-medium text-sm placeholder-gray-300 focus:outline-none focus:bg-white focus:border-[#26c0ff] transition-all"
+                className="w-full bg-transparent border-b border-gray-600 focus:border-white py-2 text-white text-sm placeholder-gray-500 focus:outline-none transition-colors"
               />
             </div>
 
-            {/* Password */}
-            <div className="flex flex-col gap-1.5 mt-2 relative">
-              <label className="text-[#000000] text-[10px] font-bold uppercase tracking-widest pl-1">Password</label>
+            {/* Password Input */}
+            <div className="flex flex-col gap-1.5 sm:gap-2 relative">
+              <label className="text-white text-xs sm:text-sm font-medium">Password</label>
               <div className="relative w-full">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -161,32 +129,29 @@ const Login = () => {
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full bg-[#26c0ff]/5 border-2 border-[#26c0ff]/20 rounded-xl px-4 py-3.5 pr-12 text-[#000000] font-medium text-sm placeholder-gray-300 focus:outline-none focus:bg-white focus:border-[#26c0ff] transition-all"
+                  className="w-full bg-transparent border-b border-gray-600 focus:border-white py-2 pr-10 text-white text-sm placeholder-gray-500 focus:outline-none transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#26c0ff] transition-colors"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            {/* Button */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-6 bg-[#26c0ff] hover:bg-[#0b1b24] transition-colors duration-300 text-white py-4 rounded-xl text-sm font-black uppercase tracking-[0.1em] disabled:opacity-70 shadow-lg"
+              className="w-full mt-2 sm:mt-4 bg-primary2 hover:bg-primary2/80 border border-white/20 text-white py-3 sm:py-3.5 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50 cursor-pointer"
             >
-              {loading ? "Verifying..." : "Sign in to account"}
+              {loading ? "Logging in..." : "Log in"}
             </button>
-            
           </form>
         </div>
-
       </div>
-
     </div>
   );
 };

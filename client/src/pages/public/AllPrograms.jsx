@@ -71,7 +71,7 @@ const AllPrograms = () => {
               variants={cardVariants}
               key={program.id}
               onClick={() => setSelectedProgram(program)}
-              className="group flex flex-col w-full bg-white rounded-[32px] overflow-hidden shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_60px_-15px_rgba(38,192,255,0.2)] transition-all duration-500 hover:-translate-y-2 border border-gray-100 cursor-pointer"
+              className="group flex flex-col w-full bg-white rounded-[32px] overflow-hidden shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_60px_-15px_rgba(38,192,255,0.2)]  duration-500 hover:-translate-y-2 border border-gray-100 cursor-pointer"
             >
 
               {/* TOP IMAGE */}

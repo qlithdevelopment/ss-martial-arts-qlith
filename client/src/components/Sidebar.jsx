@@ -1,9 +1,29 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Logo from '../assets/logo/Logo_compress.png';
+import Logo from "../assets/logo/Logo_compress.png";
 import { toast } from "react-hot-toast";
-import { ArrowLeft, MessageSquareQuote, FileText, LogOut, Handshake, ChevronDown, ChevronsRight, ChevronsLeft, Menu, X, House, Newspaper, CalendarDays, Image, Users, CircleHelp, GraduationCap, Mail,Phone } from "lucide-react";
+import {
+  ArrowLeft,
+  MessageSquareQuote,
+  FileText,
+  LogOut,
+  Handshake,
+  ChevronDown,
+  ChevronsRight,
+  ChevronsLeft,
+  Menu,
+  X,
+  House,
+  Newspaper,
+  CalendarDays,
+  Image,
+  Users,
+  CircleHelp,
+  GraduationCap,
+  Mail,
+  Phone,
+} from "lucide-react";
 import ConfirmModal from "../components/admin/reusecomponents/ConfirmationModal";
 const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const navigate = useNavigate();
@@ -23,16 +43,15 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     try {
       await logout();
       setIsLogoutModalOpen(false);
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Logout failed:', error);
-      toast.error('Failed to logout');
+      console.error("Logout failed:", error);
+      toast.error("Failed to logout");
     } finally {
       setIsLoggingOut(false);
     }
   };
 
-  
   // Automatically close sidebar panel when navigating on mobile viewports
   const handleItemClick = () => {
     if (window.innerWidth < 768) {
@@ -44,128 +63,68 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     {
       path: "/admin/dashboard",
       label: "Dashboard",
-      icon: (
-        <House className="w-5 h-5 shrink-0" strokeWidth={1.5} />
-        
-      )
+      icon: <House className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
     {
-      path: "/admin/blogs",
-      label: "Blogs",
-      icon: (
-        <Newspaper
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-        
-      )
-    },
-    {
-      path: "/admin/events",
-      label: "Events",
-      icon: (
-        <CalendarDays
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-        
-      )
-    },
-    {
-      path: "/admin/galleries",
-      label: "Galleries",
-      icon: (
-        <Image
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-       
-      )
+      path: "/admin/students",
+      label: "Students",
+      icon: <GraduationCap className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
     {
       path: "/admin/trainers",
       label: "Trainers",
-      icon: (
-        <Users
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-        
-      )
+      icon: <Users className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
+    {
+      path: "/admin/blogs",
+      label: "Blogs",
+      icon: <Newspaper className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
+    },
+    {
+      path: "/admin/events",
+      label: "Events",
+      icon: <CalendarDays className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
+    },
+    {
+      path: "/admin/galleries",
+      label: "Galleries",
+      icon: <Image className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
+    },
+    
     {
       path: "/admin/faqs",
       label: "FAQs",
-      icon: (
-        <CircleHelp
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-        
-      )
-    },    
-    {
-      path: "/admin/students",
-      label: "Students",
-      icon: (
-        <GraduationCap
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-
-        
-      )
+      icon: <CircleHelp className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
     {
       path: "/admin/contacts",
       label: "Contacts",
-      icon: (
-        <Phone
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-       
-      )
+      icon: <Phone className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
     {
       path: "/admin/affiliations",
       label: "Affiliations",
-      icon: (
-        <Handshake
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-       
-      )
+      icon: <Handshake className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
     {
       path: "/admin/testimonials",
       label: "Testimonials",
       icon: (
-        <MessageSquareQuote
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-       
-      )
+        <MessageSquareQuote className="w-5 h-5 shrink-0" strokeWidth={1.5} />
+      ),
     },
     {
       path: "/admin/news",
       label: "News",
-      icon: (
-        <FileText
-          className="w-5 h-5 shrink-0"
-          strokeWidth={1.5}
-        />
-       
-      )
+      icon: <FileText className="w-5 h-5 shrink-0" strokeWidth={1.5} />,
     },
   ];
 
   const linkStyles = ({ isActive }) =>
-    `flex items-center gap-4 py-3 px-3.5 rounded-xl font-medium transition-all ${isActive
-      ? "bg-primary text-white shadow-md shadow-primary/20"
-      : "text-gray-600 hover:bg-gray-50 hover:text-primary"
+    `flex items-center gap-4 py-3 px-3.5 rounded-xl font-medium transition-all ${
+      isActive
+        ? "bg-primary text-white shadow-md shadow-primary/20"
+        : "text-gray-600 hover:bg-gray-50 hover:text-primary"
     }`;
 
   return (
@@ -177,12 +136,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           className="p-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:text-primary transition-colors shadow-xs"
         >
           {isCollapsed ? (
-
             <Menu className="w-6 h-6" strokeWidth={1.5} />
-
           ) : (
             <X className="w-6 h-6 " strokeWidth={1.5} />
-
           )}
         </button>
       </div>
@@ -199,15 +155,26 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* BRAND LOGO CONSOLE ZONE */}
           <div className="flex items-center justify-between mt-4 mb-6 px-2 h-12 border-b border-primary2/20 pb-4">
-            <Link to="/" className="flex items-center gap-3 overflow-hidden group">
+            <Link
+              to="/"
+              className="flex items-center gap-3 overflow-hidden group"
+            >
               {/* Dynamic Compressed Image Wrap Box */}
               <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center text-white shadow-sm shrink-0 p-1.5 overflow-hidden border border-gray-100 group-hover:border-[#f97316] transition-colors">
-                <img src={Logo} alt="SSMA Logo" className="w-full h-full object-contain" />
+                <img
+                  src={Logo}
+                  alt="SSMA Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col tracking-tight animate-fadeIn whitespace-nowrap group-hover:text-[#f97316] transition-colors">
-                  <span className="text-sm font-extrabold text-gray-800 leading-tight group-hover:text-[#f97316] transition-colors">SS Martial Arts</span>
-                  <span className="text-[10px] font-semibold uppercase text-secondary tracking-widest">School</span>
+                  <span className="text-sm font-extrabold text-gray-800 leading-tight group-hover:text-[#f97316] transition-colors">
+                    SS Martial Arts
+                  </span>
+                  <span className="text-[10px] font-semibold uppercase text-secondary tracking-widest">
+                    School
+                  </span>
                 </div>
               )}
             </Link>
@@ -226,8 +193,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           </div>
 
           {/* DYNAMIC NAVIGATION LINKS */}
-          <nav className="flex-1 overflow-y-auto scrollbar-track-transparent custom-scrollbar pr-0 pb-4 flex flex-col gap-1.5">
-            {menuItems.map((item) => (
+          <nav className="">
+            {menuItems.map((item) =>
               item.children ? (
                 <div key={item.label} className="flex flex-col">
                   <div
@@ -235,17 +202,19 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                       setIsStudentsOpen(!isStudentsOpen);
                       if (isCollapsed) setIsCollapsed(false);
                     }}
-                    className={`flex items-center justify-between gap-4 py-3 px-4 rounded-xl font-medium transition-all cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-primary ${isStudentsOpen && !isCollapsed ? 'bg-orange-50/50 text-[#f97316]' : ''}`}
+                    className={`flex items-center justify-between gap-4 py-3 px-4 rounded-xl font-medium transition-all cursor-pointer text-gray-600 hover:bg-gray-50 hover:text-primary ${isStudentsOpen && !isCollapsed ? "bg-orange-50/50 text-[#f97316]" : ""}`}
                   >
                     <div className="flex items-center gap-4">
                       {item.icon}
-                      {!isCollapsed && <span className="truncate">{item.label}</span>}
+                      {!isCollapsed && (
+                        <span className="truncate">{item.label}</span>
+                      )}
                     </div>
                     {!isCollapsed && (
-
                       <ChevronDown
-                        className={`w-4 h-4 transition-transform ${isStudentsOpen ? "rotate-180 text-[#f97316]" : ""
-                          }`}
+                        className={`w-4 h-4 transition-transform ${
+                          isStudentsOpen ? "rotate-180 text-[#f97316]" : ""
+                        }`}
                         strokeWidth={2}
                       />
                     )}
@@ -253,11 +222,13 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
                   {isStudentsOpen && !isCollapsed && (
                     <div className="flex flex-col gap-1 mt-1 ml-6 border-l-2 border-orange-100 pl-2">
-                      {item.children.map(child => (
+                      {item.children.map((child) => (
                         <NavLink
                           key={child.path}
                           to={child.path}
-                          className={({ isActive }) => `flex items-center gap-4 py-2 px-3 rounded-lg font-medium transition-all text-sm ${isActive ? "bg-[#f97316] text-white shadow shadow-orange-500/20" : "text-gray-500 hover:bg-orange-50 hover:text-[#f97316]"}`}
+                          className={({ isActive }) =>
+                            `flex items-center gap-4 py-2 px-3 rounded-lg font-medium transition-all text-sm ${isActive ? "bg-[#f97316] text-white shadow shadow-orange-500/20" : "text-gray-500 hover:bg-orange-50 hover:text-[#f97316]"}`
+                          }
                           onClick={handleItemClick}
                         >
                           <span className="truncate">{child.label}</span>
@@ -274,10 +245,12 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                   onClick={handleItemClick}
                 >
                   {item.icon}
-                  {!isCollapsed && <span className="truncate">{item.label}</span>}
+                  {!isCollapsed && (
+                    <span className="truncate">{item.label}</span>
+                  )}
                 </NavLink>
-              )
-            ))}
+              ),
+            )}
           </nav>
         </div>
 
@@ -290,7 +263,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               ${isCollapsed ? "justify-center px-0" : ""}
             `}
           >
-
             <LogOut className="w-5 h-5 shrink-0" strokeWidth={1.5} />
             {!isCollapsed && <span className="truncate">Sign Out</span>}
           </button>

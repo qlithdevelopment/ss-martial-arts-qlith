@@ -209,7 +209,7 @@ const BlogDetail = () => {
             >
                <BlogBackButton />
               <div className="flex items-center gap-3 mb-4">
-                <span className="bg-[var(--color-primary)] text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-sm shadow-md">
+                <span className="bg-primary text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-sm shadow-md">
                   {formatCategory(blog?.category)}
                 </span>
                 <span className="text-white text-xs md:text-sm font-medium tracking-wide drop-shadow-md">
@@ -218,10 +218,10 @@ const BlogDetail = () => {
                   
                 </span>
               </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-4 drop-shadow-lg">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight  mb-4 drop-shadow-lg">
                 {blog?.title}
               </h1>
-              <p className="text-lg md:text-xl text-gray-100 font-medium max-w-2xl drop-shadow-md border-l-4 border-[var(--color-primary)] pl-4">
+              <p className="text-lg md:text-xl text-gray-100 font-medium max-w-2xl drop-shadow-md border-l-4 border-primary pl-4">
                 {blog?.short_description}
               </p>
             </motion.div>
@@ -251,9 +251,7 @@ const BlogDetail = () => {
                       {block.title}
                     </h2>
                   )}
-
                   <div className={`grid grid-cols-1 ${hasImage ? 'lg:grid-cols-3' : 'grid-cols-1'} gap-8 items-start`}>
-
                     {/* Description + keypoints */}
                     <div className={hasImage ? 'lg:col-span-2 space-y-4' : 'space-y-4'}>
                       {Array.isArray(block.description) ? (
@@ -273,17 +271,16 @@ const BlogDetail = () => {
                       )}
 
                       {hasKeypoints && (
-                        <div className="mt-6 bg-white border border-gray-100 p-6 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
-                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="mt-6 bg-white border border-gray-100 p-6 rounded-2xl ">
+                          <span className="flex flex-wrap">
                             {block.keypoints.map((point, kIdx) => (
                               point && point.trim() !== '' && (
-                                <li key={kIdx} className="flex items-start gap-3 text-sm md:text-base font-bold text-gray-700">
-                                  <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] mt-2 flex-shrink-0" />
-                                  {point}
+                                <li key={kIdx} className="flex items-start gap-3 text-xs md:text-sm font-thin text-gray-700 mr-2">
+                                  #{point}
                                 </li>
                               )
                             ))}
-                          </ul>
+                          </span>
                         </div>
                       )}
                     </div>

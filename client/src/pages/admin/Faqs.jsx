@@ -107,7 +107,6 @@ const Faqs = () => {
   );
 
   const COLUMNS = [
-
     {
       header: 'Question & Answer',
       skeleton: () => (
@@ -128,7 +127,7 @@ const Faqs = () => {
       accessor: 'isPublish',
       skeleton: () => <div className="h-5 bg-gray-200 rounded-full w-20" />,
       render: (value) => (
-        <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full ${value === false
+        <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 rounded-full ${value === false
           ? 'bg-red-50 text-red-500'
           : 'bg-green-50 text-green-600'
           }`}>
@@ -141,7 +140,7 @@ const Faqs = () => {
       accessor: 'order',
       skeleton: () => <div className="h-5 bg-gray-200 rounded w-6" />,
       render: (value) => (
-        <span className="text-xs font-bold text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
+        <span className="text-xs font-bold text-gray-400 bg-gray-50 px-2 rounded">
           {value ?? '—'}
         </span>
       ),
@@ -151,7 +150,7 @@ const Faqs = () => {
       accessor: 'homeOrder',
       skeleton: () => <div className="h-5 mx-5 bg-gray-200 rounded w-6" />,
       render: (value) => (
-        <span className="text-xs font-bold mx-4 text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
+        <span className="text-xs font-bold mx-4 text-gray-400 bg-gray-50 px-2 rounded">
           {value ?? '—'}
         </span>
       ),

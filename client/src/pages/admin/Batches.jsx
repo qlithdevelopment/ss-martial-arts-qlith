@@ -1,16 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Search, Calendar, Users, X, Save, Type, IndianRupee, Activity, FileText, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
-import api from '../../api/axios';
-import AdminTable from '../../components/admin/reusecomponents/AdminTable.jsx';
-import ConfirmModal from '../../components/admin/reusecomponents/ConfirmationModal.jsx';
-import PaginationComponent from '../../components/PaginationComponent.jsx';
-import { formatDate } from '../../components/CommonFormats.js';
+import React, { useState, useEffect } from "react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Search,
+  Calendar,
+  Users,
+  X,
+  Save,
+  Type,
+  IndianRupee,
+  Activity,
+  FileText,
+  RefreshCw,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
+import api from "../../api/axios";
+import AdminTable from "../../components/admin/reusecomponents/AdminTable.jsx";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal.jsx";
+import PaginationComponent from "../../components/PaginationComponent.jsx";
+import { formatDate } from "../../components/CommonFormats.js";
+import { fmt } from "../../components/student/Common.jsx";
 
 const Batches = () => {
   const [batches, setBatches] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -21,22 +36,29 @@ const Batches = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [batchToDelete, setBatchToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState({})
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({});
 
   const [formData, setFormData] = useState({
-    name: '',
-    date: '',
-    enddate: '',
-    total_fee: '',
-    status: 'active',
-    notes: ''
+    name: "",
+    date: "",
+    enddate: "",
+    total_fee: "",
+    status: "active",
+    notes: "",
   });
 
   const openCreateModal = () => {
     setSelectedBatch(null);
-    setSearch('');
-    setFormData({ name: '', date: '', enddate: '', total_fee: '', status: 'active', notes: '' });
+    setSearch("");
+    setFormData({
+      name: "",
+      date: "",
+      enddate: "",
+      total_fee: "",
+      status: "active",
+      notes: "",
+    });
     setIsModalOpen(true);
   };
 
@@ -65,11 +87,13 @@ const Batches = () => {
   const fetchBatches = async () => {
     try {
       setIsLoadingData(true);
-      const res = await api.get(`/batches?page=${page}&search=${debouncedSearch}`);
+      const res = await api.get(
+        `/batches?page=${page}&search=${debouncedSearch}`,
+      );
       setBatches(res?.data?.data || res.data || []);
-      setPagination(res?.data?.pagination)
+      setPagination(res?.data?.pagination);
     } catch (err) {
-      toast.error('Failed to load batches');
+      toast.error("Failed to load batches");
     } finally {
       setIsLoadingData(false);
     }
@@ -81,16 +105,16 @@ const Batches = () => {
     try {
       if (selectedBatch) {
         await api.put(`/batches/${selectedBatch.id}`, formData);
-        toast.success('Batch updated successfully');
+        toast.success("Batch updated successfully");
       } else {
-        await api.post('/batches', formData);
-        toast.success('Batch created successfully');
+        await api.post("/batches", formData);
+        toast.success("Batch created successfully");
       }
       setIsModalOpen(false);
-      setSearch('');
+      setSearch("");
       fetchBatches();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to save batch');
+      toast.error(error.response?.data?.message || "Failed to save batch");
     } finally {
       setLoading(false);
     }
@@ -105,32 +129,74 @@ const Batches = () => {
     try {
       setIsDeleting(true);
       await api.delete(`/batches/${batchToDelete}`);
-      toast.success('Batch deleted successfully');
+      toast.success("Batch deleted successfully");
       fetchBatches();
       setIsDeleteModalOpen(false);
       setBatchToDelete(null);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to delete batch');
+      toast.error("Failed to delete batch");
     } finally {
       setIsDeleting(false);
     }
   };
 
-  const filteredBatches = batches.filter(b =>
-    b.name.toLowerCase().includes(search.toLowerCase())
+  const filteredBatches = batches.filter((b) =>
+    b.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const paginatedBatches = filteredBatches.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
+const getDuration = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start > end) return "Invalid Date";
+
+  let current = new Date(start);
+
+  // Calculate years
+  let years = end.getFullYear() - current.getFullYear();
+  current.setFullYear(current.getFullYear() + years);
+
+  if (current > end) {
+    years--;
+    current.setFullYear(current.getFullYear() - 1);
+  }
+
+  // Calculate months
+  let months =
+    (end.getFullYear() - current.getFullYear()) * 12 +
+    (end.getMonth() - current.getMonth());
+
+  current.setMonth(current.getMonth() + months);
+
+  if (current > end) {
+    months--;
+    current.setMonth(current.getMonth() - 1);
+  }
+
+  // Calculate days
+  const days = Math.floor(
+    (end - current) / (1000 * 60 * 60 * 24)
+  );
+
+  const parts = [];
+
+  if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
+  if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
+  if (days > 0) parts.push(`${days} Day${days > 1 ? "s" : ""}`);
+
+  return parts.length ? parts.join(" ") : "0 Days";
+};
   // ── AdminTable column definitions ──────────────────────────────────────────
 
   const columns = [
     {
-      header: 'Batch Name',
+      header: "Batch Name",
       render: (_, row) => (
         <div className="flex items-center gap-3">
           <div>
@@ -149,35 +215,54 @@ const Batches = () => {
       ),
     },
     {
-      header: 'Duration',
+      header: "Start",
       render: (_, row) => (
         <div className="flex items-center gap-2 text-gray-600">
-          <span>{formatDate(row.date)} – {formatDate(row.enddate)}</span>
+          <span>{fmt(row.date)}</span>
         </div>
       ),
     },
     {
-      header: 'Total Fee',
-      accessor: 'total_fee',
+      header: "End",
+      render: (_, row) => (
+        <div className="flex items-center gap-2 text-gray-600">
+          <span>{fmt(row.enddate)}</span>
+        </div>
+      ),
+    },
+    {
+      header: "Duration",
+      render: (_, row) => (
+        <div className="flex items-center gap-2 text-gray-600">
+          <span>{getDuration(row.date, row.enddate)}</span>
+        </div>
+      ),
+    },
+    {
+      header: "Total Fee",
+      accessor: "total_fee",
       render: (value) => (
         <span className="font-semibold text-gray-900">₹{value}</span>
       ),
     },
     {
-      header: 'Status',
-      accessor: 'status',
+      header: "Status",
+      accessor: "status",
       render: (value) => (
-        <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${value === 'active'
-          ? 'bg-green-100 text-green-700'
-          : 'bg-red-100 text-red-700'
-          }`}>
+        <span
+          className={`px-2.5 py-1 text-xs font-bold rounded-full ${
+            value === "active"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
           {value.toUpperCase()}
         </span>
       ),
     },
     {
-      header: 'Actions',
-      className: 'text-right',
+      header: "Actions",
+      className: "text-right",
       render: (_, row) => (
         <div className="flex items-center justify-end gap-2">
           <button
@@ -207,7 +292,10 @@ const Batches = () => {
       {/* Action Bar */}
       <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+          <Search
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            size={18}
+          />
           <input
             type="text"
             name="batch_search_query"
@@ -219,7 +307,6 @@ const Batches = () => {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-
           <button
             onClick={openCreateModal}
             className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
@@ -239,7 +326,6 @@ const Batches = () => {
         emptyIcon={<Users size={28} className="text-gray-400" />}
         emptyTitle="No batches found"
         emptyMessage="Create your first batch to get started."
-
       />
       <div className="mt-8">
         {!loading && batches.length > 0 && pagination?.total > 0 && (
@@ -265,7 +351,7 @@ const Batches = () => {
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              transition={{ type: 'spring', duration: 0.5, bounce: 0 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
             >
               <div
@@ -275,10 +361,12 @@ const Batches = () => {
                 <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-100 shrink-0">
                   <div>
                     <h3 className="text-xl font-black text-gray-900 tracking-tight">
-                      {selectedBatch ? 'Edit Batch' : 'Add New Batch'}
+                      {selectedBatch ? "Edit Batch" : "Add New Batch"}
                     </h3>
                     <p className="text-xs text-gray-500 font-medium mt-0.5">
-                      {selectedBatch ? 'Update existing batch schedule' : 'Create a new training batch'}
+                      {selectedBatch
+                        ? "Update existing batch schedule"
+                        : "Create a new training batch"}
                     </p>
                   </div>
                   <button
@@ -289,12 +377,15 @@ const Batches = () => {
                   </button>
                 </div>
 
-                <form onSubmit={handleSave} className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
+                <form
+                  onSubmit={handleSave}
+                  className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                     <div className="md:col-span-2 flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Type size={12} className="text-[#f97316]" /> BATCH NAME *
+                        <Type size={12} className="text-[#f97316]" /> BATCH NAME
+                        *
                       </label>
                       <input
                         type="text"
@@ -303,40 +394,49 @@ const Batches = () => {
                         required
                         placeholder="e.g. Morning Warrior Batch"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#f97316]" /> START DATE *
+                        <Calendar size={12} className="text-[#f97316]" /> START
+                        DATE *
                       </label>
                       <input
                         type="date"
                         required
                         value={formData.date}
-                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, date: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#f97316]" /> END DATE *
+                        <Calendar size={12} className="text-[#f97316]" /> END
+                        DATE *
                       </label>
                       <input
                         type="date"
                         required
                         value={formData.enddate}
-                        onChange={(e) => setFormData({ ...formData, enddate: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, enddate: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IndianRupee size={12} className="text-[#f97316]" /> TOTAL FEE *
+                        <IndianRupee size={12} className="text-[#f97316]" />{" "}
+                        TOTAL FEE *
                       </label>
                       <input
                         type="number"
@@ -345,19 +445,27 @@ const Batches = () => {
                         step="0.01"
                         placeholder="e.g. 500.00"
                         value={formData.total_fee}
-                        onChange={(e) => setFormData({ ...formData, total_fee: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            total_fee: e.target.value,
+                          })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#f97316]" /> STATUS *
+                        <Activity size={12} className="text-[#f97316]" /> STATUS
+                        *
                       </label>
                       <select
                         value={formData.status}
                         disabled={!selectedBatch}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, status: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
                       >
                         <option value="active">Active</option>
@@ -373,11 +481,12 @@ const Batches = () => {
                         rows="3"
                         placeholder="Any additional information about this batch..."
                         value={formData.notes}
-                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, notes: e.target.value })
+                        }
                         className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
                       ></textarea>
                     </div>
-
                   </div>
 
                   <div className="pt-6 mt-4 border-t border-gray-100 flex justify-end gap-3">

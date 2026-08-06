@@ -115,7 +115,7 @@ const Contact = () => {
               <div>
                 <h3 className="text-[#26c0ff] font-black uppercase tracking-wider mb-1 text-sm">Academy Location</h3>
                 <p className="text-black font-medium text-sm leading-relaxed">
-                  near Ekramra College, Sundarpada,
+                  Near Ekramra College, Sundarpada,
                   <br />
                   Bhubaneswar, Odisha 751002
                 </p>

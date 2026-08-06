@@ -220,7 +220,7 @@ const Trainers = () => {
               <div className="p-5 flex-1 flex flex-col">
                 {/* Designation badge */}
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-black text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded">
+                  <span className="text-xs font-black truncate text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded">
                     {trainer.designation || "Instructor"}
                   </span>
                 </div>

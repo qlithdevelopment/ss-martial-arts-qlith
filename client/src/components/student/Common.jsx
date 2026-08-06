@@ -22,7 +22,7 @@ export function NoData() {
 
 export function Card({ children, className = "" }) {
   return (
-    <div className={`bg-white/50 dark:bg-slate-900 backdrop-blur-2xl border border-white/70 dark:border-slate-800 rounded-2xl shadow-xl shadow-slate-900/5 dark:shadow-none ${className}`}>
+    <div className={`bg-white dark:bg-slate-900 backdrop-blur-2xl border border-white/70 dark:border-slate-800 rounded-2xl shadow-xl shadow-slate-900/5 dark:shadow-none ${className}`}>
       {children}
     </div>
   );
@@ -36,7 +36,7 @@ export function InfoRow({ icon, label, value, valueClass = "" }) {
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{label}</p>
-        <p className={`text-xs font-semibold text-primary2 dark:text-slate-200 truncate mt-0.5 ${valueClass}`}>
+        <p className={`text-sm text-black dark:text-slate-200 truncate mt-0.5 ${valueClass}`}>
           {value ?? <NoData />}
         </p>
       </div>

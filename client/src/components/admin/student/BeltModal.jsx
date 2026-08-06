@@ -42,7 +42,6 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
     e.preventDefault();
     if (!beltForm.kyu_no) return toast.error('Please enter a kyu number');
     if (!beltForm.belt_position) return toast.error('Please select a belt');
-    if (!beltForm.certification_no) return toast.error('Please enter a certification number');
     if (!beltForm.date_of_issue) return toast.error('Please select a date of issue');
     if (!student) return;
 
@@ -136,7 +135,7 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
                       onChange={(e) => setBeltForm({ ...beltForm, certification_no: e.target.value })}
                       placeholder="Unique certificate number"
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none"
-                      required
+                      
                     />
                   </div>
 
