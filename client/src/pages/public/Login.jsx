@@ -112,7 +112,7 @@ const Login = () => {
               <input
                 name="email"
                 required
-                placeholder="Enter your registration Number"
+                placeholder="Enter your registration number"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full bg-transparent border-b border-gray-600 focus:border-white py-2 text-white text-sm placeholder-gray-500 focus:outline-none transition-colors"

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Phone, MapPin, Building2 } from 'lucide-react';
-import api from '../../api/axios';
-import SectionHeader from "../../components/SectionHeader"
-import AffiliationDetailModal from '../../components/public/AffiliationDetailModal';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Phone, MapPin, Building2 } from "lucide-react";
+import api from "../../api/axios";
+import SectionHeader from "../../components/SectionHeader";
+import AffiliationDetailModal from "../../components/public/AffiliationDetailModal";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
 const getImageUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
-  if (path.startsWith('/storage/')) return `${BASE_URL}${path}`;
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  if (path.startsWith("/storage/")) return `${BASE_URL}${path}`;
   return `${BASE_URL}/storage/${path}`;
 };
 
@@ -33,11 +33,11 @@ const Affiliation = () => {
     const fetchAffiliations = async () => {
       try {
         setLoading(true);
-        const res = await api.get('/affiliations');
+        const res = await api.get("/affiliations");
         const payload = res?.data?.data;
         setAffiliations(payload?.data || []);
       } catch (error) {
-        console.error('Failed to fetch affiliations', error);
+        console.error("Failed to fetch affiliations", error);
       } finally {
         setLoading(false);
       }
@@ -47,26 +47,25 @@ const Affiliation = () => {
 
   return (
     <section className="w-full min-h-screen  bg-white px-4 md:px-8 py-20 md:py-24 relative overflow-hidden">
-
       <div className="global-container lg:!px-14 relative z-10">
         <div className="fixed top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[16vw] font-black text-black/[0.05] uppercase tracking-tighter pointer-events-none  whitespace-nowrap select-none">
           AFFILIATED
         </div>
         <motion.div
-        initial={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-        <SectionHeader
-          label="Our Network"
-          title="OUR"
-          titleColor="text-black"
-          highlight="AFFILIATIONS"
-        />
+          <SectionHeader
+            label="Our Network"
+            title="OUR"
+            titleColor="text-black"
+            highlight="AFFILIATIONS"
+          />
         </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[220px] md:auto-rows-[300px] gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[220px] md:auto-rows-[300px] gap-6">
           {loading ? (
             Array.from({ length: 6 }).map((_, idx) => (
               <div
@@ -77,7 +76,9 @@ const Affiliation = () => {
           ) : affiliations.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
               <Building2 className="text-gray-600 mb-4" size={40} />
-              <p className="text-gray-400 font-medium">No affiliations to show right now.</p>
+              <p className="text-gray-400 font-medium">
+                No affiliations to show right now.
+              </p>
             </div>
           ) : (
             affiliations.map((item, idx) => (
@@ -99,7 +100,7 @@ const Affiliation = () => {
                       <img
                         src={getImageUrl(item.image)}
                         alt={item.name}
-                        className="w-[50%] h-[90%] object-cover p-6 md:p-0 transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-contain"
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -142,15 +143,14 @@ const Affiliation = () => {
               </motion.div>
             ))
           )}
-        </div >
-
-      </div >
+        </div>
+      </div>
       <AffiliationDetailModal
         affiliation={selectedAffiliation}
         onClose={() => setSelectedAffiliation(null)}
         getImageUrl={getImageUrl}
       />
-    </section >
+    </section>
   );
 };
 

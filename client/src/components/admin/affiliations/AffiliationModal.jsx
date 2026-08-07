@@ -1,25 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Building2, AlignLeft, Phone, MapPin, ImagePlus } from 'lucide-react';
-import toast from 'react-hot-toast';
-import api from '../../../api/axios';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  Building2,
+  AlignLeft,
+  Phone,
+  MapPin,
+  ImagePlus,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import api from "../../../api/axios";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
 const getImageUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http')) return path;
-  if (path.startsWith('/storage/')) return `${BASE_URL}${path}`;
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  if (path.startsWith("/storage/")) return `${BASE_URL}${path}`;
   return `${BASE_URL}/storage/${path}`;
 };
 
-const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliations }) => {
+const AffiliationModal = ({
+  isOpen,
+  onClose,
+  affiliation = null,
+  fetchAffiliations,
+}) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    phone: '',
-    location: '',
+    name: "",
+    description: "",
+    phone: "",
+    location: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -28,9 +40,10 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
   const isEdit = Boolean(affiliation);
 
   const resetForm = () => {
-    setFormData({ name: '', description: '', phone: '', location: '' });
+    setFormData({ name: "", description: "", phone: "", location: "" });
     setImageFile(null);
     setImagePreview(null);
+    setImageError("");
   };
 
   useEffect(() => {
@@ -38,12 +51,14 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
 
     if (affiliation) {
       setFormData({
-        name: affiliation.name || '',
-        description: affiliation.description || '',
-        phone: affiliation.phone || '',
-        location: affiliation.location || '',
+        name: affiliation.name || "",
+        description: affiliation.description || "",
+        phone: affiliation.phone || "",
+        location: affiliation.location || "",
       });
-      setImagePreview(affiliation.image ? getImageUrl(affiliation.image) : null);
+      setImagePreview(
+        affiliation.image ? getImageUrl(affiliation.image) : null,
+      );
       setImageFile(null);
     } else {
       resetForm();
@@ -52,10 +67,10 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const MAX_SIZE_MB = 2;
+  const MAX_SIZE_MB = 1;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 
   const handleImageChange = (e) => {
@@ -64,12 +79,16 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
 
     if (!ALLOWED_TYPES.includes(file.type)) {
       setImageError("Only JPG, JPEG, or PNG allowed.");
+      setImageFile(null);
+      setImagePreview(null);
       e.target.value = "";
       return;
     }
 
     if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-      setImageError(`Image must be under ${MAX_SIZE_MB}MB.`);
+      setImageError(`Image size exceeds ${MAX_SIZE_MB}MB limit.`);
+      setImageFile(null);
+      setImagePreview(null);
       e.target.value = "";
       return;
     }
@@ -82,6 +101,10 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (imageError) {
+      return; 
+    }
+
     // Validate image is present — required only if there's no file AND no existing preview (e.g. add mode, or edit mode where image was cleared)
     if (!imageFile && !imagePreview) {
       setImageError("Please select an image.");
@@ -92,31 +115,33 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
 
     try {
       const payload = new FormData();
-      payload.append('name', formData.name);
-      payload.append('description', formData.description);
-      payload.append('phone', formData.phone);
-      payload.append('location', formData.location);
+      payload.append("name", formData.name);
+      payload.append("description", formData.description);
+      payload.append("phone", formData.phone);
+      payload.append("location", formData.location);
       if (imageFile) {
-        payload.append('image', imageFile);
+        payload.append("image", imageFile);
       }
 
       if (isEdit) {
-        payload.append('_method', 'PUT');
+        payload.append("_method", "PUT");
         await api.post(`/affiliations/${affiliation.id}`, payload, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        toast.success('Affiliation updated successfully!');
+        toast.success("Affiliation updated successfully!");
       } else {
-        await api.post('/affiliations', payload, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        await api.post("/affiliations", payload, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        toast.success('Affiliation created successfully!');
+        toast.success("Affiliation created successfully!");
       }
       fetchAffiliations();
       handleClose();
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'Failed to save affiliation');
+      toast.error(
+        error.response?.data?.message || "Failed to save affiliation",
+      );
     } finally {
       setLoading(false);
     }
@@ -125,7 +150,7 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
   const handleClose = () => {
     resetForm();
     onClose();
-    setImageError("")
+    setImageError("");
   };
 
   return (
@@ -147,15 +172,16 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
           >
             <div className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-2xl flex flex-col max-h-[85dvh] pointer-events-auto overflow-hidden">
-
               {/* Header */}
               <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-50 shrink-0 bg-white">
                 <div>
                   <h3 className="text-xl font-black text-gray-900 tracking-tight">
-                    {isEdit ? 'Edit Affiliation' : 'Add Affiliation'}
+                    {isEdit ? "Edit Affiliation" : "Add Affiliation"}
                   </h3>
                   <p className="text-xs text-gray-500 font-medium mt-0.5">
-                    {isEdit ? 'Update this partner/affiliation' : 'Add a new partner or affiliated brand'}
+                    {isEdit
+                      ? "Update this partner/affiliation"
+                      : "Add a new partner or affiliated brand"}
                   </p>
                 </div>
                 <button
@@ -167,20 +193,29 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
               </div>
 
               {/* Form Body */}
-              <form id="affiliation-form" onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto flex-1 custom-scrollbar">
-
+              <form
+                id="affiliation-form"
+                onSubmit={handleSubmit}
+                className="p-4 sm:p-5 overflow-y-auto flex-1 custom-scrollbar"
+              >
                 {/* Image Upload */}
                 <div className="flex flex-col gap-1.5 mb-4">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                    <ImagePlus size={12} className="text-orange-500" /> LOGO / IMAGE
+                    <ImagePlus size={12} className="text-orange-500" /> LOGO /
+                    IMAGE
                   </label>
                   <div className="flex items-center gap-4">
                     <div
-                      className={`w-20 h-20 rounded-xl bg-gray-50 border flex items-center justify-center overflow-hidden shrink-0 ${imageError ? "border-red-400" : "border-gray-200"
-                        }`}
+                      className={`w-20 h-20 rounded-xl bg-gray-50 border flex items-center justify-center overflow-hidden shrink-0 ${
+                        imageError ? "border-red-400" : "border-gray-200"
+                      }`}
                     >
                       {imagePreview ? (
-                        <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-1" />
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-full object-contain p-1"
+                        />
                       ) : (
                         <Building2 className="text-gray-300" size={28} />
                       )}
@@ -189,16 +224,20 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
                       <label className="cursor-pointer px-4 py-2.5 text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all w-fit">
                         Choose File
                         <input
-                          type="file"                         
+                          type="file"
                           accept=".jpeg,.jpg,.png,image/jpeg,image/png"
                           onChange={handleImageChange}
                           className="hidden"
                         />
                       </label>
                       {imageError ? (
-                        <p className="text-[10px] font-semibold text-red-500">{imageError}</p>
+                        <p className="text-[10px] font-semibold text-red-500">
+                          {imageError}
+                        </p>
                       ) : (
-                        <p className="text-[10px] text-gray-400">JPG, JPEG or PNG · Max 2MB</p>
+                        <p className="text-[10px] text-gray-400">
+                          JPG, JPEG or PNG · Max {MAX_SIZE_MB}MB
+                        </p>
                       )}
                     </div>
                   </div>
@@ -223,7 +262,8 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
                 {/* Description */}
                 <div className="flex flex-col gap-1.5 mb-4">
                   <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                    <AlignLeft size={12} className="text-orange-500" /> DESCRIPTION
+                    <AlignLeft size={12} className="text-orange-500" />{" "}
+                    DESCRIPTION
                   </label>
                   <textarea
                     name="description"
@@ -292,7 +332,6 @@ const AffiliationModal = ({ isOpen, onClose, affiliation = null, fetchAffiliatio
                   )}
                 </button>
               </div>
-
             </div>
           </motion.div>
         </>

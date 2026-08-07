@@ -13,6 +13,7 @@ import {
   Activity,
   FileText,
   RefreshCw,
+  Eye,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
@@ -22,6 +23,7 @@ import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationMod
 import PaginationComponent from "../../components/PaginationComponent.jsx";
 import { formatDate } from "../../components/CommonFormats.js";
 import { fmt } from "../../components/student/Common.jsx";
+import ViewBatch from "../../components/admin/student/ViewBatch.jsx";
 
 const Batches = () => {
   const [batches, setBatches] = useState([]);
@@ -38,6 +40,7 @@ const Batches = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({});
+  const [viewBatch, setViewBatch] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -150,48 +153,46 @@ const Batches = () => {
     currentPage * itemsPerPage,
   );
 
-const getDuration = (startDate, endDate) => {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  const getDuration = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-  if (start > end) return "Invalid Date";
+    if (start > end) return "Invalid Date";
 
-  let current = new Date(start);
+    let current = new Date(start);
 
-  // Calculate years
-  let years = end.getFullYear() - current.getFullYear();
-  current.setFullYear(current.getFullYear() + years);
+    // Calculate years
+    let years = end.getFullYear() - current.getFullYear();
+    current.setFullYear(current.getFullYear() + years);
 
-  if (current > end) {
-    years--;
-    current.setFullYear(current.getFullYear() - 1);
-  }
+    if (current > end) {
+      years--;
+      current.setFullYear(current.getFullYear() - 1);
+    }
 
-  // Calculate months
-  let months =
-    (end.getFullYear() - current.getFullYear()) * 12 +
-    (end.getMonth() - current.getMonth());
+    // Calculate months
+    let months =
+      (end.getFullYear() - current.getFullYear()) * 12 +
+      (end.getMonth() - current.getMonth());
 
-  current.setMonth(current.getMonth() + months);
+    current.setMonth(current.getMonth() + months);
 
-  if (current > end) {
-    months--;
-    current.setMonth(current.getMonth() - 1);
-  }
+    if (current > end) {
+      months--;
+      current.setMonth(current.getMonth() - 1);
+    }
 
-  // Calculate days
-  const days = Math.floor(
-    (end - current) / (1000 * 60 * 60 * 24)
-  );
+    // Calculate days
+    const days = Math.floor((end - current) / (1000 * 60 * 60 * 24));
 
-  const parts = [];
+    const parts = [];
 
-  if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
-  if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
-  if (days > 0) parts.push(`${days} Day${days > 1 ? "s" : ""}`);
+    if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
+    if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
+    if (days > 0) parts.push(`${days} Day${days > 1 ? "s" : ""}`);
 
-  return parts.length ? parts.join(" ") : "0 Days";
-};
+    return parts.length ? parts.join(" ") : "0 Days";
+  };
   // ── AdminTable column definitions ──────────────────────────────────────────
 
   const columns = [
@@ -266,6 +267,16 @@ const getDuration = (startDate, endDate) => {
       render: (_, row) => (
         <div className="flex items-center justify-end gap-2">
           <button
+            onClick={() => {
+              setViewBatch(true);
+              setSelectedBatch(row);
+            }}
+            className="flex items-center gap-1.5 text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-lg"
+            title="View Details"
+          >
+            <Eye size={16} />
+          </button>
+          <button
             onClick={() => openEditModal(row)}
             className="flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
           >
@@ -283,6 +294,7 @@ const getDuration = (startDate, endDate) => {
         <div className="flex justify-end gap-2">
           <div className="w-8 h-8 rounded-lg bg-gray-200" />
           <div className="w-8 h-8 rounded-lg bg-gray-200" />
+          <div className="w-8 h-8 rounded-lg bg-gray-200" />
         </div>
       ),
     },
@@ -291,7 +303,7 @@ const getDuration = (startDate, endDate) => {
     <div className="w-full">
       {/* Action Bar */}
       <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
+        <div className={`relative flex-1 ${viewBatch && "invisible"}`}>
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
             size={18}
@@ -317,24 +329,36 @@ const getDuration = (startDate, endDate) => {
         </div>
       </div>
 
-      {/* AdminTable */}
-      <AdminTable
-        columns={columns}
-        data={batches}
-        isLoading={isLoadingData}
-        skeletonRows={3}
-        emptyIcon={<Users size={28} className="text-gray-400" />}
-        emptyTitle="No batches found"
-        emptyMessage="Create your first batch to get started."
-      />
-      <div className="mt-8">
-        {!loading && batches.length > 0 && pagination?.total > 0 && (
-          <PaginationComponent
-            pagination={pagination}
-            onPageChange={(newPage) => setPage(newPage)}
+      {viewBatch ? (
+        <ViewBatch
+          batch={selectedBatch}
+          onBack={() => {
+            setViewBatch(false);
+            setSelectedBatch(null);
+          }}
+        />
+      ) : (
+        <div>
+          {/* AdminTable */}
+          <AdminTable
+            columns={columns}
+            data={batches}
+            isLoading={isLoadingData}
+            skeletonRows={3}
+            emptyIcon={<Users size={28} className="text-gray-400" />}
+            emptyTitle="No batches found"
+            emptyMessage="Create your first batch to get started."
           />
-        )}
-      </div>
+          <div className="mt-8">
+            {!loading && batches.length > 0 && pagination?.total > 0 && (
+              <PaginationComponent
+                pagination={pagination}
+                onPageChange={(newPage) => setPage(newPage)}
+              />
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       <AnimatePresence>

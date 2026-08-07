@@ -74,10 +74,11 @@ class BatchController extends Controller
     /**
      * READ A SINGLE BATCH
      */
-    public function show($id)
+    public function show(int $id)
     {
         try {
-            $batch = Batch::find($id);
+            // Eager load the students relationship
+            $batch = Batch::with('students')->find($id);
 
             if (!$batch) {
                 return response()->json(['message' => 'Batch not found.'], 404);

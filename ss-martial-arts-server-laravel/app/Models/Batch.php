@@ -14,4 +14,9 @@ class Batch extends Model
         'status',
         'notes'
     ];
+
+    public function students()
+    {
+        return $this->hasMany(User::class, 'batch_id');
+    }
 }
