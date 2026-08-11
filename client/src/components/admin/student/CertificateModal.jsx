@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload } from 'lucide-react';
+import { X, Upload, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../../api/axios';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
 const EMPTY_FORM = {
   title: '',
@@ -18,10 +19,26 @@ const getFileNameFromUrl = (url) => {
   if (!url) return null;
   return url.split('/').pop();
 };
+// Resolve a stored path/URL from editingCert into an absolute, viewable URL
+const resolveExistingFileUrl = (editingCert) => {
+  if (!editingCert) return null;
+
+  const raw = Array.isArray(editingCert.certificated)
+    ? editingCert.certificated[0]
+    : editingCert.file_url;
+
+  if (!raw) return null;
+
+  return raw.startsWith('http') ? raw : `${BASE_URL}${raw.startsWith('/') ? '' : '/'}${raw}`;
+};
+
+const isPdfUrl = (url) => !!url && url.toLowerCase().endsWith('.pdf');
 
 const CertificateModal = ({ isOpen, onClose, studentId, editingCert = null, onSuccess }) => {
   const [certForm, setCertForm] = useState(EMPTY_FORM);
   const [existingFileName, setExistingFileName] = useState(null);
+  const [existingFileUrl, setExistingFileUrl] = useState(null);
+  const [newFilePreviewUrl, setNewFilePreviewUrl] = useState(null);
   const [certerror, setCerterror] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,13 +55,28 @@ const CertificateModal = ({ isOpen, onClose, studentId, editingCert = null, onSu
           file: null,
         });
         setExistingFileName(getFileNameFromUrl(editingCert.certificated?.[0]));
+        setExistingFileUrl(resolveExistingFileUrl(editingCert));
       } else {
         setCertForm(EMPTY_FORM);
         setExistingFileName(null);
+        setExistingFileUrl(null);
       }
       setCerterror(false);
     }
   }, [isOpen, editingCert]);
+
+  // Build/revoke a local preview URL whenever a new file is picked
+  useEffect(() => {
+    if (!certForm.file) {
+      setNewFilePreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(certForm.file);
+    setNewFilePreviewUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [certForm.file]);
 
   const handleClose = () => {
     setCerterror(false);
@@ -54,10 +86,10 @@ const CertificateModal = ({ isOpen, onClose, studentId, editingCert = null, onSu
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!certForm.title) return toast.error('Please enter a certificate title');
-    if (!editingCert && !certForm.file) {
-      setCerterror(true);
-      return toast.error('Please upload a certificate');
-    }
+    // if (!editingCert && !certForm.file) {
+    //   setCerterror(true);
+    //   return toast.error('Please upload a certificate');
+    // }
 
     try {
       setIsSubmitting(true);
@@ -93,6 +125,10 @@ const CertificateModal = ({ isOpen, onClose, studentId, editingCert = null, onSu
       setIsSubmitting(false);
     }
   };
+
+  // Only preview a NEWLY selected file while uploading — not the existing certificate.
+  const previewUrl = newFilePreviewUrl;
+  const previewIsPdf = certForm.file ? certForm.file.type === 'application/pdf' : false;
 
   return (
     <AnimatePresence>
@@ -199,42 +235,63 @@ const CertificateModal = ({ isOpen, onClose, studentId, editingCert = null, onSu
                   </div>
                 </div>
 
-                <div className="mb-2">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Upload File</label>
-                  <div
-                    className={`border-2 border-dashed rounded-xl p-4 text-center hover:bg-gray-50 transition-colors cursor-pointer relative ${certerror ? 'border-red-500' : 'border-gray-200'
-                      }`}
-                  >
-                    <input
-                      type="file"
-                      accept=".jpg, .jpeg, .png, image/jpeg, image/png"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-
-                        const MAX_FILE_SIZE_MB = 2;
-                        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-                          toast.error(`Image must be smaller than ${MAX_FILE_SIZE_MB}MB.`);
-                          e.target.value = '';
-                          return;
-                        }
-
-                        setCerterror(false);
-                        setExistingFileName(null);
-                        setCertForm({ ...certForm, file });
-                      }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                    <Upload size={24} className="mx-auto text-gray-400 mb-2" />
-                    <span className="text-sm text-gray-500 font-medium">
-                      {certForm.file ? (
-                        certForm.file.name
-                      ) : existingFileName ? (
-                        <>Current file: <span className="text-gray-700">{existingFileName}</span></>
+                {/* Preview — sits above the dropzone, separate from it, fixed height 22 (5.5rem/88px) */}
+                <div className="flex flex-row gap-2">
+                  {previewUrl && (
+                    <div className="mt-4 order-1 flex items-center gap-3 p-2.5 rounded-xl ">
+                      {previewIsPdf ? (
+                        <div className="h-[5.5rem] w-[5.5rem] shrink-0 rounded-lg bg-white border border-gray-200 flex items-center justify-center">
+                          <FileText size={28} className="text-red-500" />
+                        </div>
                       ) : (
-                        'Click to browse or drag file here JPG, JPEG or PNG · Max 2MB'
+                        <img
+                          src={previewUrl}
+                          alt="Certificate preview"
+                          className="h-[5.5rem] w-auto max-w-[5.5rem] rounded-lg object-contain bg-white border border-gray-200"
+                        />
                       )}
-                    </span>
+
+                    </div>
+                  )}
+
+                  <div className=" order-2 w-full mb-2">
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Upload File</label>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-4 text-center hover:bg-gray-50 transition-colors cursor-pointer relative ${certerror ? 'border-red-500' : 'border-gray-200'
+                        }`}
+                    >
+                      <input
+                        type="file"
+                        accept=".jpg, .jpeg, .png, image/jpeg, image/png"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          // if (!file) return;
+
+                          const MAX_FILE_SIZE_MB = 2;
+                          if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                            toast.error(`Image must be smaller than ${MAX_FILE_SIZE_MB}MB.`);
+                            e.target.value = '';
+                            return;
+                          }
+
+                          setCerterror(false);
+                          setExistingFileName(null);
+                          setCertForm({ ...certForm, file });
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <Upload size={24} className="mx-auto text-gray-400 mb-2" />
+                      <span className="text-sm text-gray-500 font-medium">
+                        {certForm.file ? (
+                          certForm.file.name
+                        ) : existingFileName ? (
+                          <>Click to replace current file: <span className="text-gray-700">{existingFileName}</span></>
+                        ) : (
+                          'Click to browse or drag file here JPG, JPEG or PNG · Max 2MB'
+                        )}
+                      </span>
+                    </div>
+
                   </div>
                 </div>
               </form>

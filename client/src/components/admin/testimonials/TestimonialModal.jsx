@@ -4,6 +4,15 @@ import { X, Upload, Star } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../../api/axios"; // adjust if your api client lives elsewhere
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
+
+const getImageUrl = (path) => {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  if (path.startsWith("/storage/")) return `${BASE_URL}${path}`;
+  return `${BASE_URL}/storage/${path}`;
+};
+
 const EMPTY_FORM = {
   type: "",
   title: "",
@@ -59,7 +68,7 @@ const TestimonialModal = ({ isOpen, onClose, testimonial, fetchTestimonials }) =
           : EMPTY_FORM
       );
       setImageFile(null);
-      setImagePreview(testimonial?.image || null);
+      setImagePreview(testimonial?.image ? getImageUrl(testimonial.image) : null);
       setImageError(false);
     }
   }, [isOpen, testimonial]);
@@ -263,6 +272,10 @@ const TestimonialModal = ({ isOpen, onClose, testimonial, fetchTestimonials }) =
                           src={imagePreview}
                           alt="Preview"
                           className="w-20 h-18 object-cover rounded-lg mx-auto mb-2"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                            setImageError(true);
+                          }}
                         />
                       ) : (
                         <Upload size={16} className="mx-auto text-gray-400 mb-2" />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Plus,
   Edit2,
@@ -6,30 +6,12 @@ import {
   Search,
   Mail,
   IndianRupee,
-  IdCard,
-  X,
-  Save,
-  Type,
-  Lock,
-  Activity,
-  FileText,
   Eye,
-  EyeOff,
-  Award,
-  RefreshCw,
-  User,
-  Users,
-  Calendar,
-  Ruler,
-  Weight,
-  MapPin,
-  Phone,
-  Building2,
-  UserCog,
-  ScanLine,
+  Filter,
+  ChevronDown,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import PaginationComponent from "../../components/PaginationComponent";
@@ -37,13 +19,18 @@ import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationMod
 import AdminTable from "../../components/admin/reusecomponents/AdminTable";
 import { getAvatarUrlByName } from "../../components/student/AvatarPickerModal";
 import FeeModal from "../../components/admin/student/FeeModal";
+import StudentModal from "../../components/admin/student/StudentModal";
+
+const PAYMENT_STATUS_OPTIONS = [
+  { value: "", label: "All Payment Statuses" },
+  { value: "paid", label: "Fully Paid" },
+  { value: "pending", label: "Payment Pending" },
+];
 
 const Students = () => {
   const [students, setStudents] = useState([]);
-  const [batches, setBatches] = useState([]);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
   const [editingFee, setEditingFee] = useState(null);
@@ -51,69 +38,35 @@ const Students = () => {
   const navigate = useNavigate();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [pagination, setPagination] = useState({});
   const [page, setPage] = useState(1);
 
-  const emptyFormData = {
-    name: "",
-    father_name: "",
-    mother_name: "",
-    gender: "",
-    date_of_birth: "",
-    height: "",
-    weight: "",
-    address: "",
-    mobile_number: "",
-    joining_date: "",
-    email: "",
-    reg_no: "",
-    password: "",
-    batch_id: "",
-    branch_id: "",
-    sensei: "",
-    belt: "",
-    total_fee: "",
-    status: 1,
-    notes: "",
-    id_proof_name: "",
-    id_proof_number: "",
-  };
+  // ── Filters (batch + payment status) ─────────────────────────────────────
+  const [batches, setBatches] = useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [batchFilter, setBatchFilter] = useState(""); // batch id, "" = all
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState(""); // "" | "paid" | "pending"
+  const filterRef = useRef(null);
 
-  const [formData, setFormData] = useState(emptyFormData);
+  const activeFilterCount = useMemo(
+    () => (batchFilter ? 1 : 0) + (paymentStatusFilter ? 1 : 0),
+    [batchFilter, paymentStatusFilter]
+  );
 
   const openCreateModal = () => {
     setSelectedStudent(null);
     setSearch("");
-    fetchBatches();
-    setFormData(emptyFormData);
-    setPasswordTouched(false);
-    setIsModalOpen(true);
+    setIsStudentModalOpen(true);
   };
 
   const openEditModal = (student) => {
     setSelectedStudent(student);
-    fetchBatches();
-    setFormData({
-      ...emptyFormData,
-      ...student,
-      password: "",
-      status:
-        student.status == "1" ||
-        student.status === true ||
-        student.status === "true" ||
-        student.status === "active"
-          ? 1
-          : 0,
-    });
-    setPasswordTouched(false);
-    setIsModalOpen(true);
+    setIsStudentModalOpen(true);
   };
 
   // Debounce search input -> debouncedSearch, 300ms after typing stops
@@ -125,37 +78,29 @@ const Students = () => {
   }, [search]);
 
   useEffect(() => {
-    setPage(1); // reset to page 1 whenever the search term changes
-  }, [debouncedSearch]);
+    setPage(1); // reset to page 1 whenever the search term or filters change
+  }, [debouncedSearch, batchFilter, paymentStatusFilter]);
 
-  // Fetch students whenever the page changes
+  // Fetch students whenever the page, search, or filters change
   useEffect(() => {
     fetchStudents();
-  }, [page, debouncedSearch]);
+  }, [page, debouncedSearch, batchFilter, paymentStatusFilter]);
 
+  // Batches for the filter dropdown
   useEffect(() => {
-    if (selectedStudent) return;
-    if (passwordTouched) return;
+    fetchBatches();
+  }, []);
 
-    const digitsOnly = (formData.mobile_number || "").replace(/\D/g, "");
-    const last4 = digitsOnly.slice(-4);
-    const [year, month, day] = formData.date_of_birth.split("-");
-    const birthDay = day;
-    const birthMonth = month;
-    const birthDayMonth = `${birthDay}` + `${birthMonth}`;
-
-    if (last4.length === 4 && birthDayMonth && !Number.isNaN(birthDayMonth)) {
-      const generated = `${birthDayMonth}${last4}`;
-      setFormData((prev) =>
-        prev.password === generated ? prev : { ...prev, password: generated },
-      );
-    }
-  }, [
-    formData.mobile_number,
-    formData.date_of_birth,
-    selectedStudent,
-    passwordTouched,
-  ]);
+  // Close the filter dropdown when clicking outside it
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setIsFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fetchBatches = async () => {
     try {
@@ -169,15 +114,20 @@ const Students = () => {
   const fetchStudents = async () => {
     try {
       setIsLoadingData(true);
-      const res = await api.get(
-        `/students?page=${page}&search=${debouncedSearch}`,
-      );
+      const params = new URLSearchParams({
+        page: String(page),
+        search: debouncedSearch || "",
+      });
+      if (batchFilter) params.set("batch_id", batchFilter);
+      if (paymentStatusFilter) params.set("payment_status", paymentStatusFilter);
+
+      const res = await api.get(`/students?${params.toString()}`);
       const rawStudents = res.data?.data || res.data;
       setPagination(res.data?.pagination || {});
       setStudents(
         [...(Array.isArray(rawStudents) ? rawStudents : [])].sort(
-          (a, b) => b.id - a.id,
-        ),
+          (a, b) => b.id - a.id
+        )
       );
     } catch (err) {
       console.error(err);
@@ -187,25 +137,9 @@ const Students = () => {
     }
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      if (selectedStudent) {
-        await api.put(`/students/${selectedStudent.id}`, formData);
-        toast.success("Student updated successfully");
-      } else {
-        await api.post("/students/register", formData);
-        toast.success("Student registered successfully");
-      }
-      setIsModalOpen(false);
-      setSearch("");
-      fetchStudents();
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to save student");
-    } finally {
-      setLoading(false);
-    }
+  const handleClearFilters = () => {
+    setBatchFilter("");
+    setPaymentStatusFilter("");
   };
 
   const handleDelete = (id) => {
@@ -240,6 +174,7 @@ const Students = () => {
   const COLUMNS = [
     {
       header: "Student Info",
+      className: "max-w-[220px]",
       skeleton: () => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-200"></div>
@@ -254,7 +189,7 @@ const Students = () => {
           ? getAvatarUrlByName(row.avatar)
           : null;
         return (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden">
               {avatarImageUrl ? (
                 <img
@@ -266,13 +201,20 @@ const Students = () => {
                 row.name?.charAt(0)
               )}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="font-bold text-gray-900" title={row.name}>
-                  {row.name?.split(" ").length > 4
-                    ? row.name.split(" ").slice(0, 4).join(" ") + "..."
-                    : row.name}
+                <p
+                  className="font-bold text-gray-900 truncate max-w-[160px]"
+                  title={row.name}
+                >
+                  {row.name}
                 </p>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5 min-w-0">
+                <Mail size={12} className="shrink-0" />
+                <span className="truncate max-w-[160px]" title={row.email}>
+                  {row.email}
+                </span>
               </div>
             </div>
           </div>
@@ -282,9 +224,13 @@ const Students = () => {
     {
       header: "Assigned Batch",
       accessor: "batch_id",
+      className: "max-w-[140px]",
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
       render: (_, row) => (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-semibold">
+        <span
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-semibold max-w-full truncate"
+          title={row.batch_name || "Unassigned"}
+        >
           {row.batch_name || "Unassigned"}
         </span>
       ),
@@ -292,22 +238,25 @@ const Students = () => {
     {
       header: "Mobile Number",
       accessor: "mobile_number",
+      className: "max-w-[140px] truncate",
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
     },
     {
       header: "Registration No",
       accessor: "reg_no",
+      className: "max-w-[140px] truncate",
       skeleton: () => <div className="h-6 bg-gray-200 rounded-md w-24"></div>,
     },
 
     {
       header: "Total Fee",
       accessor: "total_fee",
+      className: "max-w-[120px]",
       skeleton: () => <div className="h-5 bg-gray-200 rounded w-16"></div>,
       render: (value) => (
-        <div className="flex items-center gap-1 font-semibold text-gray-900">
-          <IndianRupee size={14} className="text-gray-400" />
-          {value}
+        <div className="flex items-center gap-1 font-semibold text-gray-900 truncate">
+          <IndianRupee size={14} className="text-gray-400 shrink-0" />
+          <span className="truncate" title={String(value ?? "")}>{value}</span>
         </div>
       ),
     },
@@ -394,6 +343,101 @@ const Students = () => {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
+          {/* Filter button + dropdown */}
+          <div className="relative" ref={filterRef}>
+            <button
+              type="button"
+              onClick={() => setIsFilterOpen((prev) => !prev)}
+              className={`h-full px-4 py-3 border rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm shrink-0 ${
+                activeFilterCount > 0
+                  ? "bg-orange-50 border-orange-200 text-[#f97316]"
+                  : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              <Filter size={16} />
+              <span className="hidden lg:inline">Filter</span>
+              {activeFilterCount > 0 && (
+                <span className="w-5 h-5 flex items-center justify-center rounded-full bg-[#f97316] text-white text-[10px] font-bold">
+                  {activeFilterCount}
+                </span>
+              )}
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${isFilterOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {isFilterOpen && (
+              <div className="absolute right-0 sm:left-0 top-full mt-2 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl z-30 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-bold text-gray-900">Filters</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterOpen(false)}
+                    className="text-gray-400 hover:text-gray-700"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1.5">
+                      Batch
+                    </label>
+                    <select
+                      value={batchFilter}
+                      onChange={(e) => setBatchFilter(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
+                    >
+                      <option value="">All Batches</option>
+                      {batches.map((batch) => (
+                        <option key={batch.id} value={batch.id}>
+                          {batch.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1.5">
+                      Payment Status
+                    </label>
+                    <select
+                      value={paymentStatusFilter}
+                      onChange={(e) => setPaymentStatusFilter(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
+                    >
+                      {PAYMENT_STATUS_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                  <button
+                    type="button"
+                    onClick={handleClearFilters}
+                    disabled={activeFilterCount === 0}
+                    className="text-xs font-bold text-gray-500 hover:text-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Clear filters
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterOpen(false)}
+                    className="px-4 py-2 bg-[#f97316] hover:bg-orange-600 text-white text-xs font-bold rounded-lg transition-colors"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={openCreateModal}
             className="flex-1 sm:flex-none px-5 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
@@ -414,7 +458,7 @@ const Students = () => {
         emptyMessage="Add your first student!"
       />
       <div className="mt-8">
-        {!loading && students.length > 0 && pagination?.total > 0 && (
+        {!isLoadingData && students.length > 0 && pagination?.total > 0 && (
           <PaginationComponent
             pagination={pagination}
             onPageChange={(newPage) => setPage(newPage)}
@@ -422,555 +466,14 @@ const Students = () => {
         )}
       </div>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsModalOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 50, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none"
-            >
-              <div
-                className="bg-white w-full max-w-3xl rounded-[1.5rem] shadow-2xl flex flex-col max-h-[90dvh] pointer-events-auto overflow-hidden"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex justify-between items-center p-5 sm:p-6 border-b border-gray-100 shrink-0">
-                  <div>
-                    <h3 className="text-xl font-black text-gray-900 tracking-tight">
-                      {selectedStudent ? "Edit Student" : "Add New Student"}
-                    </h3>
-                    <p className="text-xs text-gray-500 font-medium mt-0.5">
-                      {selectedStudent
-                        ? "Update student records and assignments"
-                        : "Enroll a new student"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setIsModalOpen(false)}
-                    className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
-                  >
-                    <X size={20} strokeWidth={2.5} />
-                  </button>
-                </div>
+      {/* Register / Edit Student Modal */}
+      <StudentModal
+        isOpen={isStudentModalOpen}
+        onClose={() => setIsStudentModalOpen(false)}
+        student={selectedStudent}
+        onSuccess={fetchStudents}
+      />
 
-                <form
-                  onSubmit={handleSave}
-                  className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* ===== PERSONAL DETAILS ===== */}
-                    <div className="md:col-span-2">
-                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">
-                        Personal Details
-                      </p>
-                    </div>
-
-                    <div className="md:col-span-2 flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Type size={12} className="text-[#f97316]" /> FULL NAME
-                        *
-                      </label>
-                      <input
-                        type="text"
-                        name="student_full_name_entry"
-                        autoComplete="off"
-                        required
-                        placeholder="e.g. John Doe"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <User size={12} className="text-[#f97316]" /> FATHER'S
-                        NAME
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Robert Doe"
-                        value={formData.father_name}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            father_name: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Users size={12} className="text-[#f97316]" /> MOTHER'S
-                        NAME
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Jane Doe"
-                        value={formData.mother_name}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            mother_name: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#f97316]" /> GENDER
-                      </label>
-                      <select
-                        value={formData.gender}
-                        onChange={(e) =>
-                          setFormData({ ...formData, gender: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
-                      >
-                        <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#f97316]" /> DATE
-                        OF BIRTH
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.date_of_birth}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            date_of_birth: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Ruler size={12} className="text-[#f97316]" /> HEIGHT
-                        (cm)
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        placeholder="e.g. 165"
-                        value={formData.height}
-                        onChange={(e) =>
-                          setFormData({ ...formData, height: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Weight size={12} className="text-[#f97316]" /> WEIGHT
-                        (kg)
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.1"
-                        placeholder="e.g. 60"
-                        value={formData.weight}
-                        onChange={(e) =>
-                          setFormData({ ...formData, weight: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Phone size={12} className="text-[#f97316]" /> MOBILE
-                        NUMBER *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        placeholder="+91 98765 43210"
-                        value={formData.mobile_number}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            mobile_number: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="md:col-span-2 flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <MapPin size={12} className="text-[#f97316]" /> ADDRESS
-                      </label>
-                      <textarea
-                        rows="2"
-                        placeholder="Full residential address"
-                        value={formData.address}
-                        onChange={(e) =>
-                          setFormData({ ...formData, address: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      ></textarea>
-                    </div>
-
-                    {/* ===== IDENTITY PROOF ===== */}
-                    <div className="md:col-span-2 pt-2">
-                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">
-                        Identity Proof
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <ScanLine size={12} className="text-[#f97316]" /> ID
-                        PROOF NAME
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Aadhar Card"
-                        value={formData.id_proof_name}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            id_proof_name: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IdCard size={12} className="text-[#f97316]" /> ID PROOF
-                        NUMBER
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. XXXX-XXXX-XXXX"
-                        value={formData.id_proof_number}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            id_proof_number: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    {/* ===== ACCOUNT & ACADEMY DETAILS ===== */}
-                    <div className="md:col-span-2 pt-2">
-                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mb-1">
-                        Account & Academy Details
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Mail size={12} className="text-[#f97316]" /> EMAIL
-                        ADDRESS
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="john@example.com"
-                        value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IdCard size={12} className="text-[#f97316]" />{" "}
-                        REGISTRATION NO *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="ABC234"
-                        value={formData.reg_no}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            reg_no: e.target.value.toUpperCase(),
-                          })
-                        }
-                        className="w-full bg-gray-50 uppercase border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Lock size={12} className="text-[#f97316]" /> PASSWORD{" "}
-                        {selectedStudent && (
-                          <span className="text-gray-400 normal-case tracking-normal">
-                            (Leave blank to keep)
-                          </span>
-                        )}
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          readOnly={!selectedStudent}
-                          required={!selectedStudent}
-                          placeholder="••••••••"
-                          value={formData.password}
-                          onChange={(e) => {
-                            setPasswordTouched(true);
-                            setFormData({
-                              ...formData,
-                              password: e.target.value,
-                            });
-                          }}
-                          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pr-11 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword((prev) => !prev)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#f97316] transition-colors"
-                          tabIndex={-1}
-                        >
-                          {showPassword ? (
-                            <EyeOff size={16} />
-                          ) : (
-                            <Eye size={16} />
-                          )}
-                        </button>
-                      </div>
-                      {!selectedStudent &&
-                        !passwordTouched &&
-                        formData.password && (
-                          <p className="text-[11px] text-gray-400 mt-0.5">
-                            Auto-generated from DOB (DDMM) + last 4 digits of
-                            mobile number.
-                          </p>
-                        )}
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Calendar size={12} className="text-[#f97316]" />{" "}
-                        JOINING DATE
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.joining_date}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            joining_date: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#f97316]" /> ASSIGN
-                        BATCH *
-                      </label>
-                      <select
-                        required
-                        value={formData.batch_id}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            batch_id: e.target.value
-                              ? parseInt(e.target.value)
-                              : "",
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none"
-                      >
-                        <option value="">Select a Batch</option>
-                        {batches.map((batch) => (
-                          <option key={batch.id} value={batch.id}>
-                            {batch.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Building2 size={12} className="text-[#f97316]" />{" "}
-                        ADMISSION DOJO (BRANCH)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.branch_id || ""}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            branch_id: e.target.value,
-                          })
-                        }
-                        placeholder="Enter branch name"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <UserCog size={12} className="text-[#f97316]" /> SENSEI
-                        (COACH)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Siddharth Kumar Sahoo"
-                        value={formData.sensei}
-                        onChange={(e) =>
-                          setFormData({ ...formData, sensei: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Award size={12} className="text-[#f97316]" /> CURRENT
-                        BELT
-                      </label>
-                      <select
-                        value={formData.belt || ""}
-                        onChange={(e) =>
-                          setFormData({ ...formData, belt: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium appearance-none"
-                      >
-                        <option value="">Select a Belt</option>
-                        <option value="White Belt">White Belt</option>
-                        <option value="Yellow Belt">Yellow Belt</option>
-                        <option value="Orange Belt">Orange Belt</option>
-                        <option value="Green Belt">Green Belt</option>
-                        <option value="Blue Belt">Blue Belt</option>
-                        <option value="Purple Belt">Purple Belt</option>
-                        <option value="Brown Belt">Brown Belt</option>
-                        <option value="Red Belt">Red Belt</option>
-                        <option value="Black Belt">Black Belt</option>
-                      </select>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <IndianRupee size={12} className="text-[#f97316]" />{" "}
-                        TOTAL FEE *
-                      </label>
-                      <input
-                        type="number"
-                        required
-                        min="0"
-                        step="0.01"
-                        placeholder="e.g. 500.00"
-                        value={formData.total_fee}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            total_fee: e.target.value,
-                          })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <Activity size={12} className="text-[#f97316]" /> STATUS
-                        *
-                      </label>
-                      <select
-                        value={String(formData.status)}
-                        disabled={!selectedStudent}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            status: parseInt(e.target.value),
-                          })
-                        }
-                        className={`${!selectedStudent ? "cursor-not-allowed" : "cursor-pointer"} w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400 appearance-none`}
-                      >
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                      </select>
-                    </div>
-
-                    <div className="md:col-span-2 flex flex-col gap-1.5">
-                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                        <FileText size={12} className="text-[#f97316]" /> NOTES
-                      </label>
-                      <textarea
-                        rows="2"
-                        placeholder="Any additional information..."
-                        value={formData.notes}
-                        onChange={(e) =>
-                          setFormData({ ...formData, notes: e.target.value })
-                        }
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] transition-all font-medium placeholder:text-gray-400"
-                      ></textarea>
-                    </div>
-                  </div>
-
-                  <div className="pt-6 mt-4 border-t border-gray-100 flex justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setIsModalOpen(false)}
-                      disabled={loading}
-                      className="px-5 py-2.5 text-sm shadow-sm font-bold cursor-pointer text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="px-5 py-2.5 cursor-pointer text-sm font-bold text-white bg-[#f97316] hover:bg-orange-600 rounded-xl flex items-center gap-2 shadow-md shadow-[#f97316]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {loading ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Save size={16} /> Save Student
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

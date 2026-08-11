@@ -201,8 +201,8 @@ const Batches = () => {
       render: (_, row) => (
         <div className="flex items-center gap-3">
           <div>
-            <p className="font-bold text-gray-900">{row.name}</p>
-            <p className="text-xs text-gray-500">{row.notes}</p>
+            <p className="font-bold truncate max-w-36 text-gray-900">{row.name}</p>
+            <p className="text-xs truncate max-w-32 text-gray-500">{row.notes}</p>
           </div>
         </div>
       ),

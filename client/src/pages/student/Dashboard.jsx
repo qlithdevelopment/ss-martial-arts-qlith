@@ -332,7 +332,7 @@ export default function StudentDashboard() {
                   Email ID: {displayEmail ?? "—"}
                 </p>
 
-                {batchLoading && <p className="text-xs text-slate-400 mb-2 animate-pulse">Loading batch…</p>}
+                
                 {batchError && <p className="text-xs text-rose-400 mb-2">{batchError}</p>}
 
                 <div className="flex flex-wrap justify-center sm:justify-start gap-2">
@@ -387,7 +387,7 @@ export default function StudentDashboard() {
               </button>
             ))}
           </div>
-          {activeTab === "Profile" && <ProfileTab student={student} />}
+          {activeTab === "Profile" && <ProfileTab student={student}loading={studentLoading} />}
           {activeTab === "Batch" && <BatchTab batch={batch} loading={batchLoading} error={batchError} />}
           {activeTab === "Belt" && <BeltTab beltRecords={beltRecords} loading={beltsLoading} error={beltsError} />}
           {activeTab === "Certs" && <CertsTab certs={certs} loading={certsLoading} error={certsError} />}

@@ -124,7 +124,7 @@ const Trainers = () => {
             />
             <input
               type="text"
-              placeholder="Search trainers..."
+              placeholder="Search trainers by name and designation "
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -152,12 +152,12 @@ const Trainers = () => {
             >
               {/* Image skeleton */}
               <div className="relative h-48 bg-gray-200 w-full">
-                <div className="absolute top-3 right-3">                  
+                <div className="absolute top-3 right-3">
                 </div>
               </div>
 
               {/* Body skeleton */}
-              <div className="p-5 flex-1 flex flex-col">                
+              <div className="p-5 flex-1 flex flex-col">
 
                 <div className="space-y-2 mb-4 flex-1">
                   <div className="h-3 bg-gray-100 rounded w-full"></div>
@@ -173,7 +173,7 @@ const Trainers = () => {
               </div>
             </div>
           ))}
-        </div>        
+        </div>
       ) : trainers?.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -182,15 +182,24 @@ const Trainers = () => {
           <h3 className="text-lg font-bold text-gray-900 mb-1">
             No trainers found
           </h3>
-          <p className="text-gray-500 text-sm mb-6">
-            Start adding your team members and instructors here.
-          </p>
-          <button
-            onClick={openCreateModal}
-            className="text-orange-500 font-bold hover:text-orange-600 text-sm"
-          >
-            + Add your first trainer
-          </button>
+          {debouncedSearch ? (
+            <p className="text-gray-500 text-sm">
+              No trainers match "{debouncedSearch}". Try a different search.
+            </p>
+          ) : (
+            <>
+              <p className="text-gray-500 text-sm mb-6">
+                Start adding your team members and instructors here.
+              </p>
+              <button
+                onClick={openCreateModal}
+                className="text-orange-500 font-bold hover:text-orange-600 text-sm"
+              >
+                + Add your first trainer
+              </button>
+            </>
+          )}
+          
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

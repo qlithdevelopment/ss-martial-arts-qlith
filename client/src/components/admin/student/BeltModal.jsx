@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Pencil, PlusCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../../api/axios';
 
@@ -28,15 +28,118 @@ const emptyForm = {
   date_of_issue: todayISO(),
 };
 
-const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
+const BeltModal = ({ isOpen, onClose, student, onSuccess, isEdit = false, initialBeltPosition = null }) => {
   const [beltForm, setBeltForm] = useState(emptyForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [assignedBeltsList, setAssignedBeltsList] = useState([]);
+  const [isFetchingBelts, setIsFetchingBelts] = useState(false);
+
+  // Id of the belt record currently being edited (set once a belt is picked in edit mode)
+  const [editingBeltId, setEditingBeltId] = useState(null);
+
+  const userId = student?.user_id || student?.id;
 
   useEffect(() => {
     if (isOpen) {
       setBeltForm(emptyForm);
+      setEditingBeltId(null);
     }
-  }, [isOpen]);
+  }, [isOpen, isEdit]);
+
+  // Fetch this student's already-assigned belts whenever the modal opens
+  useEffect(() => {
+    if (!isOpen || !userId) {
+      setAssignedBeltsList([]);
+      return;
+    }
+
+    let isCancelled = false;
+
+    const fetchAssignedBelts = async () => {
+      try {
+        setIsFetchingBelts(true);
+        const response = await api.get('/belts', { params: { user_id: userId } });
+        const data = response?.data?.data ?? response?.data ?? [];
+        const belts = Array.isArray(data) ? data : [];
+
+        if (!isCancelled) {
+          setAssignedBeltsList(belts);
+        }
+
+      } catch (error) {
+        console.error('Failed to fetch assigned belts:', error);
+        if (!isCancelled) {
+          setAssignedBeltsList([]);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsFetchingBelts(false);
+        }
+      }
+    };
+
+    fetchAssignedBelts();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isOpen, userId]);
+
+  // Map of belt_position (trimmed) -> full existing belt record
+  const assignedBeltsMap = useMemo(() => {
+    const map = new Map();
+
+    assignedBeltsList.forEach((b) => {
+      if (!b || typeof b !== 'object') return;
+      const position = b.belt_position?.trim();
+      if (position) map.set(position, b);
+    });
+
+    return map;
+  }, [assignedBeltsList]);
+
+
+   const beltOptions = useMemo(() => {
+    if (isEdit && initialBeltPosition) {
+      const trimmed = initialBeltPosition.trim();
+      return assignedBeltsMap.has(trimmed)
+        ? BELT_OPTIONS.filter((belt) => belt.trim() === trimmed)
+        : [];
+    }
+
+    return BELT_OPTIONS.filter((belt) => {
+      const alreadyAssigned = assignedBeltsMap.has(belt.trim());
+      return isEdit ? alreadyAssigned : !alreadyAssigned;
+    });
+  }, [assignedBeltsMap, isEdit, initialBeltPosition]);
+
+  const handleBeltPositionChange = (value) => {
+    if (isEdit) {
+      const existing = assignedBeltsMap.get(value.trim());
+      setEditingBeltId(existing?.id ?? null);
+      setBeltForm({
+        kyu_no: existing?.kyu_no || '',
+        belt_position: value,
+        certification_no: existing?.certification_no || '',
+        date_of_issue: existing?.date_of_issue
+          ? existing.date_of_issue.split('T')[0]
+          : todayISO(),
+      });
+    } else {
+      setBeltForm((prev) => ({ ...prev, belt_position: value }));
+    }
+  };
+
+  // Auto-preselect + prefill when opened from a specific callout's Edit button.
+  // Waits for assignedBeltsMap to be populated (belts fetch to finish) before applying.
+  useEffect(() => {
+    if (!isOpen || !isEdit || !initialBeltPosition) return;
+    if (assignedBeltsMap.size === 0) return;
+    if (!assignedBeltsMap.has(initialBeltPosition.trim())) return;
+
+    handleBeltPositionChange(initialBeltPosition);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isEdit, initialBeltPosition, assignedBeltsMap]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,12 +147,11 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
     if (!beltForm.belt_position) return toast.error('Please select a belt');
     if (!beltForm.date_of_issue) return toast.error('Please select a date of issue');
     if (!student) return;
-
-    const userId = student.user_id || student.id;
+    if (isEdit && !editingBeltId) return toast.error('Please select a belt to edit');
 
     try {
       setIsSubmitting(true);
-      toast.loading('Assigning belt...', { id: 'belt' });
+      toast.loading(isEdit ? 'Updating belt...' : 'Assigning belt...', { id: 'belt' });
 
       const payload = {
         kyu_no: beltForm.kyu_no,
@@ -59,14 +161,21 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
         user_id: userId,
       };
 
-      await api.post('/belts', payload);
+      if (isEdit) {
+        await api.put(`/belts/${editingBeltId}`, payload);
+      } else {
+        await api.post('/belts', payload);
+      }
 
-      toast.success('Belt assigned successfully!', { id: 'belt' });
+      toast.success(isEdit ? 'Belt updated successfully!' : 'Belt assigned successfully!', { id: 'belt' });
       onSuccess?.();
       onClose();
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'Failed to assign belt.', { id: 'belt' });
+      toast.error(
+        error.response?.data?.error || (isEdit ? 'Failed to update belt.' : 'Failed to assign belt.'),
+        { id: 'belt' }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -87,10 +196,13 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-md bg-white rounded-3xl shadow-xl z-50 max-h-[90vh] flex flex-col overflow-hidden"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-lg bg-white rounded-3xl shadow-xl z-50 max-h-[90vh] flex flex-col overflow-hidden"
           >
             <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
-              <h3 className="text-lg font-bold text-gray-900">Assign Belt</h3>
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                {isEdit ? <Pencil size={18} className="text-[#f97316]" /> : <PlusCircle size={18} className="text-[#f97316]" />}
+                {isEdit ? 'Edit Belt' : 'Assign Belt'}
+              </h3>
               <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                 <X size={20} />
               </button>
@@ -103,15 +215,27 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
                     <label className="block text-sm font-bold text-gray-700 mb-2">Belt position</label>
                     <select
                       value={beltForm.belt_position}
-                      onChange={(e) => setBeltForm({ ...beltForm, belt_position: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none"
+                      onChange={(e) => handleBeltPositionChange(e.target.value)}
+                      disabled={isFetchingBelts}
+                      className="w-full px-4 py-3 max-w-full truncate  bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none disabled:opacity-60"
                       required
                     >
-                      <option value="">Choose a belt...</option>
-                      {BELT_OPTIONS.map((belt) => (
+                      <option value="" hidden className="max-w-10 truncate" >
+                        {isFetchingBelts
+                          ? 'Loading belts...'
+                          : isEdit
+                            ? 'Choose a belt to edit...'
+                            : 'Choose a belt...'}
+                      </option>
+                      {!isFetchingBelts && beltOptions.map((belt) => (
                         <option key={belt} value={belt}>{belt}</option>
                       ))}
                     </select>
+                    {!isFetchingBelts && beltOptions.length === 0 && (
+                      <p className="text-xs text-gray-400 mt-1.5">
+                        {isEdit ? 'No belts have been assigned yet.' : 'All belts have already been assigned.'}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -135,7 +259,7 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
                       onChange={(e) => setBeltForm({ ...beltForm, certification_no: e.target.value })}
                       placeholder="Unique certificate number"
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none"
-                      
+
                     />
                   </div>
 
@@ -153,10 +277,10 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess }) => {
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isFetchingBelts || beltOptions.length === 0}
                   className="w-full py-3 bg-[#f97316] hover:bg-orange-600 text-white font-bold rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Assign Belt
+                  {isEdit ? 'Update Belt' : 'Assign Belt'}
                 </button>
               </form>
             </div>

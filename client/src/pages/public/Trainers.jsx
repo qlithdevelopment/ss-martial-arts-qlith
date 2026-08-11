@@ -133,30 +133,36 @@ const Trainers = () => {
                         <Users className="text-gray-300" size={48} />
                       </div>
                     )}
-                    <div className="absolute top-3 left-3 px-2.5 py-1 bg-[#f97316] text-white font-black text-[10px] tracking-widest uppercase rounded shadow-lg">
+                    <div
+                      className="absolute top-3 left-3 max-w-[70%] truncate px-2.5 py-1 bg-[#f97316] text-white font-black text-[10px] tracking-widest uppercase rounded shadow-lg"
+                      title={item.rank}
+                    >
                       {item.rank}
                     </div>
                   </div>
 
                   {/* BOTTOM: Content section */}
-                  <div className="flex-1 p-5 md:p-6 md:py-3 flex flex-col justify-start bg-white">
-                    <h4 className="text-base md:text-lg font-black text-black uppercase tracking-tight leading-tight line-clamp-2 mb-1">
+                  <div className="flex-1 p-5 md:p-6 md:py-3 flex flex-col justify-start bg-white min-w-0">
+                    <h4
+                      className="text-base md:text-lg font-black text-black uppercase tracking-tight leading-tight line-clamp-2 mb-1 max-w-full"
+                      title={item.name}
+                    >
                       {item.name}
                     </h4>
 
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-2">
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium mb-2 min-w-0">
                       <Award size={12} className="shrink-0 text-[#f97316]" />
-                      <span className="truncate">{item.belt}</span>
+                      <span className="truncate max-w-full" title={item.belt}>{item.belt}</span>
                     </div>
 
                     {item.phone && (
                       <a
                         href={`tel:${item.phone}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1.5 text-xs text-gray-700 hover:text-[#f97316] transition-colors w-fit"
+                        className="flex items-center gap-1.5 text-xs text-gray-700 hover:text-[#f97316] transition-colors w-fit max-w-full min-w-0"
                       >
                         <Phone size={12} className="shrink-0" />
-                        <span className="truncate">{item.phone}</span>
+                        <span className="truncate max-w-full" title={item.phone}>{item.phone}</span>
                       </a>
                     )}
                   </div>
@@ -199,56 +205,67 @@ const Trainers = () => {
                   alt={selectedInstructor.name}
                   className="h-full w-full object-contain z-10"
                 />
-                <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[80px] md:text-[150px] font-black text-white/5 uppercase tracking-tighter leading-none pointer-events-none z-0 whitespace-nowrap -rotate-90 md:rotate-0">
-                  {selectedInstructor.name.split(' ')[0]}
-                </h2>
+                {/* <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[80px] md:text-[150px] font-black text-white/5 uppercase tracking-tighter leading-none pointer-events-none z-0 whitespace-nowrap -rotate-90 md:rotate-0">
+                  {selectedInstructor.name}
+                </h2> */}
               </div>
 
-              <div className="w-full md:w-1/2 h-full  bg-black p-6 md:p-8 lg:p-10 relative flex flex-col justify-start shrink-0 overflow-y-auto">
-                <div className="mt-0 md:mt-0">
-                  <div className="inline-block px-3 py-1 bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black text-[10px] tracking-widest uppercase mb-2 md:mb-3 rounded-full">
+              <div className="w-full md:w-1/2 h-full  bg-black p-6 md:p-8 lg:p-10 relative flex flex-col justify-start shrink-0 overflow-y-auto min-w-0">
+                <div className="mt-0 md:mt-0 min-w-0">
+                  <div
+                    className="inline-block max-w-full truncate px-3 py-1 bg-[#f97316]/10 border border-[#f97316]/30 text-[#f97316] font-black text-[10px] tracking-widest uppercase mb-2 md:mb-3 rounded-full"
+                    title={selectedInstructor.rank}
+                  >
                     {selectedInstructor.rank}
                   </div>
 
-                  <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter mb-1">
+                  <h2
+                    className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter mb-1 "
+                    title={selectedInstructor.name}
+                  >
                     {selectedInstructor.name}
                   </h2>
 
-                  <p className="text-[#f97316] font-bold text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6">
+                  <p
+                    className="text-[#f97316] font-bold text-xs md:text-sm tracking-widest uppercase mb-4 md:mb-6 truncate max-w-full"
+                    title={`${selectedInstructor.belt} - ${selectedInstructor.experience}`}
+                  >
                     {selectedInstructor.belt} - {selectedInstructor.experience}
                   </p>
                 </div>
 
-                <div className="mb-4 md:mb-6">
+                <div className="mb-4 md:mb-6 min-w-0">
                   <h3 className="text-[#26c0ff] text-sm md:text-base font-black uppercase tracking-wider border-b border-[#26c0ff]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
                     <History size={16} className="text-[#f97316]" /> Biography
                   </h3>
-                  <p className="text-white/70 leading-relaxed font-medium text-[11px] md:text-xs lg:text-sm">
+                  <p className="text-white/70 leading-relaxed max-h-44 overflow-y-auto scrollbar-track-transparent font-medium text-[11px] md:text-xs lg:text-sm max-w-full">
                     {selectedInstructor.bio}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="text-[#26c0ff] text-sm md:text-base font-black uppercase tracking-wider border-b border-[#26c0ff]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
                       <Users size={16} className="text-[#f97316]" /> Expertise
                     </h3>
                     <ul className="space-y-1.5 md:space-y-2">
                       {selectedInstructor.disciplines.map((d, i) => (
-                        <li key={i} className="flex items-center gap-3 text-white/80 font-medium text-[11px] md:text-xs">
-                          <div className="w-1.5 h-1.5 bg-[#f97316] rounded-full shrink-0"></div> {d}
+                        <li key={i} className="flex items-center gap-3 text-white/80 font-medium text-[11px] md:text-xs min-w-0">
+                          <div className="w-1.5 h-1.5 bg-[#f97316] rounded-full shrink-0"></div>
+                          <span className="truncate max-w-full" title={d}>{d}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="text-[#26c0ff] text-sm md:text-base font-black uppercase tracking-wider border-b border-[#26c0ff]/30 pb-2 mb-2 md:mb-3 flex items-center gap-3">
                       <Award size={16} className="text-[#f97316]" /> Achievements
                     </h3>
                     <ul className="space-y-1.5 md:space-y-2">
                       {selectedInstructor.achievements.map((a, i) => (
-                        <li key={i} className="flex items-center gap-3 text-white/80 font-medium text-[11px] md:text-xs">
-                          <div className="w-1.5 h-1.5 bg-[#f97316] rounded-full shrink-0"></div> {a}
+                        <li key={i} className="flex items-center gap-3 text-white/80 font-medium text-[11px] md:text-xs min-w-0">
+                          <div className="w-1.5 h-1.5 bg-[#f97316] rounded-full shrink-0"></div>
+                          <span className="truncate max-w-full" title={a}>{a}</span>
                         </li>
                       ))}
                     </ul>
@@ -257,12 +274,15 @@ const Trainers = () => {
 
                 <div className="bg-white/5 p-4 rounded-xl md:rounded-2xl border border-white/10 mb-4 md:mb-6 relative overflow-hidden">
                   <div className="text-[#f97316] text-4xl absolute top-0 left-2 opacity-20 font-serif leading-none">"</div>
-                  <p className="text-white/90 italic font-medium text-center text-[11px] md:text-xs relative z-10 pt-1">
+                  <p className="text-white/90 italic font-medium text-center text-[11px] md:text-xs relative z-10 pt-1 max-w-full line-clamp-4">
                     {selectedInstructor.philosophy}
                   </p>
                 </div>
 
-                <button className="w-full py-3 bg-[#f97316] hover:bg-[#b5952f] text-white font-black uppercase tracking-widest text-xs md:text-sm rounded-xl transition-colors shadow-[0_10px_20px_rgba(212,175,55,0.3)] mt-auto shrink-0">
+                <button
+                  className="w-full py-3 bg-[#f97316] hover:bg-[#b5952f] text-white font-black uppercase tracking-widest text-xs md:text-sm rounded-xl transition-colors shadow-[0_10px_20px_rgba(212,175,55,0.3)] mt-auto shrink-0 truncate px-3"
+                  title={`Join A Class With ${selectedInstructor.name.split(' ')[0]}`}
+                >
                   Join A Class With {selectedInstructor.name.split(' ')[0]}
                 </button>
               </div>

@@ -45,8 +45,6 @@ const ArrayField = ({ label, icon: Icon, items, placeholder, onArrayChange, onAd
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-// trainerId: pass an id to edit that trainer (fetched fresh from API).
-// Pass null/undefined to open in "create" mode.
 const TrainerModal = ({ isOpen, onClose, trainerId = null, fetchTrainers }) => {
   const isEditMode = !!trainerId;
   const [loading, setLoading] = useState(false);

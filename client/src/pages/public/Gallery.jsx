@@ -169,7 +169,7 @@ const GalleryPage = () => {
                       layoutId={`album-cover-${album.id}`}
                       src={getImageUrl(album.images && album.images[0])}
                       alt={album.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-top object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     {/* Gradient Overlays */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
@@ -229,7 +229,7 @@ const GalleryPage = () => {
                   layoutId={`album-cover-${selectedAlbum.id}`}
                   src={getImageUrl(selectedAlbum.images && selectedAlbum.images[0])}
                   alt={selectedAlbum.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute object-top inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 flex flex-col justify-end p-8 md:p-16">
                   <div className="inline-block bg-[#f97316] text-black text-[10px] font-black tracking-widest uppercase px-3 py-1.5 rounded-full mb-4 w-fit shadow-lg">
@@ -258,7 +258,7 @@ const GalleryPage = () => {
                     <img
                       src={getImageUrl(img)}
                       alt={`${selectedAlbum.name} ${idx + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                       <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-50 group-hover:scale-100 duration-300">

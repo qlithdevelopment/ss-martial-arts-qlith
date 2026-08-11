@@ -1,7 +1,77 @@
 import { User, Mail, Phone, Calendar, Users, MapPin, Shield, BookOpen, Award, GraduationCap, Ruler, Weight } from "lucide-react";
 import { Card, Chip, InfoRow, NoData, fmt } from "./Common";
 
-export default function ProfileTab({ student }) {
+function InfoRowSkeleton() {
+    return (
+        <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 flex-shrink-0" />
+            <div className="flex-1 space-y-1.5">
+                <div className="h-2.5 w-20 bg-slate-200 dark:bg-slate-700 rounded" />
+                <div className="h-3 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+            </div>
+        </div>
+    );
+}
+
+function ProfileTabSkeleton() {
+    return (
+        <div className="space-y-6 animate-pulse">
+            <Card className="p-6">
+                <div className="flex items-start justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-xl bg-slate-200 dark:bg-slate-700" />
+                        <div className="space-y-2">
+                            <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+                            <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded" />
+                        </div>
+                    </div>
+                    <div className="h-5 w-16 bg-slate-200 dark:bg-slate-700 rounded-full" />
+                </div>
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+                    {Array.from({ length: 4 }).map((_, i) => <InfoRowSkeleton key={i} />)}
+                </div>
+            </Card>
+
+            <Card className="p-6">
+                <div className="h-2.5 w-28 bg-slate-200 dark:bg-slate-700 rounded mb-3" />
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+                    {Array.from({ length: 2 }).map((_, i) => <InfoRowSkeleton key={i} />)}
+                </div>
+            </Card>
+
+            <Card className="p-6">
+                <div className="h-2.5 w-16 bg-slate-200 dark:bg-slate-700 rounded mb-3" />
+                <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl p-3 border border-slate-100 dark:border-slate-800/50">
+                    <div className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 flex-shrink-0" />
+                    <div className="flex-1 space-y-2">
+                        <div className="h-3 w-full bg-slate-200 dark:bg-slate-700 rounded" />
+                        <div className="h-3 w-2/3 bg-slate-200 dark:bg-slate-700 rounded" />
+                    </div>
+                </div>
+            </Card>
+
+            <Card className="p-6">
+                <div className="h-2.5 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-3" />
+                <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+                    {Array.from({ length: 6 }).map((_, i) => <InfoRowSkeleton key={i} />)}
+                </div>
+            </Card>
+
+            <Card className="p-6">
+                <div className="h-2.5 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-3" />
+                <div className="grid grid-cols-2 gap-3">
+                    {Array.from({ length: 2 }).map((_, i) => <InfoRowSkeleton key={i} />)}
+                </div>
+            </Card>
+        </div>
+    );
+}
+
+export default function ProfileTab({ student, loading }) {
+    if (loading) {
+        return <ProfileTabSkeleton />;
+    }
+
     if (!student) {
         return (
             <Card className="p-8 text-center">

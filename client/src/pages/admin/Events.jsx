@@ -16,7 +16,6 @@ import EventModal from "../../components/admin/events/EventModal";
 import PaginationComponent from "../../components/PaginationComponent";
 import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
 import ViewEventModal from "../../components/admin/events/ViewEventModal";
-// import UserRegisteredEvents from "./UserRegisteredEvents";
 import { formatDate } from "../../components/CommonFormats";
 
 
@@ -224,7 +223,7 @@ const Events = () => {
                   <img
                     src={`${BASE_URL}/storage/${event.image}`}
                     alt={event.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-300">

@@ -156,7 +156,7 @@ const Galleries = () => {
               <div className="relative h-48 bg-gray-100 overflow-hidden">
                 {album.images && album.images.length > 0 ? (
                   <>
-                    <img src={getImageUrl(album.images[0])} alt={album.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={getImageUrl(album.images[0])} alt={album.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <button onClick={() => setViewAlbum(album)} className="text-white text-xs font-bold px-4 py-2 bg-black/60 rounded-full backdrop-blur-sm hover:bg-black/80 transition-colors">
                         View All Photos

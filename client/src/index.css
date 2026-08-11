@@ -455,3 +455,9 @@ button{
  overflow-x: scroll;
  scrollbar-width: thin;
 }
+
+@media (max-width: 767px) {
+  .belt-container {
+    width: 350px !important;
+  }
+}

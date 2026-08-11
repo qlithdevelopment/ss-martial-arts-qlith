@@ -1,5 +1,5 @@
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react';
-import { Award, Check } from 'lucide-react';
+import { Award, Check, Edit2, Trash2 } from 'lucide-react';
 
 const BELTS = [
   { name: 'white', label: 'White', hex: '#fffffc', textDark: true },
@@ -33,9 +33,10 @@ const GAP = 7;
 const ROW_COUNT = BELTS.length;
 const ROW_HEIGHT = (CHART_HEIGHT - PADDING * 2 - GAP * (ROW_COUNT - 1)) / ROW_COUNT;
 
-const CALLOUT_WIDTH = 100;
+const CALLOUT_WIDTH = 200; // px
 const CALLOUT_HEIGHT = 50;
-const CALLOUT_GAP_X = 34;
+const CALLOUT_GAP_X = 34; // gap between chart edge and column 1
+const COLUMN_GAP = 16; // gap between column 1 and column 2
 const CALLOUT_MIN_SPACING = 8;
 
 const fmtDate = (dateStr) =>
@@ -111,7 +112,7 @@ const StripeMarks = ({ count, dark }) => {
   } else if (count === 2) {
     r = 48;
   } else {
-    r = 47;
+    r = 46;
   }
 
   return (
@@ -144,7 +145,7 @@ const StripeMarks = ({ count, dark }) => {
   );
 };
 
-const Belts = ({ belts = [] }) => {
+const Belts = ({ belts = [], onEditBelt, onDeleteBelt }) => {
   const wrapperRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(0);
   const isDark = useIsDarkMode();
@@ -169,6 +170,8 @@ const Belts = ({ belts = [] }) => {
       !existing || new Date(record.date_of_issue) > new Date(existing._rawDate || 0);
     if (isNewer) {
       detailsByColor[color] = {
+        id: record.id,
+        belt_position: record.belt_position,
         certification_no: record.certification_no,     
         kyu_no: record.kyu_no,
         date_of_issue: fmtDate(record.date_of_issue) || '—',
@@ -177,7 +180,8 @@ const Belts = ({ belts = [] }) => {
     }
   });
 
-  const reservedWidth = CALLOUT_GAP_X + CALLOUT_WIDTH;
+  // Reserve space for the chart edge + gap + two callout columns + gap between them
+  const reservedWidth = CALLOUT_GAP_X + CALLOUT_WIDTH * 2 + COLUMN_GAP;
   const chartInnerWidth = Math.max(0, chartWidth - reservedWidth +50 );
 
   const activeRows = BELTS.map((belt, index) => ({ belt, index }))
@@ -189,23 +193,53 @@ const Belts = ({ belts = [] }) => {
       anchorY: rowCenterY(index),
     }));
 
-  let prevBottom = -Infinity;
-  const callouts = activeRows.map((row) => {
-    let top = row.anchorY - CALLOUT_HEIGHT / 2;
-    if (top < prevBottom + CALLOUT_MIN_SPACING) top = prevBottom + CALLOUT_MIN_SPACING;
-    prevBottom = top + CALLOUT_HEIGHT;
-    return { ...row, calloutTop: top };
+  // Split active belts into two columns: 1st, 3rd, 5th... -> column 0; 2nd, 4th, 6th... -> column 1
+  const column0Active = [];
+  const column1Active = [];
+  activeRows.forEach((row, i) => {
+    if (i % 2 === 0) {
+      column0Active.push(row);
+    } else {
+      column1Active.push(row);
+    }
   });
 
-  const contentHeight = Math.max(CHART_HEIGHT, callouts.length ? prevBottom + PADDING : 0);
-  
+  // Stack callouts vertically within each column independently, avoiding overlap per column
+  const layoutColumn = (rows) => {
+    let prevBottom = -Infinity;
+    return rows.map((row) => {
+      let top = row.anchorY - CALLOUT_HEIGHT / 2;
+      if (top < prevBottom + CALLOUT_MIN_SPACING) top = prevBottom + CALLOUT_MIN_SPACING;
+      prevBottom = top + CALLOUT_HEIGHT;
+      return { ...row, calloutTop: top };
+    });
+  };
+
+  const column0Callouts = layoutColumn(column0Active).map((c) => ({ ...c, column: 0 }));
+  const column1Callouts = layoutColumn(column1Active).map((c) => ({ ...c, column: 1 }));
+  const callouts = [...column0Callouts, ...column1Callouts];
+
+  const column0Bottom = column0Callouts.length
+    ? column0Callouts[column0Callouts.length - 1].calloutTop + CALLOUT_HEIGHT
+    : 0;
+  const column1Bottom = column1Callouts.length
+    ? column1Callouts[column1Callouts.length - 1].calloutTop + CALLOUT_HEIGHT
+    : 0;
+
+  const contentHeight = Math.max(CHART_HEIGHT, column0Bottom + PADDING, column1Bottom + PADDING);
+
+  // X positions for each column's callout box and connector endpoint
+  const column0Left = chartInnerWidth + CALLOUT_GAP_X;
+  const column1Left = column0Left + CALLOUT_WIDTH + COLUMN_GAP;
+  const columnLeft = (col) => (col === 0 ? column0Left : column1Left);
 
   return (
-    <div ref={wrapperRef} style={{ width: '100%' }} className='mt-3'>
+    <div ref={wrapperRef} style={{ width: '730px' }} className='mt-3 lg:!w-[90%]'>
       <div style={{ position: 'relative', width: '100%', height: `${contentHeight}px` }}>
 
         {/* Belt chart */}
-        <div
+        <div 
+        // className='belt-container'
           style={{
             position: 'absolute',
             left: 0,
@@ -314,25 +348,26 @@ const Belts = ({ belts = [] }) => {
             height={contentHeight}
             style={{ position: 'absolute', left: 0, top: 0, pointerEvents: 'none' }}
           >
-            {callouts.map(({ belt, anchorY, calloutTop }, i) => {
+            {callouts.map(({ belt, anchorY, calloutTop, column }, i) => {
               const startX = chartInnerWidth - 4;
               const startY = anchorY;
-              const endX = chartInnerWidth + CALLOUT_GAP_X - 6;
+              const endX = columnLeft(column) - 6;
               const endY = calloutTop + CALLOUT_HEIGHT / 2;
-              const midX = startX + CALLOUT_GAP_X * 0.55;
+              const midX = startX + (endX - startX) * 0.55;
+              const strokeColor = belt.hex === '#fffffc' ? '#808080' : belt.hex;
               return (
                 <g key={i}>
                   <path
                     d={`M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`}
                     fill="none"
-                    stroke={`${belt.hex}` == `#fffffc` ? `#0a0a00` : `${belt.hex}` }
+                    stroke={strokeColor}
                     strokeOpacity="0.55"
                     strokeWidth="1.5"
                     strokeDasharray="1,4"
                     strokeLinecap="round"
                   />
-                  <circle cx={startX} cy={startY} r="2.5" fill={`${belt.hex}` == `#fffffc` ? `#0a0a00` : `${belt.hex}` } />
-                  <circle cx={endX} cy={endY} r="2.5" fill={`${belt.hex}` == `#fffffc` ? `#0a0a00` : `${belt.hex}` } />
+                  {/* <circle cx={startX} cy={startY} r="2.5" fill={strokeColor} /> */}
+                  <circle cx={endX} cy={endY} r="2.5" fill={strokeColor} />
                 </g>
               );
             })}
@@ -340,14 +375,15 @@ const Belts = ({ belts = [] }) => {
         )}
 
         {/* Callout badges */}
-        {callouts.map(({ belt, details, calloutTop }, i) => (
+        {callouts.map(({ belt, details, calloutTop, column }, i) => (
           <div
             key={i}
+            className="group"
             style={{
               position: 'absolute',
-              left: `${chartInnerWidth + CALLOUT_GAP_X}px`,
+              left: `${columnLeft(column)}px`,
               top: `${calloutTop}px`,
-              width: `${CALLOUT_WIDTH}%`,
+              width: `${CALLOUT_WIDTH}px`,
               height: `${CALLOUT_HEIGHT}px`,
               borderRadius: '10px',
               background: isDark
@@ -355,8 +391,8 @@ const Belts = ({ belts = [] }) => {
                 : 'linear-gradient(180deg, #ffffff, #fbfbfb)',
               border: `1px solid ${belt.hex}33`,
               boxShadow: isDark
-                ? `0 3px 10px -3px ${belt.hex}66, 0 1px 2px rgba(0,0,0,0.4)`
-                : `0 3px 10px -3px ${belt.hex}55, 0 1px 2px rgba(0,0,0,0.06)`,
+                ? `0 3px 10px -3px ${belt.hex === '#fffffc' ? '#808080' : belt.hex}66, 0 1px 2px rgba(0,0,0,0.4)`
+                : `0 3px 10px -3px ${belt.hex === '#fffffc' ? '#808080' : belt.hex}55, 0 1px 2px rgba(0,0,0,0.06)`,
               boxSizing: 'border-box',
               padding: '0 10px',
               display: 'flex',
@@ -369,7 +405,7 @@ const Belts = ({ belts = [] }) => {
                 width: '18px',
                 height: '18px',
                 borderRadius: '999px',
-                backgroundColor: `${`${belt.hex}` == `#fffffc` ? `#0a0a00` : `${belt.hex}` }1a`,
+                backgroundColor: `${belt.hex === '#fffffc' ? '#0a0a0a' : belt.hex}1a`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -377,7 +413,7 @@ const Belts = ({ belts = [] }) => {
               }}
             >
               
-              <Award size={10} color={`${belt.hex}` == `#fffffc` ? `#0a0a00` : `${belt.hex}` }  strokeWidth={2.5} />
+              <Award size={10} color={belt.hex === '#fffffc' ? '#808080' : belt.hex}  strokeWidth={2.5} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, lineHeight: 1.25 }}>
               <span
@@ -408,6 +444,41 @@ const Belts = ({ belts = [] }) => {
                 {details.date_of_issue}
               </span>
             </div>
+
+            {/* Edit / Delete — always visible now */}
+            {(onEditBelt || onDeleteBelt) && (
+              <div
+                className="absolute top-1 right-1 flex items-center gap-1"
+                style={{ zIndex: 1 }}
+              >
+                {onEditBelt && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditBelt(details);
+                    }}
+                    title="Edit belt"
+                    className="w-5 h-5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center shadow-sm"
+                  >
+                    <Edit2 size={10} strokeWidth={2.5} />
+                  </button>
+                )}
+                {onDeleteBelt && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteBelt(details.id);
+                    }}
+                    title="Delete belt"
+                    className="w-5 h-5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center shadow-sm"
+                  >
+                    <Trash2 size={10} strokeWidth={2.5} />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>

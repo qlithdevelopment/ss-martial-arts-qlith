@@ -32,7 +32,7 @@ class BeltController extends Controller
             $validated = $request->validate([
                 'kyu_no' => 'required|string|max:100',
                 'belt_position' => 'required|string|max:100',
-                'certification_no' => 'required|string|unique:belts,certification_no',
+                'certification_no' => 'nullable|string|unique:belts,certification_no',
                 'date_of_issue' => 'required|date',
                 'user_id' => 'required|exists:users,id',
             ]);

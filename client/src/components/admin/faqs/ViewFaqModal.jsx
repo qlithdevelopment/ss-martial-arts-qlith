@@ -112,7 +112,7 @@ const ViewFaqModal = ({ isOpen, onClose, faq, onDelete }) => {
                   <HelpCircle size={12} /> Question
                 </p>
                 <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                  <p className="text-sm font-semibold text-gray-900 whitespace-pre-wrap leading-relaxed">
+                  <p className="text-sm font-semibold max-h-60 overflow-y-auto text-gray-900 whitespace-pre-wrap leading-relaxed">
                     {faq.question || "No question provided."}
                   </p>
                 </div>

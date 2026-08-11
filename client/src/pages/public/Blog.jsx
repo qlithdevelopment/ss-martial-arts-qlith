@@ -232,10 +232,10 @@ const BlogPage = () => {
                     <span className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-widest mb-4">
                       {finalFeatured[currentSlide].category}
                     </span>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0b1b24] mb-4 leading-tight tracking-tight">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl truncate font-bold text-[#0b1b24] mb-4 leading-tight tracking-tight">
                       {finalFeatured[currentSlide].title}
                     </h2>
-                    <p className="text-gray-600 mb-8 text-sm md:text-base lg:text-lg leading-relaxed line-clamp-3">
+                    <p className="text-gray-600 mb-8 text-sm md:text-base truncate line-clamp-5 text-wrap lg:text-lg leading-relaxed line-clamp-3">
                       {finalFeatured[currentSlide].short_description}
                     </p>
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
@@ -255,7 +255,7 @@ const BlogPage = () => {
                     <img
                       src={finalFeatured[currentSlide].featured_image}
                       alt={finalFeatured[currentSlide].title}
-                      className="w-full h-full object-cover object-center"
+                      className="w-full h-full object-cover object-top"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-white/10 to-transparent pointer-events-none"></div>
                   </div>
@@ -317,7 +317,7 @@ const BlogPage = () => {
                     <img
                       src={blog.featured_image}
                       alt={blog.title}
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                      className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
                       <span className="text-[10px] font-bold text-[#0b1b24] uppercase tracking-wider">
@@ -331,10 +331,10 @@ const BlogPage = () => {
                         {blog.posted_date}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors">
+                    <h3 className="text-xl font-bold truncate text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors">
                       {blog.title}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                    <p className="text-sm truncate text-gray-500 leading-relaxed line-clamp-3">
                       {blog.short_description}
                     </p>
                   </div>

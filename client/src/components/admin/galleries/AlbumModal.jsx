@@ -160,11 +160,14 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
       const newPreviews = validFiles.map(file => URL.createObjectURL(file));
       setGalleryPreviews(prev => [...prev, ...newPreviews]);
 
-      const newAlbumRemaining = albumRemainingSlots - validFiles.length;
-      const newGlobalRemaining = globalRemainingSlots - validFiles.length;
-      toast.success(
-        `${validFiles.length} images added. ${newAlbumRemaining} slots left in this album, total ${newGlobalRemaining} slots left in gallary.`
-      );
+      if (validFiles.length > 1) {
+        const newAlbumRemaining = albumRemainingSlots - validFiles.length;
+        const newGlobalRemaining = globalRemainingSlots - validFiles.length;
+        toast.success(
+          `${validFiles.length} images added. ${newAlbumRemaining} slots left in this album, total ${newGlobalRemaining} slots left in gallary.`,
+          { id: 'gallery-images-added' }
+        );
+      }
     }
 
     e.target.value = ''; // allows re-selecting the same file after removal
@@ -376,7 +379,7 @@ const AlbumModal = ({ isOpen, onClose, albumData = null, fetchAlbums, totalImage
                           <span className="text-[9px] font-bold">ADD PHOTOS</span>
                         </label>
                         {imageError && <span className='text-red-500 text-[10px]'>
-                          select at least one image 
+                          select at least one image
                         </span>
                         }
                       </div>
