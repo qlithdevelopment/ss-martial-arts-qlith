@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('venue')->nullable();
             $table->date('date')->nullable();
             $table->string('certificate_number')->nullable();
-            $table->json('certificated');
+            $table->json('certificated')->nullable();
             $table->timestamps();
         });
     }

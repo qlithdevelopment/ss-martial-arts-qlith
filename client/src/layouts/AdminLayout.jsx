@@ -83,20 +83,7 @@ const AdminLayout = () => {
         <main className="flex-1 p-4 mt-14 overflow-y-auto">
           <Outlet />
         </main>
-
-        {/* SCROLL TO TOP BUTTON */}
-        {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-[#f97316] text-white p-3.5 rounded-full shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] hover:bg-orange-600 hover:shadow-[0_6px_20px_rgba(249,115,22,0.23)] hover:scale-110 transition-all duration-300 z-50 flex items-center justify-center animate-fadeIn"
-            title="Scroll to Top"
-          >
-            <ChevronUp
-              className="w-5 h-5"
-              strokeWidth={3}
-            />
-          </button>
-        )}
+        
       </div>
       <PasswordResetModal
         isOpen={isPasswordModalOpen}

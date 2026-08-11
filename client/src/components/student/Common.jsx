@@ -46,22 +46,32 @@ export function InfoRow({ icon, label, value, valueClass = "" }) {
 
 export function ProfileSkeleton() {
   return (
-    <Card className="p-6 sm:p-8 animate-pulse">
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <div className="w-28 h-28 rounded-2xl bg-primary/10 dark:bg-slate-800 flex-shrink-0" />
-        <div className="flex flex-col md:items-start md:justify-start items-center justify-center w-full space-y-3">
-          <div className="h-8 bg-primary/10 dark:bg-slate-800 rounded-lg w-48" />
-          <div className="h-4 bg-slate-200/60 dark:bg-slate-700 rounded w-64" />
-          <div className="flex gap-2 mt-2">
-            <div className="h-7 w-24 bg-slate-200/60 dark:bg-slate-700 rounded-lg" />
-            <div className="h-7 w-32 bg-slate-200/60 dark:bg-slate-700 rounded-lg" />
+    <Card className="p-6 sm:p-8 flex flex-col md:flex-row md:items-start gap-6 animate-pulse">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start w-full md:flex-1 gap-6">
+        <div className="w-28 h-28 rounded-2xl bg-slate-200 dark:bg-slate-700 flex-shrink-0" />
+
+        <div className="flex-1 text-center sm:text-left min-w-0 w-full">
+
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2 justify-center sm:justify-start">
+            <div className="h-7 w-40 bg-slate-200 dark:bg-slate-700 rounded-md" />
+            <div className="h-5 w-16 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto sm:mx-0" />
+          </div>
+          <div className="h-3 w-48 bg-slate-200 dark:bg-slate-700 rounded mb-2 mx-auto sm:mx-0" />
+
+          <div className="h-3 w-56 bg-slate-200 dark:bg-slate-700 rounded mb-3 mx-auto sm:mx-0" />
+
+
+          <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+            <div className="h-7 w-24 bg-slate-200 dark:bg-slate-700 rounded-full" />
+            <div className="h-7 w-28 bg-slate-200 dark:bg-slate-700 rounded-full" />
           </div>
         </div>
       </div>
-      <div className="mt-6 pt-6 border-t border-white/60 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-16 bg-slate-200/50 dark:bg-slate-800 rounded-xl" />
-        ))}
+
+      <div className="w-full md:w-auto flex flex-col gap-4 justify-center md:justify-end md:items-start">
+
+        <div className="h-11 w-full sm:w-40 bg-slate-200 dark:bg-slate-700 rounded-xl" />
+        <div className="h-8 w-44 bg-slate-200 dark:bg-slate-700 rounded-lg" />
       </div>
     </Card>
   );

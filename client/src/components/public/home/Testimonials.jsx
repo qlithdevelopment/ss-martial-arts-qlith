@@ -73,10 +73,7 @@ const Testimonials = () => {
     };
     fetchTestimonials();
   }, []);
-
-  // Number of repeated column-sets to render. At least 3 (for a smooth,
-  // gapless looping strip); grows if there's enough real data to fill
-  // more unique sets, which in turn grows the section height/scroll length.
+  
   const numSets = useMemo(() => {
     if (!testimonialsData.length) return 3;
     const setsNeededForData = Math.ceil(testimonialsData.length / TESTIMONIALS_PER_SET);
@@ -179,29 +176,29 @@ const Testimonials = () => {
                   {/* Card 1: Quote Box */}
                   <div className="bg-white rounded-[20px] p-5 xl:p-6 shadow-2xl relative h-auto">
                     <QuoteIcon />
-                    <p className="text-[10px] xl:text-[11px] text-gray-600 mt-3 font-medium leading-relaxed">
+                    <p className="text-[10px] xl:text-[11px] text-gray-600 mt-3 font-medium leading-relaxed max-w-full max-h-16 xl:max-h-20 overflow-hidden line-clamp-4">
                       {getTestimonial(base + 0).text}
                     </p>
-                    <div className="flex items-center gap-3 mt-4 border-t border-gray-100 pt-3">
+                    <div className="flex items-center gap-3 mt-4 border-t border-gray-100 pt-3 min-w-0">
                       <img src={getImageUrl(getTestimonial(base + 0).image)} className="w-8 h-8 rounded-full object-cover shrink-0" alt="User" />
-                      <div>
-                        <h4 className="text-[10px] xl:text-[11px] font-bold text-gray-900">{getTestimonial(base + 0).name}</h4>
-                        <p className="text-[9px] text-[#0b1b24]">{getTestimonial(base + 0).role}</p>
+                      <div className="min-w-0">
+                        <h4 className="text-[10px] xl:text-[11px] font-bold text-gray-900 truncate max-w-full" title={getTestimonial(base + 0).name}>{getTestimonial(base + 0).name}</h4>
+                        <p className="text-[9px] text-[#0b1b24] truncate max-w-full" title={getTestimonial(base + 0).role}>{getTestimonial(base + 0).role}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Card 2: Square Text Box */}
                   <div className="bg-white rounded-[20px] p-5 xl:p-6 shadow-2xl h-auto flex flex-col justify-between">
-                    <p className="text-[11px] xl:text-[12px] text-gray-800 font-medium leading-relaxed mt-2">
+                    <p className="text-[11px] xl:text-[12px] text-gray-800 font-medium leading-relaxed mt-2 max-w-full max-h-20 xl:max-h-24 overflow-hidden line-clamp-4">
                       {getTestimonial(base + 1).text}
                     </p>
-                    <div className="flex items-center justify-between mt-4 xl:mt-6">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between mt-4 xl:mt-6 min-w-0">
+                      <div className="flex items-center gap-3 min-w-0">
                         <img src={getImageUrl(getTestimonial(base + 1).image)} className="w-8 h-8 xl:w-10 xl:h-10 rounded-full object-cover shrink-0" alt="User" />
-                        <div>
-                          <h4 className="text-[11px] xl:text-[12px] font-bold text-gray-900">{getTestimonial(base + 1).name}</h4>
-                          <p className="text-[9px] xl:text-[10px] text-gray-500">{getTestimonial(base + 1).role}</p>
+                        <div className="min-w-0">
+                          <h4 className="text-[11px] xl:text-[12px] font-bold text-gray-900 truncate max-w-full" title={getTestimonial(base + 1).name}>{getTestimonial(base + 1).name}</h4>
+                          <p className="text-[9px] xl:text-[10px] text-gray-500 truncate max-w-full" title={getTestimonial(base + 1).role}>{getTestimonial(base + 1).role}</p>
                         </div>
                       </div>
                     </div>
@@ -209,8 +206,8 @@ const Testimonials = () => {
 
                   {/* Card 3: Down Bubble */}
                   <div className="bg-white rounded-[20px] p-5 xl:p-6 shadow-2xl relative mt-2 h-auto after:content-[''] after:absolute after:-bottom-[15px] after:left-1/2 after:-translate-x-1/2 after:block after:w-0 after:border-x-[15px] after:border-x-transparent after:border-t-[15px] after:border-t-white after:border-b-0">
-                    <h4 className="text-center text-xs xl:text-sm font-black text-gray-900 mb-2">{getTestimonial(base + 2).title}</h4>
-                    <p className="text-[10px] xl:text-[11px] text-gray-600 text-center font-medium leading-relaxed">
+                    <h4 className="text-center text-xs xl:text-sm font-black text-gray-900 mb-2 truncate max-w-full" title={getTestimonial(base + 2).title}>{getTestimonial(base + 2).title}</h4>
+                    <p className="text-[10px] xl:text-[11px] text-gray-600 text-center font-medium leading-relaxed max-w-full max-h-16 overflow-hidden line-clamp-3">
                       {getTestimonial(base + 2).text}
                     </p>
                   </div>
@@ -226,8 +223,8 @@ const Testimonials = () => {
                     <div className="-mt-8 xl:-mt-6">
                       <Stars count={getTestimonial(base + 3).stars} />
                     </div>
-                    <h4 className="text-[12px] xl:text-[14px] font-black text-gray-900 mb-2 xl:mb-3">{getTestimonial(base + 3).title}</h4>
-                    <p className="text-[11px] xl:text-[12px] text-gray-600 font-medium leading-relaxed flex-1 pb-4">
+                    <h4 className="text-[12px] xl:text-[14px] font-black text-gray-900 mb-2 xl:mb-3 truncate max-w-full" title={getTestimonial(base + 3).title}>{getTestimonial(base + 3).title}</h4>
+                    <p className="text-[11px] xl:text-[12px] text-gray-600 font-medium leading-relaxed flex-1 pb-4 max-w-full max-h-28 overflow-hidden line-clamp-5">
                       {getTestimonial(base + 3).text}
                     </p>
                     <div className="mt-auto w-full text-right">
@@ -246,7 +243,7 @@ const Testimonials = () => {
                       <img src={getImageUrl(getTestimonial(base + 4).image)} className="w-full h-full object-cover" alt="Training" />
                     </div>
                     <div className="px-2 xl:px-3 pb-2 xl:pb-3">
-                      <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed text-center">
+                      <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed text-center max-w-full max-h-14 overflow-hidden line-clamp-3">
                         {getTestimonial(base + 4).text}
                       </p>
                     </div>
@@ -260,7 +257,7 @@ const Testimonials = () => {
                     <div className="mt-4">
                       <Stars count={getTestimonial(base + 5).stars} />
                     </div>
-                    <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed text-center mt-2">
+                    <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed text-center mt-2 max-w-full max-h-16 overflow-hidden line-clamp-3">
                       {getTestimonial(base + 5).text}
                     </p>
                   </div>
@@ -273,11 +270,11 @@ const Testimonials = () => {
                     <div className="absolute -top-[30px] xl:-top-[40px] right-6 xl:right-8">
                       <img src={getImageUrl(getTestimonial(base + 6).image)} className="w-10 h-10 xl:w-12 xl:h-12 rounded-full border-[3px] border-[#e0e1e5] shrink-0" alt="User" />
                     </div>
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-[11px] xl:text-[13px] font-black text-gray-900">{getTestimonial(base + 6).name}</h4>
+                    <div className="flex justify-between items-center mb-2 gap-2 min-w-0">
+                      <h4 className="text-[11px] xl:text-[13px] font-black text-gray-900 truncate max-w-[60%]" title={getTestimonial(base + 6).name}>{getTestimonial(base + 6).name}</h4>
                       <Stars count={getTestimonial(base + 6).stars} />
                     </div>
-                    <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed">
+                    <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed max-w-full max-h-16 overflow-hidden line-clamp-3">
                       {getTestimonial(base + 6).text}
                     </p>
                   </div>
@@ -285,9 +282,9 @@ const Testimonials = () => {
                   {/* Card 8: Wide Middle */}
                   <div className="bg-white rounded-[20px] p-5 xl:p-6 shadow-2xl flex items-center gap-3 xl:gap-4 h-auto">
                     <img src={getImageUrl(getTestimonial(base + 7).image)} className="w-16 h-16 xl:w-20 xl:h-20 rounded-lg object-cover shrink-0" alt="User" />
-                    <div>
+                    <div className="min-w-0">
                       <QuoteIcon />
-                      <p className="text-[10px] xl:text-[11px] text-gray-800 font-bold leading-relaxed mt-2">
+                      <p className="text-[10px] xl:text-[11px] text-gray-800 font-bold leading-relaxed mt-2 max-w-full max-h-16 overflow-hidden line-clamp-3">
                         {getTestimonial(base + 7).text}
                       </p>
                     </div>
@@ -295,12 +292,12 @@ const Testimonials = () => {
 
                   {/* Card 9: Wide Bottom */}
                   <div className="bg-white rounded-[20px] p-5 xl:p-6 shadow-2xl flex items-center justify-between gap-4 h-auto">
-                    <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed">
+                    <p className="text-[10px] xl:text-[11px] text-gray-600 font-medium leading-relaxed max-w-full max-h-16 overflow-hidden line-clamp-3">
                       {getTestimonial(base + 8).text}
                     </p>
-                    <div className="flex flex-col items-center shrink-0">
+                    <div className="flex flex-col items-center shrink-0 max-w-[35%] min-w-0">
                       <img src={getImageUrl(getTestimonial(base + 8).image)} className="w-10 h-10 xl:w-14 xl:h-14 rounded-full object-cover shadow-2xl mb-1 xl:mb-2 shrink-0" alt="User" />
-                      <h4 className="text-[9px] xl:text-[10px] font-bold text-gray-900">{getTestimonial(base + 8).name}</h4>
+                      <h4 className="text-[9px] xl:text-[10px] font-bold text-gray-900 truncate max-w-full" title={getTestimonial(base + 8).name}>{getTestimonial(base + 8).name}</h4>
                     </div>
                   </div>
                 </div>

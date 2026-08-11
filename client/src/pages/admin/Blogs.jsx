@@ -250,12 +250,12 @@ const Blogs = () => {
 
                 <h3
                   onClick={() => openViewModal(blog.id)}
-                  className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2 cursor-pointer hover:text-orange-600 transition-colors"
+                  className="text-lg font-bold truncate text-gray-900 leading-tight mb-2 line-clamp-2 cursor-pointer hover:text-orange-600 transition-colors"
                 >
                   {blog.title}
                 </h3>
 
-                <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">
+                <p className="text-sm text-gray-500 truncate line-clamp-2 mb-4 flex-1">
                   {blog.short_description}
                 </p>
 

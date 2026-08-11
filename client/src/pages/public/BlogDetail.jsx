@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useLocation,useNavigate } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight,ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import api from '../../api/axios';
 import { formatDate } from '../../components/CommonFormats.js';
 
@@ -17,11 +17,10 @@ const BlogBackButton = () => {
   return (
     <button
       onClick={handleBack}
-      className={`z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${
-        isAdmin
-          ? "relative  mb-8 lg:mb-44 lg:-ml-14"
-          : "relative w-20  my-8 "
-      }`}
+      className={`z-50 bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 text-gray-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-all ${isAdmin
+        ? "relative  mb-8 lg:mb-44 lg:-ml-14"
+        : "relative w-20  my-8 "
+        }`}
     >
       <ArrowLeft size={16} /> Back
     </button>
@@ -191,44 +190,51 @@ const BlogDetail = () => {
     <div className="w-full min-h-screenn  bg-[#f8f9fa] text-[#0b1b24] font-sans">
 
       {/* HERO SECTION */}
-      <div className="relative w-full  h-[50vh] md:h-[45vh] lg:h-[65vh] overflow-hidden">        
+      <div className="relative w-full  h-[50vh] md:h-[45vh] lg:h-[65vh] overflow-hidden">
         <div className="absolute inset-0 bg-black/50 z-10" />
         <img
           src={blog.featured_image}
           alt={blog.title}
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
-         
+
         <div className="absolute global-container !py-10 lg:!px-14 inset-0 z-20 flex flex-col justify-end pb-12 md:pb-24">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="max-w-4xl"
+              className="max-w-full"
             >
-               <BlogBackButton />
+              <BlogBackButton />
               <div className="flex items-center gap-3 mb-4">
                 <span className="bg-primary text-white text-[10px] md:text-xs font-bold px-3 py-1 uppercase tracking-widest rounded-sm shadow-md">
                   {formatCategory(blog?.category)}
                 </span>
                 <span className="text-white text-xs md:text-sm font-medium tracking-wide drop-shadow-md">
-                  
-                    {formatDate(blog?.posted_date)}
-                  
+
+                  {formatDate(blog?.posted_date)}
+
                 </span>
               </div>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight  mb-4 drop-shadow-lg">
+              <h1 className="text-3xl truncate md:text-5xl max-w-full lg:text-6xl font-black text-white leading-tight tracking-tight  mb-4 drop-shadow-lg">
                 {blog?.title}
               </h1>
-              <p className="text-lg md:text-xl text-gray-100 font-medium max-w-2xl drop-shadow-md border-l-4 border-primary pl-4">
+              <p className="text-lg md:text-xl max-w-full text-wrap line-clamp-3 truncate text-gray-100 font-medium max-w-2xl drop-shadow-md border-l-4 border-primary pl-4">
                 {blog?.short_description}
               </p>
             </motion.div>
           </div>
         </div>
       </div>
-
+      <div className='global-container lg:!px-23 pt-18'>
+        <h1 className="text-lg md:text-xl max-h-20 overflow-y-auto max-w-full overflow-x-hidden scrollbar-track-transparent lg:text-2xl font-black text-black leading-tight tracking-tight  mb-4 drop-shadow-lg">
+          {blog?.title}
+        </h1>
+        <p className="text-md md:text-md max-h-30 overflow-x-hidden scrollbar-track-transparent max-w-full overflow-y-auto text-wrap  text-gray-400 font-medium max-w-2xl drop-shadow-md border-l-4 border-primary pl-4">
+          {blog?.short_description}
+        </p>
+      </div>
       {/* CONTENT BLOCKS */}
       <div className="w-full global-container lg:!px-14 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -243,21 +249,29 @@ const BlogDetail = () => {
               const hasKeypoints = block.keypoints && Array.isArray(block.keypoints) && block.keypoints.length > 0;
               const hasImage = block.image && block.image.trim() !== '';
 
+              // Alternate image side: even index -> image on right, odd index -> image on left
+              const imageOnLeft = hasImage && index % 2 === 1;
+
               return (
                 <div key={index} className="space-y-6">
                   {/* Block Title */}
                   {hasTitle && (
-                    <h2 className="text-2xl md:text-4xl font-black tracking-tight text-[#0b1b24] uppercase border-b pb-3 border-gray-200">
+                    <h2 className="text-2xl truncate md:text-4xl font-black tracking-tight text-[#0b1b24] uppercase border-b pb-3 border-gray-200">
                       {block.title}
                     </h2>
                   )}
+
                   <div className={`grid grid-cols-1 ${hasImage ? 'lg:grid-cols-3' : 'grid-cols-1'} gap-8 items-start`}>
+
                     {/* Description + keypoints */}
-                    <div className={hasImage ? 'lg:col-span-2 space-y-4' : 'space-y-4'}>
+                    <div
+                      className={`${hasImage ? 'lg:col-span-2 space-y-4' : 'space-y-4'} ${imageOnLeft ? 'lg:order-2' : 'lg:order-1'
+                        }`}
+                    >
                       {Array.isArray(block.description) ? (
                         block.description.map((paragraph, pIdx) => (
                           paragraph && paragraph.trim() !== '' && (
-                            <p key={pIdx} className="text-gray-600 text-base md:text-lg leading-relaxed">
+                            <p key={pIdx} className="text-gray-600 truncate text-base md:text-lg leading-relaxed">
                               {paragraph}
                             </p>
                           )
@@ -285,9 +299,12 @@ const BlogDetail = () => {
                       )}
                     </div>
 
-                    {/* Optional side image */}
+                    {/* Optional side image — alternates left/right per block */}
                     {hasImage && (
-                      <div className="lg:col-span-1 rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-gray-50 aspect-[4/3] lg:aspect-square">
+                      <div
+                        className={`lg:col-span-1 rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-gray-50 aspect-[4/3] lg:aspect-square ${imageOnLeft ? 'lg:order-1' : 'lg:order-2'
+                          }`}
+                      >
                         <img
                           src={block.image}
                           alt={block.title || "Section visual"}
@@ -340,11 +357,11 @@ const BlogDetail = () => {
                     </div>
                     <div className="p-6 md:p-8 flex flex-col flex-grow">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">                         
-                            {item.posted_date}                          
+                        <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                          {item.posted_date}
                         </span>
                       </div>
-                      <h4 className="text-md font-bold text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
+                      <h4 className="text-md font-bold truncate max-w-lg text-[#0b1b24] leading-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
                         {item.title}
                       </h4>
                       <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">

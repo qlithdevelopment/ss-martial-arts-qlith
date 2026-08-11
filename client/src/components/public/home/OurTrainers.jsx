@@ -1,5 +1,3 @@
-
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -132,22 +130,35 @@ const OurTrainers = () => {
 
                   {/* BACKGROUND TEXT EFFECT */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden mix-blend-overlay opacity-30">
-                    <h1 className="text-[25vw] font-black text-white whitespace-nowrap">
+                    <h1 className="text-[25vw] font-black text-white whitespace-nowrap truncate max-w-[90vw]">
                       {current.title}
                     </h1>
                   </div>
 
                   {/* LEFT CONTENT */}
                   <div className="w-full md:w-1/3 flex flex-col justify-center px-6 md:pl-32 md:pr-4 h-[30vh] md:h-full relative z-20 pt-12 md:pt-0">
-                    <p className="text-[#f97316] tracking-[0.3em] text-[10px] md:text-xs font-bold mb-2 md:mb-4 uppercase">
+                    <p
+                      className="text-[#f97316] tracking-[0.3em] text-[10px] md:text-xs font-bold mb-2 md:mb-4 uppercase truncate max-w-[220px] md:max-w-xs"
+                      title={current.subtitle}
+                    >
                       {current.subtitle}
                     </p>
-                    <h1 className="text-4xl md:text-[70px] font-black text-white tracking-widest uppercase mb-2 md:mb-6 leading-none drop-shadow-2xl relative">
-                      <span className="relative z-10">{current.title}</span>
-                      <span className="absolute top-0 left-[3px] -z-10 text-[#26c0ff] opacity-50 animate-pulse">{current.title}</span>
+                    <h1 className="text-4xl md:text-[70px] font-black text-white tracking-widest uppercase mb-2 md:mb-6 leading-none drop-shadow-2xl relative max-w-full">
+                      <span
+                        className="relative z-10 block truncate max-w-[280px] md:max-w-xl"
+                        title={current.title}
+                      >
+                        {current.title}
+                      </span>
+                      <span
+                        className="absolute top-0 left-[3px] -z-10 text-[#26c0ff] opacity-50 animate-pulse block truncate max-w-[280px] md:max-w-xl"
+                        aria-hidden="true"
+                      >
+                        {current.title}
+                      </span>
                     </h1>
                     <div className="h-[2px] bg-[#26c0ff] mb-2 md:mb-6 w-[40px]" />
-                    <p className="text-gray-300 text-[10px] md:text-base leading-relaxed md:leading-loose tracking-wider max-w-md">
+                    <p className="text-gray-300 text-[10px] md:text-base leading-relaxed md:leading-loose tracking-wider mr-3 pr-3 max-w-md max-h-40 overflow-hidden line-clamp-5">
                       {current.description}
                     </p>
                   </div>
@@ -166,14 +177,17 @@ const OurTrainers = () => {
                     <h4 className="text-white/70 font-black text-[10px] md:text-sm uppercase tracking-widest mb-1 md:mb-2">
                       What They Teach
                     </h4>
-                    <p className="text-white font-black text-sm md:text-2xl mb-2 md:mb-8 drop-shadow-md uppercase tracking-wide">
+                    <p
+                      className="text-white font-black text-sm md:text-2xl mb-2 md:mb-8 drop-shadow-md uppercase tracking-wide truncate max-w-[240px] md:max-w-sm"
+                      title={current.teach}
+                    >
                       {current.teach}
                     </p>
                     <div className="h-[2px] w-12 bg-black/20 mb-2 md:mb-8" />
                     <h4 className="text-white/70 font-black text-[10px] md:text-sm uppercase tracking-widest mb-1 md:mb-2">
                       Experience
                     </h4>
-                    <p className="text-white/90 font-medium text-[10px] md:text-sm leading-relaxed max-w-xs drop-shadow-md">
+                    <p className="text-white/90 font-medium text-[10px] md:text-sm leading-relaxed max-w-xs max-h-24 overflow-hidden line-clamp-3 drop-shadow-md">
                       {current.experience}
                     </p>
                   </div>
@@ -187,10 +201,10 @@ const OurTrainers = () => {
                   <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#f97316] text-white flex items-center justify-center group-hover:scale-110 group-hover:bg-[#26c0ff] transition-all duration-500 shadow-xl">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                   </div>
-                  <h2 className="text-base md:text-3xl font-black text-white tracking-widest uppercase">
+                  <h2 className="text-base md:text-3xl font-black text-white tracking-widest uppercase max-w-[100%]">
                     See More
                   </h2>
-                  <p className="text-white/50 text-[8px] md:text-xs uppercase tracking-widest text-center px-2">Meet all trainers</p>
+                  <p className="text-white/50 text-[8px] md:text-xs uppercase tracking-widest text-center px-2 truncate max-w-[90%]">Meet all trainers</p>
                 </Link>
               </div>
             </>

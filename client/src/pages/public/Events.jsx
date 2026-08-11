@@ -79,14 +79,14 @@ const Events = () => {
               <h3 className="text-[#f97316] font-bold tracking-[0.2em] uppercase text-sm">Event Schedule</h3>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-7xl font-black uppercase leading-none tracking-tighter text-black">
-            FOLLOW  <span className="text-[#26c0ff]">EVENTS</span>
+              FOLLOW  <span className="text-[#26c0ff]">EVENTS</span>
             </h2>
           </div>
         </motion.div>
       </div>
 
       {/* Events List */}
-      <div className="global-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="global-container lg:!px-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {loading ? (
           Array.from({ length: 4 }).map((_, idx) => (
             <div
@@ -117,7 +117,7 @@ const Events = () => {
             viewport={{ once: true }}
             transition={{ delay: idx * 0.1 }}
             onClick={() => { setSelectedEventId(event.id); setModalMode('details'); }}
-            className="group relative bg-black rounded-[20px] overflow-hidden border border-white/5 h-[340px] lg:h-[400px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] w-full flex flex-col"
+            className="group relative bg-black rounded-[20px] overflow-hidden border border-white/5 h-[340px] lg:h-[340px] cursor-pointer shadow-[0_0_30px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] w-full flex flex-col"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-multiply z-10 pointer-events-none"></div>
@@ -183,107 +183,113 @@ const Events = () => {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", stiffness: 100, damping: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className={`w-full ${modalMode === 'register' ? 'max-w-[400px]' : 'max-w-[600px]'} max-h-[90vh] bg-white rounded-[24px] overflow-hidden relative shadow-2xl border border-gray-200 my-auto flex flex-col`}
+              className={`w-full ${modalMode === 'register' ? 'max-w-2xl' : 'max-w-4xl'} max-h-[90vh] bg-white rounded-[24px] overflow-hidden relative shadow-2xl border border-gray-200 my-auto flex flex-col md:flex-row`}
             >
 
               <button
                 onClick={() => setSelectedEventId(null)}
-                className="absolute top-4 right-4 z-50 w-8 h-8 bg-white/80 backdrop-blur-sm shadow-md hover:bg-[#f97316] text-[#0b1b24] hover:text-white rounded-full flex items-center justify-center transition-colors"
+                className="absolute top-1 right-1 z-50 w-8 h-8 bg-white/80 backdrop-blur-sm shadow-md hover:bg-[#f97316] text-[#0b1b24] hover:text-white rounded-full flex items-center justify-center transition-colors"
               >
                 <X size={16} />
               </button>
 
-              {/* Modal Banner */}
-              <div className={`w-full ${modalMode === 'register' ? 'h-[80px]' : 'h-[100px] md:h-[120px]'} shrink-0 relative`}>
-                <div className="absolute inset-0 bg-black/50 z-10 pointer-events-none"></div>
+              {/* LEFT: Image */}
+              <div className="relative w-full md:w-2/5 h-56 md:h-auto shrink-0">
+                <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none"></div>
                 <img
                   src={getImageUrl(selectedEvent.image)}
                   alt={selectedEvent.name}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-0 left-0 w-full p-4 md:p-5 z-20 bg-gradient-to-t from-black to-transparent">
-                  <h2 className={`${modalMode === 'register' ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'} font-black text-white uppercase tracking-tighter line-clamp-1`}>
-                    {selectedEvent.name}
-                  </h2>
+                  <div className="inline-block px-2 py-0.5 bg-[#f97316] w-fit text-white font-black text-[9px] tracking-widest uppercase rounded shadow-lg mb-1 truncate max-w-full">
+                    {selectedEvent.date}
+                  </div>
+
                 </div>
               </div>
 
-              {/* Modal Content */}
-              {modalMode === 'details' ? (
-                <div className="p-4 md:p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+              {/* RIGHT: Content */}
+              <div className="w-full md:w-3/5 flex flex-col min-w-0 overflow-y-auto custom-scrollbar">
+                {modalMode === 'details' ? (
+                  <div className="p-4 md:p-6 flex flex-col gap-6">
 
-                  {/* Event Details */}
-                  <div className="flex flex-col gap-5">
+                    {/* Event Details */}
+                    <div className="flex flex-col gap-5">
 
-                    {/* Quick Info Bar */}
-                    <div className="flex flex-wrap gap-3 bg-[#0b1b24] p-3 rounded-xl border border-gray-200 shadow-sm text-xs justify-center md:justify-start">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar size={14} className="text-[#f97316]" />
-                        <span className="text-white font-medium tracking-wide">{selectedEvent.date}</span>
+                      {/* Quick Info Bar */}
+                      <div className="flex flex-wrap gap-3 bg-[#0b1b24] p-3 mr-3 rounded-xl border border-gray-200 shadow-sm text-xs justify-center md:justify-start">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Calendar size={14} className="text-[#f97316] shrink-0" />
+                          <span className="text-white font-medium tracking-wide truncate max-w-full">{selectedEvent.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Clock size={14} className="text-[#f97316] shrink-0" />
+                          <span className="text-white font-medium tracking-wide truncate max-w-full">{selectedEvent.timing}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Clock size={14} className="text-[#f97316]" />
-                        <span className="text-white font-medium tracking-wide">{selectedEvent.timing}</span>
+
+                      <div className="min-w-0">
+                        <h2 className="text-lg md:text-2xl font-black text-black uppercase tracking-tighter max-h-16 overflow-y-auto max-w-full">
+                          {selectedEvent.name}
+                        </h2>
+                        <h3 className="text-[#26c0ff] text-base font-black uppercase tracking-wider border-b border-gray-200 pb-1 mb-2">
+                          About The Event
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed font-medium text-xs md:text-sm whitespace-pre-wrap max-w-full">
+                          {selectedEvent.description || 'No description provided.'}
+                        </p>
                       </div>
+
+                      {/* Action Button */}
+                      {/* <div className="mt-4 border-t border-gray-100 pt-5">
+                        <button
+                          onClick={() => setModalMode('register')}
+                          className="w-full bg-[#f97316] hover:bg-orange-600 text-white font-black uppercase tracking-widest py-3.5 md:py-4 text-sm rounded-xl transition-all shadow-lg shadow-[#f97316]/30 hover:shadow-[#f97316]/50 hover:-translate-y-1 flex items-center justify-center gap-2"
+                        >
+                          Register For This Event <ChevronRight size={16} />
+                        </button>
+                      </div> */}
+
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-5 md:p-6 bg-[#f9fafb] flex flex-col gap-4">
+                    <div className="min-w-0">
+                      <h3 className="text-xl font-black text-[#26c0ff] uppercase tracking-tighter mb-1 truncate max-w-full">Register Now</h3>
+                      <p className="text-gray-500 text-xs font-medium">Secure your spot. Limited availability.</p>
                     </div>
 
-                    <div>
-                      <h3 className="text-[#26c0ff] text-base font-black uppercase tracking-wider border-b border-gray-200 pb-1 mb-2">
-                        About The Event
-                      </h3>
-                      <p className="text-gray-600 leading-relaxed font-medium text-xs md:text-sm whitespace-pre-wrap">
-                        {selectedEvent.description || 'No description provided.'}
-                      </p>
-                    </div>
+                    <form className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Full Name</label>
+                        <input type="text" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="John Doe" />
+                      </div>
 
-                    {/* Action Button */}
-                    <div className="mt-4 border-t border-gray-100 pt-5">
-                      <button
-                        onClick={() => setModalMode('register')}
-                        className="w-full bg-[#f97316] hover:bg-orange-600 text-white font-black uppercase tracking-widest py-3.5 md:py-4 text-sm rounded-xl transition-all shadow-lg shadow-[#f97316]/30 hover:shadow-[#f97316]/50 hover:-translate-y-1 flex items-center justify-center gap-2"
-                      >
-                        Register For This Event <ChevronRight size={16} />
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Email Address</label>
+                        <input type="email" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="john@example.com" />
+                      </div>
+
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Phone Number</label>
+                        <input type="tel" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="+1 (555) 000-0000" />
+                      </div>
+
+                      <button type="button" className="mt-4 w-full bg-[#26c0ff] hover:bg-[#0a192f] text-white font-black uppercase tracking-widest py-3 md:py-3.5 text-sm rounded-lg transition-all shadow shadow-[#26c0ff]/30 flex items-center justify-center gap-2">
+                        Confirm Registration <Send size={14} className="text-[#f97316]" />
                       </button>
-                    </div>
-
+                    </form>
                   </div>
-                </div>
-              ) : (
-                <div className="p-5 md:p-6 bg-[#f9fafb] flex flex-col gap-4 overflow-y-auto custom-scrollbar">
-                  <div>
-                    <h3 className="text-xl font-black text-[#26c0ff] uppercase tracking-tighter mb-1">Register Now</h3>
-                    <p className="text-gray-500 text-xs font-medium">Secure your spot. Limited availability.</p>
-                  </div>
-
-                  <form className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Full Name</label>
-                      <input type="text" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="John Doe" />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Email Address</label>
-                      <input type="email" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="john@example.com" />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[#0b1b24]/50 text-[9px] font-bold uppercase tracking-widest">Phone Number</label>
-                      <input type="tel" className="w-full bg-white border border-gray-200 rounded-lg p-2 md:p-2.5 text-sm text-[#0b1b24] placeholder-gray-400 focus:outline-none focus:border-[#f97316]/50 focus:ring-2 focus:ring-[#f97316]/20 transition-all shadow-sm" placeholder="+1 (555) 000-0000" />
-                    </div>
-
-                    <button type="button" className="mt-4 w-full bg-[#26c0ff] hover:bg-[#0a192f] text-white font-black uppercase tracking-widest py-3 md:py-3.5 text-sm rounded-lg transition-all shadow shadow-[#26c0ff]/30 flex items-center justify-center gap-2">
-                      Confirm Registration <Send size={14} className="text-[#f97316]" />
-                    </button>
-                  </form>
-                </div>
-              )}
+                )}
+              </div>
 
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
       {/* VIEW ALL BUTTON */}
-     
+
 
     </div>
   );

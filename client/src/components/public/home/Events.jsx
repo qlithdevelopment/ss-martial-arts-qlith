@@ -170,7 +170,7 @@ const Events = () => {
                           <p className="text-white/90 text-[10px] md:text-xs font-bold tracking-widest uppercase mb-1 md:mb-2">
                             {evt.date}
                           </p>
-                          <h3 className="text-[16px] leading-[1.1] md:text-2xl lg:text-3xl font-black md:leading-tight tracking-tight mb-1 md:mb-2 text-white drop-shadow-sm w-full text-wrap pr-2 md:pr-0">
+                          <h3 className="text-[16px] leading-[1.1] md:text-2xl truncate line-clamp-2 text-wrap max-w-full  lg:text-3xl font-black md:leading-tight tracking-tight mb-1 md:mb-2 text-white drop-shadow-sm w-full pr-2 md:pr-0">
                             {evt.name}
                           </h3>
                           <p className="text-white/80 text-[10px] md:text-xs font-medium mb-3 md:mb-4 line-clamp-2 max-w-[95%] md:max-w-md">
@@ -178,13 +178,13 @@ const Events = () => {
                           </p>
 
                           <div className="flex flex-wrap items-center gap-3 w-full mt-auto">
-                            <button
+                            {/* <button
                               onClick={() => { setSelectedEventId(evt.id); setIsModalOpen(true); }}
                               className="px-5 py-2.5 md:py-3 rounded-full border border-white bg-white backdrop-blur-sm flex items-center gap-1.5 hover:bg-white/90 text-black transition-all text-[10px] md:text-xs font-bold"
                             >
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
                               Register
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                       ))}

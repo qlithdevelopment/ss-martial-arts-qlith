@@ -117,8 +117,8 @@ const Faqs = () => {
       ),
       render: (_, row) => (
         <div className="py-1">
-          <p className="font-bold text-gray-900 leading-tight mb-1">{row.question}</p>
-          <p className="text-sm text-gray-500 truncate max-w-32 line-clamp-2">{row.answer}</p>
+          <p className="font-bold max-w-80 truncate text-gray-900 leading-tight mb-1">{row.question}</p>
+          <p className="text-sm text-gray-500 max-w-60  truncate line-clamp-2">{row.answer}</p>
         </div>
       ),
     },

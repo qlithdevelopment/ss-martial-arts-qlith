@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kyu_no');
             $table->string('belt_position');
-            $table->string('certification_no')->unique();
+            $table->string('certification_no')->nullable()->unique();;
             $table->date('date_of_issue');
 
             $table->foreignId('user_id')

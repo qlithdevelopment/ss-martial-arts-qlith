@@ -50,7 +50,11 @@ const ViewBatch = ({ batch, onBack }) => {
       header: "Reg No",
       accessor: "reg_no",
       skeleton: () => <div className="h-4 bg-gray-200 rounded w-16"></div>,
-      render: (val) => val || "N/A",
+      render: (val) => (
+        <span className="block max-w-[90px] truncate" title={val || "N/A"}>
+          {val || "N/A"}
+        </span>
+      ),
     },
     {
       header: "Student Name",
@@ -69,7 +73,7 @@ const ViewBatch = ({ batch, onBack }) => {
           ? getAvatarUrlByName(row.avatar)
           : null;
         return (
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 max-w-[220px]">
             <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden border border-orange-200">
               {avatarImageUrl ? (
                 <img
@@ -81,9 +85,17 @@ const ViewBatch = ({ batch, onBack }) => {
                 val?.charAt(0) || "S"
               )}
             </div>
-            <div>
-              <p className="font-semibold text-gray-900 leading-tight">{val}</p>
-              <p className="text-[11px] text-gray-400">
+            <div className="min-w-0">
+              <p
+                className="font-semibold text-gray-900 leading-tight truncate"
+                title={val}
+              >
+                {val}
+              </p>
+              <p
+                className="text-[11px] text-gray-400 truncate"
+                title={row.email || "No email"}
+              >
                 {row.email || "No email"}
               </p>
             </div>
@@ -95,20 +107,34 @@ const ViewBatch = ({ batch, onBack }) => {
       header: "Mobile Number",
       accessor: "mobile_number",
       skeleton: () => <div className="h-4 bg-gray-200 rounded w-24"></div>,
-      render: (val) => val || "N/A",
+      render: (val) => (
+        <span className="block max-w-[130px] truncate" title={val || "N/A"}>
+          {val || "N/A"}
+        </span>
+      ),
     },
     {
       header: "Gender",
       accessor: "gender",
       skeleton: () => <div className="h-4 bg-gray-200 rounded w-12"></div>,
-      render: (val) => <span className="capitalize">{val || "N/A"}</span>,
+      render: (val) => (
+        <span
+          className="block max-w-[90px] truncate capitalize"
+          title={val || "N/A"}
+        >
+          {val || "N/A"}
+        </span>
+      ),
     },
     {
       header: "Belt",
       accessor: "belt",
       skeleton: () => <div className="h-5 bg-gray-200 rounded w-16"></div>,
       render: (val) => (
-        <span className="px-2 py-0.5 text-[11px] font-semibold bg-gray-100 text-gray-700 rounded">
+        <span
+          className="inline-block max-w-[100px] truncate align-bottom px-2 py-0.5 text-[11px] font-semibold bg-gray-100 text-gray-700 rounded"
+          title={val || "N/A"}
+        >
           {val || "N/A"}
         </span>
       ),
@@ -120,15 +146,17 @@ const ViewBatch = ({ batch, onBack }) => {
       render: (val) => {
         const isActive =
           val === "1" || val === 1 || val === true || val === "active";
+        const label = isActive ? "ACTIVE" : "INACTIVE";
         return (
           <span
-            className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase ${
+            className={`inline-block max-w-[100px] truncate align-bottom px-2 py-0.5 text-[10px] font-bold rounded-full uppercase ${
               isActive
                 ? "bg-emerald-50 text-emerald-600"
                 : "bg-rose-50 text-rose-600"
             }`}
+            title={label}
           >
-            {isActive ? "ACTIVE" : "INACTIVE"}
+            {label}
           </span>
         );
       },
@@ -138,13 +166,15 @@ const ViewBatch = ({ batch, onBack }) => {
       accessor: "belt",
       skeleton: () => <div className="h-5 bg-gray-200 rounded w-16"></div>,
       render: (val, row) => (
-        <button
-          onClick={() => navigate(`/admin/students/${row.id}`)}
-          className="px-2 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
-          title="View Details"
-        >
-          <Eye size={16} />
-        </button>
+        <div className="max-w-[60px] truncate">
+          <button
+            onClick={() => navigate(`/admin/students/${row.id}`)}
+            className="px-2 py-1.5 text-xs font-bold text-[#f97316] bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100 flex items-center gap-1"
+            title="View Details"
+          >
+            <Eye size={16} />
+          </button>
+        </div>
       ),
     },
   ];
@@ -221,7 +251,7 @@ const ViewBatch = ({ batch, onBack }) => {
               <Undo2 size={15} />
             </button>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-gray-900">
+              <h1 className="text-base truncate max-w-2xl font-bold text-gray-900">
                 {batchData.name}
               </h1>
               <span

@@ -45,7 +45,7 @@ class CertificateController extends Controller
             'medals' => 'nullable|string|max:255',
             'venue' => 'nullable|string|max:255',
             'certificate_number' => 'nullable|string|max:255',
-            'certificated' => 'required|array|min:1',
+            'certificated' => 'nullable|array|min:1',
             'certificated.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096', // supports PDFs/images up to 4MB each
         ]);
 

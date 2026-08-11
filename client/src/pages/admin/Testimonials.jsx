@@ -197,13 +197,13 @@ const Testimonials = () => {
                                 </div>
 
                                 {testimonial.role && (
-                                    <p className="text-xs font-bold text-orange-500 uppercase tracking-wide mb-2">
+                                    <p className="text-xs font-bold line-clamp-1 max-w-80 text-orange-500 uppercase tracking-wide mb-2">
                                         {testimonial.role}
                                     </p>
                                 )}
 
                                 {testimonial.title && (
-                                    <p className="text-sm font-bold text-gray-800 mb-1 line-clamp-1">
+                                    <p className="text-sm font-bold text-gray-800 mb-1 line-clamp-2 h-10">
                                         {testimonial.title}
                                     </p>
                                 )}

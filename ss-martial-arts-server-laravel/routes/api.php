@@ -93,7 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
 
         Route::post('/events', [EventController::class, 'store']);
-        Route::post('/events/{id}', [EventController::class, 'update']);
+        Route::put('/events/{id}', [EventController::class, 'update']);
         Route::delete('/events/{id}', [EventController::class, 'destroy']);
 
         Route::post('/blogs', [BlogController::class, 'store']);

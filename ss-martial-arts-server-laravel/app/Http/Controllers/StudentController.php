@@ -23,6 +23,8 @@ class StudentController extends Controller
             }
 
             $search = $request->query('search');
+            $batchId = $request->query('batch_id');
+            $paymentStatus = $request->query('payment_status'); // 'paid' | 'pending'
 
             $query = User::leftJoin('batches', 'users.batch_id', '=', 'batches.id')
                 ->where('users.role', 'student')
@@ -46,8 +48,10 @@ class StudentController extends Controller
                     'users.sensei',
                     'users.belt',
                     'users.avatar',
+                    'users.notes',
                     'users.total_fee',
                     'users.status',
+                    'users.is_full_payment',
                     'users.id_proof_name',
                     'users.id_proof_number',
                     'users.created_at',
@@ -57,13 +61,34 @@ class StudentController extends Controller
 
             // Apply search filter if search parameter is present
             if (!empty($search)) {
-                $query->where(function ($q) use ($search) {
+                $normalizedSearch = strtolower(trim($search));               
+                $fullyPaidPhrases = ['fully paid', 'full payment', 'full paid', 'paid'];
+                $paymentPendingPhrases = ['payment pending', 'pending', 'not fully paid', 'unpaid', 'due'];
+
+                $query->where(function ($q) use ($search, $normalizedSearch, $fullyPaidPhrases, $paymentPendingPhrases) {
                     $q->Where('users.reg_no', 'LIKE', "%{$search}%")
                         ->orWhere('users.email', 'LIKE', "%{$search}%")
                         ->orWhere('users.name', 'LIKE', "%{$search}%")
                         ->orWhere('users.belt', 'LIKE', "%{$search}%")
                         ->orWhere('batches.name', 'LIKE', "%{$search}%");
+
+                    if (in_array($normalizedSearch, $fullyPaidPhrases, true)) {
+                        $q->orWhere('users.is_full_payment', true);
+                    } elseif (in_array($normalizedSearch, $paymentPendingPhrases, true)) {
+                        $q->orWhere('users.is_full_payment', false);
+                    }
                 });
+            }
+
+            // Dedicated filter controls (separate from the free-text search above)
+            if (!empty($batchId)) {
+                $query->where('users.batch_id', $batchId);
+            }
+
+            if ($paymentStatus === 'paid') {
+                $query->where('users.is_full_payment', true);
+            } elseif ($paymentStatus === 'pending') {
+                $query->where('users.is_full_payment', false);
             }
 
             $students = $query->latest('users.created_at')->paginate($perPage);

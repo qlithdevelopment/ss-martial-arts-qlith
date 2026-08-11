@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, User, Plus, Users, Mail, Award, BookOpen, Calendar, IndianRupee, FileText, X, Edit, Trash2, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine, IdCard, Activity, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, User, Plus, Image, Users, Mail, Award, StickyNote, BookOpen, Calendar, IndianRupee, FileText, X, Edit, Trash2, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine, IdCard, Activity, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../api/axios';
 import { getBeltColor } from '../../components/CommonFormats';
@@ -28,6 +28,7 @@ const StudentView = () => {
 
   // Modals state
   const [isBeltModalOpen, setIsBeltModalOpen] = useState(false);
+  const [isBeltEditMode, setIsBeltEditMode] = useState(false);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [editingCert, setEditingCert] = useState(null); // null = add mode, cert object = edit mode
   const [viewingCert, setViewingCert] = useState(null);
@@ -38,6 +39,7 @@ const StudentView = () => {
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
   const [editingFee, setEditingFee] = useState(null);
   const [feeid, setfeeId] = useState(null);
+  const [beltToEditPosition, setBeltToEditPosition] = useState(null);
 
   // Belt delete state
   const [isDeleteBeltModalOpen, setIsDeleteBeltModalOpen] = useState(false);
@@ -189,47 +191,52 @@ const StudentView = () => {
 
   const StudentViewSkeleton = () => (
     <div className="w-full animate-fadeIn">
-      {/* Header Skeleton */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
-          <Link to="/admin/students" className="p-2 bg-white border border-gray-200 text-gray-600 rounded-full hover:bg-gray-50 transition-colors">
-            <ArrowLeft size={20} />
-          </Link>
+          <div className="w-10 h-10 rounded-full bg-white border border-gray-200 animate-pulse" />
           <div>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Student Profile</h1>
-            <p className="text-sm text-gray-500 font-medium">Manage student details, belts, and certificates</p>
+            <div className="h-6 bg-gray-200 rounded w-40 mb-2 animate-pulse" />
+            <div className="h-3.5 bg-gray-200 rounded w-56 animate-pulse" />
           </div>
         </div>
         <div className="flex justify-center gap-2">
-          <div className="h-8 w-28 bg-gray-200 rounded-lg animate-pulse" />
+          <div className="h-11 w-28 bg-gray-200 rounded-xl animate-pulse" />
           <div className="h-8 w-32 bg-gray-200 rounded-lg animate-pulse" />
+          <div className="h-8 w-40 bg-gray-200 rounded-lg animate-pulse" />
         </div>
       </div>
 
-      {/* Top Row Skeleton */}
+      {/* Top Row: Profile Summary + Personal Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch mb-6">
-        {/* Profile Summary Skeleton */}
+
+        {/* Profile Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm h-full flex flex-col overflow-hidden">
-            <div className="p-6 text-center flex flex-col items-center shrink-0">
-              <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse mb-4" />
-              <div className="h-5 bg-gray-200 rounded w-32 mb-2 animate-pulse" />
-              <div className="h-3.5 bg-gray-200 rounded w-40 mb-3 animate-pulse" />
+            <div className="p-6 pb-0 text-center shrink-0">
+              <div className="w-24 h-24 rounded-full bg-gray-200 animate-pulse mx-auto mb-4" />
+              <div className="h-5 bg-gray-200 rounded w-32 mx-auto mb-2 animate-pulse" />
+              <div className="h-3.5 bg-gray-200 rounded w-44 mx-auto mb-3 animate-pulse" />
               <div className="flex items-center justify-center gap-2">
                 <div className="h-5 bg-gray-200 rounded-full w-20 animate-pulse" />
                 <div className="h-5 bg-gray-200 rounded-full w-16 animate-pulse" />
               </div>
-              <div>
-                <div className="h-8 bg-gray-200 rounded-lg w-52 mt-4 mx-auto animate-pulse" />
+
+              {/* Payment toggle */}
+              <div className="border-t border-gray-50 mt-4 pt-3 pb-4">
+                <div className="h-2.5 bg-gray-200 rounded w-32 mb-2 animate-pulse" />
+                <div className="h-11 bg-gray-100 rounded-xl w-full animate-pulse" />
               </div>
             </div>
+
+            {/* Quick Facts x5 */}
             <div className="border-t border-gray-50 px-6 py-5 flex flex-col gap-4 flex-1">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-gray-200 animate-pulse shrink-0" />
                   <div className="flex-1">
-                    <div className="h-2.5 bg-gray-200 rounded w-16 mb-1.5 animate-pulse" />
-                    <div className="h-3.5 bg-gray-200 rounded w-24 animate-pulse" />
+                    <div className="h-2.5 bg-gray-200 rounded w-20 mb-1.5 animate-pulse" />
+                    <div className="h-3.5 bg-gray-200 rounded w-28 animate-pulse" />
                   </div>
                 </div>
               ))}
@@ -237,112 +244,76 @@ const StudentView = () => {
           </div>
         </div>
 
-        {/* Details Skeleton */}
+        {/* Personal Information */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full flex flex-col justify-center">
             <div className="h-5 bg-gray-200 rounded w-48 mb-6 pb-4 border-b border-gray-50 animate-pulse" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {Array.from({ length: 4 }).map((_, i) => (
+              {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i}>
-                  <div className="h-3 bg-gray-200 rounded w-20 mb-2 animate-pulse" />
+                  <div className="h-3 bg-gray-200 rounded w-24 mb-2 animate-pulse" />
                   <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
                 </div>
               ))}
+              <div className="md:col-span-2">
+                <div className="h-3 bg-gray-200 rounded w-20 mb-2 animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse" />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-5 my-6 bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full animate-pulse">
-        {/* Ledger summary skeleton */}
-        <div>
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <div className="w-3 h-3 rounded bg-gray-200" />
-            <div className="h-2.5 w-28 bg-gray-200 rounded" />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="bg-gray-50 rounded-xl px-3 py-2.5">
-                <div className="h-2 w-12 bg-gray-200 rounded mb-2" />
-                <div className="h-4 w-16 bg-gray-200 rounded" />
-              </div>
-            ))}
-          </div>
+      {/* Belt Certification — full width */}
+      <div className="bg-white/70 backdrop-blur-xl overflow-x-auto rounded-3xl p-6 border border-white/60 shadow-sm mb-6">
+        <div className="flex items-center gap-2 pb-4 mb-4 border-b border-white/50">
+          <div className="w-8 h-8 rounded-xl bg-gray-200 animate-pulse shrink-0" />
+          <div className="h-5 bg-gray-200 rounded w-40 animate-pulse" />
         </div>
-
-        {/* Payment history skeleton */}
-        <div>
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <div className="w-3 h-3 rounded bg-gray-200" />
-            <div className="h-2.5 w-32 bg-gray-200 rounded" />
-          </div>
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-gray-200 shrink-0" />
-                  <div className="space-y-2">
-                    <div className="h-3 w-24 bg-gray-200 rounded" />
-                    <div className="h-2.5 w-20 bg-gray-200 rounded" />
-                  </div>
-                </div>
-                <div className="text-right space-y-2">
-                  <div className="h-3 w-14 bg-gray-200 rounded ml-auto" />
-                  <div className="h-5 w-16 bg-gray-200 rounded-full ml-auto" />
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-10 bg-gray-100 rounded-lg w-full animate-pulse" />
+          ))}
         </div>
       </div>
 
-      {/* Bottom Row Skeleton: Belt (50%) + Achievements (50%) — mirrors the real layout */}
-      <div className=" gap-6">
-
-        {/* Belt Certification Table Skeleton */}
-        <div className="grid grid-cols-2 max-w-2xl mb-6">
-          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full">
-            <div className="h-5 bg-gray-200 rounded w-30 mb-4 pb-4 border-b border-gray-50 animate-pulse" />
-            <div className="flex flex-col  gap-3">
-              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-200 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
-              <div className="h-5 bg-gray-100 rounded-lg w-full animate-pulse" />
-            </div>
-          </div>
-        </div>
-
-        {/* Achievements Grid Skeleton */}
-        <div className="">
-          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full">
-            <div className="h-5 bg-gray-200 rounded w-full mb-4 pb-4 border-b border-gray-50 animate-pulse" />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white">
-                  <div className="bg-gray-200 aspect-[4/3] animate-pulse" />
-                  <div className="p-3 border-t border-gray-50 flex flex-col gap-3">
-                    <div className="h-3.5 bg-gray-200 rounded w-3/4 mx-auto animate-pulse" />
-                    <div className="flex gap-2 w-full">
-                      <div className="h-7 flex-1 bg-gray-200 rounded-lg animate-pulse" />
-                      <div className="h-7 flex-1 bg-gray-200 rounded-lg animate-pulse" />
-                    </div>
-                  </div>
+      {/* Achievements — full width */}
+      <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm mb-6">
+        <div className="h-5 bg-gray-200 rounded w-40 mb-4 pb-4 border-b border-gray-50 animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white">
+              <div className="bg-gray-200 aspect-[4/3] animate-pulse" />
+              <div className="p-3 border-t border-gray-50 flex flex-col gap-3">
+                <div className="h-3.5 bg-gray-200 rounded w-3/4 mx-auto animate-pulse" />
+                <div className="flex gap-2 w-full">
+                  <div className="h-7 flex-1 bg-gray-200 rounded-lg animate-pulse" />
+                  <div className="h-7 flex-1 bg-gray-200 rounded-lg animate-pulse" />
                 </div>
-              ))}
+              </div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Payment Details — full width */}
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-3 md:p-6 border border-white/60 shadow-sm my-6">
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/50">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-gray-200 animate-pulse shrink-0" />
+            <div className="h-5 bg-gray-200 rounded w-36 animate-pulse" />
           </div>
+          <div className="h-4 bg-gray-200 rounded w-24 animate-pulse" />
+        </div>
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-14 bg-gray-100 rounded-xl w-full animate-pulse" />
+          ))}
         </div>
       </div>
     </div>
   );
+
 
   if (loading) {
     return <StudentViewSkeleton />
@@ -404,7 +375,7 @@ const StudentView = () => {
             <span className="hidden lg:inline">Add Fee</span>
           </button>
           <button
-            onClick={() => setIsBeltModalOpen(true)}
+            onClick={() => { setIsBeltEditMode(false); setIsBeltModalOpen(true); }}
             className="px-3 py-1.5  bg-orange-50 text-[#f97316] border border-orange-200 font-bold rounded-lg flex items-center gap-1.5 hover:bg-orange-100 transition-colors text-xs shadow-sm"
           >
             <Award size={14} />
@@ -447,7 +418,7 @@ const StudentView = () => {
               </p>
 
               <div className="flex items-center justify-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wide">
+                <span className="inline-flex items-center gap-1 px-2.5 max-w-30 truncate py-1 rounded-full text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wide">
                   <IdCard size={12} /> {student.reg_no}
                 </span>
                 <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -575,6 +546,10 @@ const StudentView = () => {
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"><MapPin size={12} /> Address</p>
                 <p className="font-medium text-gray-900">{student.address || 'N/A'}</p>
               </div>
+              <div className="md:col-span-2">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"><StickyNote size={12} /> Notes</p>
+                <p className="font-medium rounded-2xl py-1.5 truncate line-clamp-2 text-wrap text-gray-900">{student.notes || 'N/A'}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -582,16 +557,35 @@ const StudentView = () => {
 
       {/* Belt Progression — full width, glass-card style to match student dashboard */}
       <div className="bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl overflow-x-auto rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-sm mb-6">
-        <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 border-b border-white/50 dark:border-slate-800 flex items-center gap-2">
-          <span className="w-8 h-8 rounded-xl bg-[#f97316]/10 text-[#f97316] flex items-center justify-center">
-            <Award size={16} />
-          </span>
-          Belt Certification
-        </h4>
+
+        <div className="flex items-center justify-between border-b border-white/50 dark:border-slate-800 pb-4 mb-4">
+          <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-[#f97316]/10 text-[#f97316] flex items-center justify-center">
+              <Award size={16} />
+            </span>
+            Belt Certification
+          </h4>
+
+          <button
+            onClick={() => { setIsBeltEditMode(true); setIsBeltModalOpen(true); }}
+            className="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 font-bold rounded-lg flex items-center gap-1.5 hover:bg-blue-100 transition-colors text-xs shadow-sm"
+          >
+            <Edit size={14} />
+            Edit Belt
+          </button>
+        </div>
 
         {belts && (
-          <div className="lg:grid lg:py-4 lg:px-3 w-full lg:grid-cols-2 overflow-x-auto lg:gap-6 items-start">
-            <Belts belts={belts} />
+          <div className="grid grid-cols-2 lg:py-4 lg:px-3 w-full lg:grid-cols-1 overflow-x-auto lg:gap-6 items-start">
+            <Belts
+              belts={belts}
+              onDeleteBelt={handleDeleteBelt}
+              onEditBelt={(details) => {
+                setBeltToEditPosition(details.belt_position);
+                setIsBeltEditMode(true);
+                setIsBeltModalOpen(true);
+              }}
+            />
           </div>
         )}
       </div>
@@ -627,10 +621,11 @@ const StudentView = () => {
                         <span className="text-[10px] font-bold text-gray-500">PDF</span>
                       </div>
                     ) : (
-                      <img src={thumbUrl} alt={cert.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <img src={thumbUrl} alt={cert.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform" />
                     )
                   ) : (
-                    <FileText className="text-gray-300" size={32} />
+                    <Image className='text-gray-400' size={78} />
+                   
                   )}
                   {fileUrls.length > 1 && (
                     <span className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
@@ -646,13 +641,13 @@ const StudentView = () => {
                   <div className="flex gap-2 w-full">
                     <button
                       onClick={(e) => { e.stopPropagation(); handleEditCert(cert); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors text-[11px] font-bold"
+                      className="flex-1 flex items-center w-8 h-8 justify-center gap-1.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors text-[11px] font-bold"
                     >
                       <Edit size={12} />
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDelete(cert.id); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors text-[11px] font-bold"
+                      className="flex-1 flex items-center w-8 h-8 justify-center gap-1.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors text-[11px] font-bold"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -680,7 +675,7 @@ const StudentView = () => {
           <span className=' px-2 text-nowrap lg:px-6 uppercase font-bold' >Total fee : <span>{student.total_fee}</span></span>
         </div>
         <PaymentDetails isAdmin={true} studentId={student.id} />
-        
+
       </div>
 
       {/* VIEW ACHIEVEMENT MODAL */}
@@ -693,9 +688,11 @@ const StudentView = () => {
       {/* BELT MODAL */}
       <BeltModal
         isOpen={isBeltModalOpen}
-        onClose={() => setIsBeltModalOpen(false)}
+        onClose={() => { setIsBeltModalOpen(false); setBeltToEditPosition(null); }}
         student={student}
-        onSuccess={() => { fetchStudent(); fetchBelt(); }}
+        isEdit={isBeltEditMode}
+        initialBeltPosition={beltToEditPosition}
+        onSuccess={() => { fetchBelt(); }}
       />
 
       {/* CERTIFICATE MODAL */}
