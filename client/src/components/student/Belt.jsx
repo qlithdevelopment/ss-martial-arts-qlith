@@ -27,7 +27,7 @@ export default function BeltTab({ beltRecords, loading, error }) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 overflow-x-auto gap-6 items-start bg-white rounded-xl">
+    <div className=" overflow-x-auto gap-6 items-start bg-white rounded-xl">
       <Belts belts={beltRecords} />
     </div>
   );

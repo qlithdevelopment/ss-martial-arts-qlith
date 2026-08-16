@@ -5,6 +5,7 @@ import AboutFeatures from '../../components/public/about/AboutFeatures';
 import AboutHistory from '../../components/public/about/AboutHistory';
 import AboutFAQ from '../../components/public/about/AboutFAQ';
 
+
 const AboutPage = () => {
   // Scroll to top on page load
   useEffect(() => {

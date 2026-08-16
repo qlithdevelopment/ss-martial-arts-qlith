@@ -15,7 +15,7 @@ export const getBeltColor = (belt) => {
   if (!belt) return { bg: "bg-slate-100", border: "border-slate-200", text: "text-slate-600" };
   const b = belt.toLowerCase();
   if (b.includes("white")) return { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-700" };
-  if (b.includes("yellow")) return { bg: "bg-[#FEF3C7]", border: "border-amber-200", text: "text-[#B45309]" };
+  if (b.includes("yellow")) return { bg: "bg-amber-600", border: "border-amber-200", text: "text-[#B45309]" };
   if (b.includes("orange")) return { bg: "bg-[#FFEDD5]", border: "border-orange-200", text: "text-[#C2410C]" };
   if (b.includes("green")) return { bg: "bg-[#D1FAE5]", border: "border-emerald-200", text: "text-[#047857]" };
   if (b.includes("blue")) return { bg: "bg-[#DBEAFE]", border: "border-blue-200", text: "text-[#1D4ED8]" };
