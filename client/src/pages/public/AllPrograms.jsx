@@ -29,7 +29,7 @@ const AllPrograms = () => {
   const [selectedProgram, setSelectedProgram] = useState(null);
 
   return (
-    <section className="w-full min-h-screen bg-[#f8f9fa] pt-24 pb-16 md:pt-32 md:pb-24">
+    <section className="w-full min-h-screen bg-[#f8f9fa] pt-24 pb-16 md:pt-32 md:pb-24 ">
 
       <div className="global-container lg:!px-22 w-full z-10 flex flex-col items-center">
 

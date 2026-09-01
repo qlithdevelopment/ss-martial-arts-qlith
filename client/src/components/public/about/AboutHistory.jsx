@@ -5,7 +5,11 @@ import { Link } from 'react-router-dom';
 
 const AboutHistory = () => {
   return (
-    <section className="w-full bg-[#f8f9fa] py-12 md:py-16 lg:py-24 px-4 md:px-8 border-t border-gray-200">
+    <section className="relative overflow-hidden w-full bg-black py-16 md:py-24 lg:py-32 px-4 md:px-8">
+      {/* MASSIVE BACKGROUND TEXT */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18vw] md:text-[15vw] font-black text-white/[0.04] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
+        HISTORY
+      </div>
       <div className="global-container lg:!px-14">
         
         <div className="flex flex-col lg:flex-row gap-16">
@@ -19,7 +23,7 @@ const AboutHistory = () => {
               className="mb-10"
             >
               <h2 className="text-3xl md:text-4xl font-black text-[#26c0ff] uppercase tracking-tight mb-2">Our History</h2>
-              <div className="w-12 h-1 bg-[#26c0ff] rounded-full"></div>
+              <div className="w-12 h-1 bg-primary2 rounded-full"></div>
             </motion.div>
 
             <div className="relative border-l-2 border-[#26c0ff] ml-3 md:ml-4 space-y-8 pb-4">
@@ -33,8 +37,10 @@ const AboutHistory = () => {
                   className="relative pl-8"
                 >
                   <div className="absolute w-4 h-4 rounded-full bg-[#26c0ff] border-4 border-[#f8f9fa] left-[-9px] top-1"></div>
-                  <h3 className="text-lg font-black text-[#26c0ff]">{item.year} - {item.title}</h3>
-                  <p className="text-sm text-gray-600 mt-2 font-medium leading-relaxed max-w-[400px]">
+                  <h3 className="text-lg font-black text-[#26c0ff]">
+                    {item.year} - {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-200 mt-2 font-medium leading-relaxed max-w-[400px]">
                     {item.desc}
                   </p>
                 </motion.div>
@@ -51,7 +57,7 @@ const AboutHistory = () => {
               className="mb-10"
             >
               <h2 className="text-3xl md:text-4xl font-black text-[#26c0ff] uppercase tracking-tight mb-2">Achievements</h2>
-              <div className="w-12 h-1 bg-[#26c0ff] rounded-full"></div>
+              <div className="w-12 h-1 bg-primary2 rounded-full"></div>
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

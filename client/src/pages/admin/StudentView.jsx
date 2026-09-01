@@ -693,6 +693,7 @@ const StudentView = () => {
         isEdit={isBeltEditMode}
         initialBeltPosition={beltToEditPosition}
         onSuccess={() => { fetchBelt(); }}
+        belts={belts}
       />
 
       {/* CERTIFICATE MODAL */}
@@ -702,6 +703,7 @@ const StudentView = () => {
         studentId={id}
         editingCert={editingCert}
         onSuccess={fetchStudent}
+        belts={belts}
       />
 
       {/* DELETE CERTIFICATE CONFIRM MODAL */}

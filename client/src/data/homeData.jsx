@@ -18,7 +18,7 @@ import weapons_muay_thaiimg from "../assets/programs/WeaponsMuayThai.png"
 export const programsData = [
   {
     id: 1,
-    tag: "karate classes near me",
+    tag: "karate classes",
     title: "Karate",
     shortDescription: "Traditional Karate classes near me for kids and adults — build discipline, technique, and confidence through structured belt-ranked training.",
     description: "Our Karate program blends traditional striking technique with a proven belt-ranked progression system, making it one of the top karate classes near me for families and adults alike. Students develop sharp technique, discipline, and self-confidence through structured drills, kata, and sparring in a safe, supportive dojo environment. Whether you're a complete beginner or returning to the mats, our certified instructors tailor every class to your skill level. Enroll today and start your journey toward a black belt.",
@@ -45,7 +45,7 @@ export const programsData = [
   },
   {
     id: 2,
-    tag: "taekwondo classes near me",
+    tag: "taekwondo classes",
     title: "Taekwondo",
     shortDescription: "High-energy Taekwondo classes near me focused on powerful kicks, speed, and flexibility for all ages and skill levels.",
     description: "Searching for taekwondo classes near me? Our program delivers dynamic, kick-focused training designed to build explosive speed, flexibility, and full-body coordination. Students progress through a structured curriculum covering forms (poomsae), sparring, and board-breaking, all while developing the discipline and confidence Taekwondo is known for. Classes are suited to beginners and competitive athletes alike, with pathways to regional and national tournaments for those who want to test their skills. Join a welcoming dojang and start kicking toward your goals today.",
@@ -72,7 +72,7 @@ export const programsData = [
   },
   {
     id: 3,
-    tag: "boxing classes near me",
+    tag: "boxing classes",
     title: "Boxing",
     shortDescription: "High-intensity boxing classes near me covering footwork, striking technique, and conditioning for fitness or competition.",
     description: "Our boxing program is built for anyone searching for boxing classes near me who wants real results — whether that's weight loss, stress relief, or competitive skill. Training covers fundamental footwork, punch technique, defensive movement, and pad work, all wrapped into high-intensity conditioning that torches calories while sharpening reflexes. Sparring is optional and only introduced once technique and confidence are solid, so total beginners are always welcome. Coaches design each session to push you at your own pace, whether your goal is fitness or the ring.",
@@ -99,7 +99,7 @@ export const programsData = [
   },
   {
     id: 4,
-    tag: "kickboxing classes near me",
+    tag: "kickboxing classes",
     title: "Kickboxing",
     shortDescription: "Full-body Kickboxing classes near me combining striking and cardio conditioning for fitness and practical self-defense.",
     description: "Looking for kickboxing classes near me that deliver both a serious workout and real self-defense skill? Our program blends punches, kicks, and combination striking with high-energy cardio conditioning to torch calories while sharpening reflexes and coordination. Group sessions are paced for every level, with instructors offering modifications for beginners and progressions for advanced students. You'll build strength, stamina, and confidence in every class, all while learning practical striking combinations you can rely on. No experience needed — just bring comfortable athletic wear and a willingness to work hard.",
@@ -126,7 +126,7 @@ export const programsData = [
   },
   {
     id: 5,
-    tag: "mma classes near me",
+    tag: "mma classes",
     title: "MMA (Mixed Martial Arts)",
     shortDescription: "Well-rounded MMA classes near me blending striking and grappling for complete beginners and experienced fighters alike.",
     description: "Our MMA program is one of the most complete mma classes near me offers — combining striking, clinch work, and ground grappling into a single, structured curriculum. Students build a well-rounded skill set by training boxing and kickboxing fundamentals alongside wrestling and jiu-jitsu-based grappling, learning how each discipline connects in a real fight scenario. Contact is introduced gradually with proper coaching and protective gear, so beginners develop technique safely before any live sparring. Whether your goal is fitness, self-defense, or competition, our coaches build a training plan around you.",
@@ -153,7 +153,7 @@ export const programsData = [
   },
   {
     id: 6,
-    tag: "self-defense classes near me",
+    tag: "self-defense classes",
     title: "Self-Defense",
     shortDescription: "Practical self-defense classes near me teaching real-world safety skills and confidence for every age group.",
     description: "Our self-defense classes are designed for anyone searching for self-defense classes near me who wants practical, easy-to-learn protection skills — no martial arts background required. Training covers situational awareness, verbal de-escalation, escaping common grabs and holds, and simple, effective strikes for close-range safety. Sessions are welcoming to all ages and fitness levels, with instructors focused on building real confidence alongside physical technique. You'll leave every class better prepared to recognize risk and respond calmly under pressure. Start building everyday safety skills that last a lifetime.",
@@ -180,7 +180,7 @@ export const programsData = [
   },
   {
     id: 7,
-    tag: "judo classes near me",
+    tag: "judo classes",
     title: "Judo / Wushu",
     shortDescription: "Judo classes near me combining throw-based grappling and Wushu forms for balance, control, and full-body coordination.",
     description: "Our combined Judo and Wushu program is a standout choice among judo classes near me for students who want variety alongside serious skill development. Judo training focuses on throws, grips, and ground control, sharpening balance, timing, and body awareness in ways few other martial arts can match. Wushu complements this with striking forms and acrobatic movement, building flexibility and full-body coordination over time. Classes are structured for beginners of any fitness level, with stances and fundamentals taught before progressing to more advanced technique. Discover the discipline and control that make this dual program so effective.",
@@ -207,7 +207,7 @@ export const programsData = [
   },
   {
     id: 8,
-    tag: "shaolin kung-fu classes near me",
+    tag: "shaolin kung-fu classes",
     title: "Shaolin Kung-fu",
     shortDescription: "Traditional Shaolin Kung-fu classes near me teaching centuries-old forms, conditioning, and discipline for all ages.",
     description: "For students seeking authentic shaolin kung-fu classes near me, our program delivers traditional forms (taolu), stance training, and rigorous conditioning rooted in centuries-old Shaolin technique. Every class builds discipline, agility, and strength through a curriculum adapted to each student's fitness level, so adults starting later in life train safely and progress at their own pace. Beginners typically learn their first basic form within a few months, with more advanced sequences introduced as strength and technique improve. Step onto the mats and connect with one of the world's oldest and most respected martial arts traditions.",
@@ -234,7 +234,7 @@ export const programsData = [
   },
   {
     id: 9,
-    tag: "pencak silat classes near me",
+    tag: "pencak silat classes",
     title: "Pencak Silat",
     shortDescription: "Authentic Pencak Silat classes near me combining strikes, joint locks, and weapon awareness for practical self-defense.",
     description: "Our Pencak Silat program is a unique find among pencak silat classes near me, teaching this traditional Indonesian martial art's blend of strikes, joint locks, and weapon awareness for genuinely practical self-defense. Students first build a strong foundation in empty-hand technique, learning how strikes and locks flow together in real-world scenarios, before weapon awareness is introduced gradually. Training builds strength and flexibility over time, but every session is scaled to the student's fitness level so beginners are never overwhelmed. Discover a martial art that prizes practicality and efficiency above all else.",
@@ -261,7 +261,7 @@ export const programsData = [
   },
   {
     id: 10,
-    tag: "gymnastics classes near me",
+    tag: "gymnastics classes",
     title: "Gymnastics (Only Flips)",
     shortDescription: "Flip-focused gymnastics classes near me building air awareness, body control, and explosive power for tricking and martial arts.",
     description: "If you're searching for gymnastics classes near me focused specifically on flips and tumbling, this program is built for exactly that. Students develop body control, air awareness, and explosive power through progressive tumbling drills, building toward standing and running flips in a safe, supervised environment. No prior gymnastics experience is required — training starts with fundamentals like body positioning and basic tumbling before advancing to aerial skills. Proper spotting and matting ensure flips are learned safely at every stage, making this a great fit for kids and teens alike. The skills built here carry directly into kicks, throws, and overall athleticism across other martial arts.",
@@ -288,7 +288,7 @@ export const programsData = [
   },
   {
     id: 11,
-    tag: "weapons training near me",
+    tag: "weapons training",
     title: "Weapons, Muay Thai",
     shortDescription: "Weapons training and Muay Thai classes near me covering precision handling, striking, and discipline beyond empty-hand technique.",
     description: "Combine two powerful disciplines in one program — traditional weapons training and Muay Thai striking — designed for students searching for weapons training near me who want to go beyond empty-hand technique. Weapons instruction covers handling, forms, and control using traditional tools like staffs, swords, and nunchaku, building precision and discipline through controlled, low-risk drills. Muay Thai striking adds powerful punches, kicks, elbows, and knees for a complete stand-up fighting skill set and serious conditioning benefit. No empty-hand martial arts background is required to start — beginners are introduced to basic handling and stances alongside foundational striking. Build discipline, power, and control in every session.",
