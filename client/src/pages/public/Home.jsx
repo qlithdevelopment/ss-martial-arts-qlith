@@ -9,6 +9,7 @@ import Partners from '../../components/public/home/Partners';
 import Testimonials from '../../components/public/home/Testimonials';
 import AboutFAQ from '../../components/public/about/AboutFAQ';
 import News from '../../components/public/home/News';
+import Blog from '../../components/public/home/Blog';
 const Home = () => {
   return (
     <div className="w-full flex flex-col bg-bgColor">
@@ -17,10 +18,10 @@ const Home = () => {
       <OurTrainers />
       <Programs />
       <Events />
-      {/* <Services /> */}
       <Gallery />
       <Partners />
       <News/>
+      <Blog/>
       <Testimonials />
       <AboutFAQ limit={5} isHome={true} />
     </div>

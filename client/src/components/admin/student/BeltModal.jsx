@@ -28,11 +28,17 @@ const emptyForm = {
   date_of_issue: todayISO(),
 };
 
-const BeltModal = ({ isOpen, onClose, student, onSuccess, isEdit = false, initialBeltPosition = null }) => {
+const BeltModal = ({
+  isOpen,
+  onClose,
+  student,
+  onSuccess,
+  isEdit = false,
+  initialBeltPosition = null,
+  belts = [],
+}) => {
   const [beltForm, setBeltForm] = useState(emptyForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [assignedBeltsList, setAssignedBeltsList] = useState([]);
-  const [isFetchingBelts, setIsFetchingBelts] = useState(false);
 
   // Id of the belt record currently being edited (set once a belt is picked in edit mode)
   const [editingBeltId, setEditingBeltId] = useState(null);
@@ -46,58 +52,22 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess, isEdit = false, initia
     }
   }, [isOpen, isEdit]);
 
-  // Fetch this student's already-assigned belts whenever the modal opens
-  useEffect(() => {
-    if (!isOpen || !userId) {
-      setAssignedBeltsList([]);
-      return;
-    }
-
-    let isCancelled = false;
-
-    const fetchAssignedBelts = async () => {
-      try {
-        setIsFetchingBelts(true);
-        const response = await api.get('/belts', { params: { user_id: userId } });
-        const data = response?.data?.data ?? response?.data ?? [];
-        const belts = Array.isArray(data) ? data : [];
-
-        if (!isCancelled) {
-          setAssignedBeltsList(belts);
-        }
-
-      } catch (error) {
-        console.error('Failed to fetch assigned belts:', error);
-        if (!isCancelled) {
-          setAssignedBeltsList([]);
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsFetchingBelts(false);
-        }
-      }
-    };
-
-    fetchAssignedBelts();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [isOpen, userId]);
-
   // Map of belt_position (trimmed) -> full existing belt record
   const assignedBeltsMap = useMemo(() => {
     const map = new Map();
 
-    assignedBeltsList.forEach((b) => {
-      if (!b || typeof b !== 'object') return;
-      const position = b.belt_position?.trim();
-      if (position) map.set(position, b);
+    belts.forEach((belt) => {
+      if (!belt || typeof belt !== "object") return;
+
+      const position = belt.belt_position?.trim();
+
+      if (position) {
+        map.set(position, belt);
+      }
     });
 
     return map;
-  }, [assignedBeltsList]);
-
+  }, [belts]);
 
    const beltOptions = useMemo(() => {
     if (isEdit && initialBeltPosition) {
@@ -216,24 +186,34 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess, isEdit = false, initia
                     <select
                       value={beltForm.belt_position}
                       onChange={(e) => handleBeltPositionChange(e.target.value)}
-                      disabled={isFetchingBelts}
-                      className="w-full px-4 py-3 max-w-full truncate  bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none disabled:opacity-60"
+                      className="w-full px-4 py-3 max-w-full truncate bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] outline-none"
                       required
                     >
-                      <option value="" hidden className="max-w-10 truncate" >
-                        {isFetchingBelts
-                          ? 'Loading belts...'
-                          : isEdit
-                            ? 'Choose a belt to edit...'
-                            : 'Choose a belt...'}
+                      <option value="" hidden>
+                        {isEdit
+                          ? "Choose a belt to edit..."
+                          : "Choose a belt..."}
                       </option>
-                      {!isFetchingBelts && beltOptions.map((belt) => (
-                        <option key={belt} value={belt}>{belt}</option>
+
+                      {beltOptions.map((belt) => (
+                        <option key={belt} value={belt}>
+                          {belt}
+                        </option>
                       ))}
                     </select>
-                    {!isFetchingBelts && beltOptions.length === 0 && (
+
+                    {beltOptions.length === 0 && (
                       <p className="text-xs text-gray-400 mt-1.5">
-                        {isEdit ? 'No belts have been assigned yet.' : 'All belts have already been assigned.'}
+                        {isEdit
+                          ? "No belts have been assigned yet."
+                          : "All belts have already been assigned."}
+                      </p>
+                    )}
+                    {beltOptions.length === 0 && (
+                      <p className="text-xs text-gray-400 mt-1.5">
+                        {isEdit
+                          ? "No belts have been assigned yet."
+                          : "All belts have already been assigned."}
                       </p>
                     )}
                   </div>
@@ -277,7 +257,7 @@ const BeltModal = ({ isOpen, onClose, student, onSuccess, isEdit = false, initia
 
                 <button
                   type="submit"
-                  disabled={isSubmitting || isFetchingBelts || beltOptions.length === 0}
+                  disabled={isSubmitting || beltOptions.length === 0}
                   className="w-full py-3 bg-[#f97316] hover:bg-orange-600 text-white font-bold rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {isEdit ? 'Update Belt' : 'Assign Belt'}
