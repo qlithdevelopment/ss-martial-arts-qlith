@@ -14,7 +14,7 @@ const FAQPage = () => {
       </div>
 
       {/* FAQ CONTENT */}
-      <div className="global-container max-w-7xl mx-auto px-4 sm:px-6 lg:!px-22 relative z-10">
+      <div className="mx-auto relative z-10">
         <AboutFAQ limit={10} paginate={true} />
       </div>
     </div>

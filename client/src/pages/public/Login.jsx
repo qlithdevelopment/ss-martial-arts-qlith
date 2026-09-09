@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
 import Logo from "../../assets/logo/Full_Logo.png";
-import loginbg from "../../assets/loginbg1.png";
+import loginbg from "../../assets/loginbg1.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -95,9 +95,9 @@ const Login = () => {
           {/* Header */}
           <div className="mb-6 sm:mb-10 text-center">
             <Link to="/">
-              <img src={Logo} alt="Logo" className="h-20 sm:h-28 md:h-32 m-auto object-contain" />
+              <img src={Logo} alt="Logo" className="h-10 sm:h-10 md:h-16 m-auto object-contain" />
             </Link>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-normal text-white mb-2 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-normal text-white mb-2 tracking-tight mt-8">
               Welcome back
             </h1>
             <p className="text-xs sm:text-sm text-gray-400 font-normal">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { QrCode } from "lucide-react";
+import { Mail, Phone, QrCode } from "lucide-react";
 import { instructorData } from "../../../data/aboutData";
 import founder from "../../../assets/about/founder.png";
 
@@ -46,15 +46,11 @@ const AboutInstructor = () => {
               </h4>
               <div className="space-y-1">
                 <p className="text-xs font-bold text-[#0b1b24] flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full border border-[#0b1b24] flex items-center justify-center text-[10px]">
-                    @
-                  </span>
+                    <Mail size={14} />
                   ssmartialartsschool@gmail.com
                 </p>
                 <p className="text-xs font-bold text-[#0b1b24] flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full border border-[#0b1b24] flex items-center justify-center text-[10px]">
-                    #
-                  </span>
+                    <Phone size={14} />
                   +91 9090224658
                 </p>
               </div>

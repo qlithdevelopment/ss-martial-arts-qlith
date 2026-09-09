@@ -59,43 +59,53 @@ const About = () => {
                 className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12 w-full border-t-[2px] border-gray-200 pt-8"
               >
                 
-                {/* MISSION */}
-                <div className="flex flex-col justify-start">
-                  <div className="relative">
-                    <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
-                      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#f97316] z-[-1] opacity-90 mix-blend-multiply"></span>
-                      MISSION
-                    </h3>
-                    <ul className="space-y-2 text-[12px] sm:text-[13px] text-gray-600 font-medium">
-                      <li className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                        Deliver high-quality martial arts training for all age groups.
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                       Build confidence, discipline, fitness, and practical self-defense skills.
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
-                       Support every student in achieving their personal and fitness goals.
-                      </li>
-                     
-                    </ul>
-                  </div>
-                </div>
+               {/* MISSION */}
+<div className="flex flex-col justify-start">
+  <div className="relative">
+    <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
+      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#f97316] z-[-1] opacity-90 mix-blend-multiply"></span>
+      MISSION
+    </h3>
+    <ul className="space-y-2 text-[12px] sm:text-[13px] text-gray-600 font-medium">
+      <li className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
+        Deliver top-tier martial arts training designed for every age and skill level.
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
+        Develop physical fitness, mental discipline, and essential self-defense skills.
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
+        Empower each individual to reach their peak personal and athletic potential.
+      </li>
+    </ul>
+  </div>
+</div>
 
-                {/* VISION */}
-                <div className="flex flex-col pb-7  justify-start">
-                  <div className="relative">
-                    <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
-                      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#26c0ff] z-[-1] opacity-90 mix-blend-multiply"></span>
-                      VISION
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed text-[12px] sm:text-[13px] font-medium pr-4">
-                      Our vision is to make SS Martial Arts School the most trusted martial arts school in Bhubaneswar by combining traditional values with modern training. We aim to inspire people of all ages to become stronger, more disciplined, and more confident in every aspect of life.
-                    </p>
-                  </div>
-                </div>
+{/* VISION */}
+<div className="flex flex-col pb-7 justify-start">
+  <div className="relative">
+    <h3 className="relative text-xl sm:text-2xl font-black text-[#0b1b24] z-10 tracking-[0.2em] uppercase inline-block font-serif mb-4">
+      <span className="absolute left-[-10px] top-[50%] -translate-y-[50%] w-8 h-8 rounded-full bg-[#26c0ff] z-[-1] opacity-90 mix-blend-multiply"></span>
+      VISION
+    </h3>
+    <ul className="space-y-2 text-[12px] sm:text-[13px] text-gray-600 font-medium">
+      <li className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
+        Stand as the premier martial arts center uniting tradition with modern methods.
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
+        Inspire a thriving community rooted in respect, core strength, and resilience.
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" />
+        Instill lasting self-assurance and leadership qualities for all areas of life.
+      </li>
+    </ul>
+  </div>
+</div>
 
               </motion.div>
 
