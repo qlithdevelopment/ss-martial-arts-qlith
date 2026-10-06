@@ -1,19 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, User, Plus, Image, Users, Mail, Award, StickyNote, BookOpen, Calendar, IndianRupee, FileText, X, Edit, Trash2, Ruler, Weight, MapPin, Phone, Building2, UserCog, ScanLine, IdCard, Activity, CheckCircle2 } from 'lucide-react';
-import toast from 'react-hot-toast';
-import api from '../../api/axios';
-import { getBeltColor } from '../../components/CommonFormats';
-import ConfirmModal from '../../components/admin/reusecomponents/ConfirmationModal';
-import BeltModal from '../../components/admin/student/BeltModal';
-import CertificateModal from '../../components/admin/student/CertificateModal';
-import { formatDate } from '../../components/CommonFormats';
-import ViewAchievementModal from '../../components/ViewAchievementModal';
-import Belts from '../../components/Belts';
-import { getAvatarUrlByName } from '../../components/student/AvatarPickerModal';
-import PaymentDetails from '../../components/student/PaymentDetails';
-import FeeModal from '../../components/admin/student/FeeModal';
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowLeft,
+  User,
+  Plus,
+  Image,
+  Users,
+  Mail,
+  Award,
+  StickyNote,
+  BookOpen,
+  Calendar,
+  IndianRupee,
+  FileText,
+  X,
+  Edit,
+  Trash2,
+  Ruler,
+  Weight,
+  MapPin,
+  Phone,
+  Building2,
+  UserCog,
+  ScanLine,
+  IdCard,
+  Activity,
+  CheckCircle2,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import api from "../../api/axios";
+import { getBeltColor } from "../../components/CommonFormats";
+import ConfirmModal from "../../components/admin/reusecomponents/ConfirmationModal";
+import BeltModal from "../../components/admin/student/BeltModal";
+import CertificateModal from "../../components/admin/student/CertificateModal";
+import { formatDate } from "../../components/CommonFormats";
+import ViewAchievementModal from "../../components/ViewAchievementModal";
+import Belts from "../../components/Belts";
+import { getAvatarUrlByName } from "../../components/student/AvatarPickerModal";
+import PaymentDetails from "../../components/student/PaymentDetails";
+import FeeModal from "../../components/admin/student/FeeModal";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
 
@@ -60,18 +86,20 @@ const StudentView = () => {
       setLoading(true);
       const [studentRes, certsRes] = await Promise.all([
         api.get(`/students/${id}`),
-        api.get(`/users/${id}/certificates`).catch(() => ({ data: { data: [] } }))
+        api
+          .get(`/users/${id}/certificates`)
+          .catch(() => ({ data: { data: [] } })),
       ]);
       const studentData = studentRes.data?.data || studentRes.data;
       const certsData = certsRes.data?.data || certsRes.data || [];
       setStudent({
         ...studentData,
-        certificates: certsData
+        certificates: certsData,
       });
       setIsFullPayment(
         studentData?.is_full_payment === true ||
-        studentData?.is_full_payment === 1 ||
-        studentData?.is_full_payment === '1'
+          studentData?.is_full_payment === 1 ||
+          studentData?.is_full_payment === "1",
       );
     } catch (error) {
       console.error("Failed to fetch student", error);
@@ -109,10 +137,14 @@ const StudentView = () => {
       await api.patch(`/users/${student.id}/payment-status`, {
         is_full_payment: newValue,
       });
-      toast.success(newValue ? 'Marked as fully paid' : 'Marked as not fully paid');
+      toast.success(
+        newValue ? "Marked as fully paid" : "Marked as not fully paid",
+      );
     } catch (error) {
       setIsFullPayment(previous); // roll back on failure
-      toast.error(error.response?.data?.message || 'Failed to update payment status');
+      toast.error(
+        error.response?.data?.message || "Failed to update payment status",
+      );
     } finally {
       setPaymentStatusSaving(false);
     }
@@ -125,9 +157,11 @@ const StudentView = () => {
 
   const handleViewCert = (cert) => {
     const fileUrls = Array.isArray(cert.certificated)
-      ? cert.certificated.map(f =>
-        f.startsWith('http') ? f : `${BASE_URL}${f.startsWith('/') ? '' : '/'}${f}`
-      )
+      ? cert.certificated.map((f) =>
+          f.startsWith("http")
+            ? f
+            : `${BASE_URL}${f.startsWith("/") ? "" : "/"}${f}`,
+        )
       : cert.file_url
         ? [cert.file_url]
         : [];
@@ -145,13 +179,13 @@ const StudentView = () => {
     try {
       setIsDeleting(true);
       await api.delete(`/certificates/${certToDelete}`);
-      toast.success('Certificate deleted successfully');
-      fetchStudent()
+      toast.success("Certificate deleted successfully");
+      fetchStudent();
       setIsDeleteModalOpen(false);
       setCertToDelete(null);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to delete certificate');
+      toast.error("Failed to delete certificate");
     } finally {
       setIsDeleting(false);
     }
@@ -167,13 +201,13 @@ const StudentView = () => {
     try {
       setIsDeletingBelt(true);
       await api.delete(`/belts/${beltToDelete}`);
-      toast.success('Belt record deleted successfully');
+      toast.success("Belt record deleted successfully");
       fetchBelt();
       setIsDeleteBeltModalOpen(false);
       setBeltToDelete(null);
     } catch (error) {
       console.error(error);
-      toast.error('Failed to delete belt record');
+      toast.error("Failed to delete belt record");
     } finally {
       setIsDeletingBelt(false);
     }
@@ -182,12 +216,11 @@ const StudentView = () => {
     setfeeId(id);
     setEditingFee(null);
     setIsFeeModalOpen(true);
-  }
+  };
   const handelfeeClose = () => {
     setIsFeeModalOpen(false);
     setfeeId(null);
-  }
-
+  };
 
   const StudentViewSkeleton = () => (
     <div className="w-full animate-fadeIn">
@@ -209,7 +242,6 @@ const StudentView = () => {
 
       {/* Top Row: Profile Summary + Personal Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch mb-6">
-
         {/* Profile Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm h-full flex flex-col overflow-hidden">
@@ -272,7 +304,10 @@ const StudentView = () => {
         </div>
         <div className="flex flex-col gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-10 bg-gray-100 rounded-lg w-full animate-pulse" />
+            <div
+              key={i}
+              className="h-10 bg-gray-100 rounded-lg w-full animate-pulse"
+            />
           ))}
         </div>
       </div>
@@ -282,7 +317,10 @@ const StudentView = () => {
         <div className="h-5 bg-gray-200 rounded w-40 mb-4 pb-4 border-b border-gray-50 animate-pulse" />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="border border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white">
+            <div
+              key={i}
+              className="border border-gray-100 rounded-xl overflow-hidden shadow-sm bg-white"
+            >
               <div className="bg-gray-200 aspect-[4/3] animate-pulse" />
               <div className="p-3 border-t border-gray-50 flex flex-col gap-3">
                 <div className="h-3.5 bg-gray-200 rounded w-3/4 mx-auto animate-pulse" />
@@ -307,23 +345,30 @@ const StudentView = () => {
         </div>
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-14 bg-gray-100 rounded-xl w-full animate-pulse" />
+            <div
+              key={i}
+              className="h-14 bg-gray-100 rounded-xl w-full animate-pulse"
+            />
           ))}
         </div>
       </div>
     </div>
   );
 
-
   if (loading) {
-    return <StudentViewSkeleton />
+    return <StudentViewSkeleton />;
   }
 
   if (!student) {
     return (
       <div className="text-center mt-20 text-gray-500">
         <p>Student not found.</p>
-        <Link to="/admin/students" className="text-[#f97316] hover:underline mt-2 inline-block">Go back</Link>
+        <Link
+          to="/admin/students"
+          className="text-[#f97316] hover:underline mt-2 inline-block"
+        >
+          Go back
+        </Link>
       </div>
     );
   }
@@ -334,7 +379,7 @@ const StudentView = () => {
       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
         <Icon size={12} /> {label}
       </p>
-      <p className="font-medium text-gray-900">{value || 'N/A'}</p>
+      <p className="font-medium text-gray-900">{value || "N/A"}</p>
     </div>
   );
 
@@ -342,7 +387,11 @@ const StudentView = () => {
     ? student.gender.charAt(0).toUpperCase() + student.gender.slice(1)
     : null;
 
-  const isActive = String(student.status) === '1' || student.status === true || student.status === 'true' || student.status === 'active';
+  const isActive =
+    String(student.status) === "1" ||
+    student.status === true ||
+    student.status === "true" ||
+    student.status === "active";
 
   // Latest belt for the top "Quick Facts" chip
   const latestBelt = belts[0] || null;
@@ -350,19 +399,28 @@ const StudentView = () => {
   const beltColors = getBeltColor(displayBelt);
 
   // resolve the stored avatar NAME into a renderable image URL
-  const avatarImageUrl = student.avatar ? getAvatarUrlByName(student.avatar) : null;
+  const avatarImageUrl = student.avatar
+    ? getAvatarUrlByName(student.avatar)
+    : null;
 
   return (
     <div className="w-full animate-fadeIn">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
-          <Link to="/admin/students" className="p-2 bg-white border border-gray-200 text-gray-600 rounded-full hover:bg-gray-50 transition-colors">
+          <Link
+            to="/admin/students"
+            className="p-2 bg-white border border-gray-200 text-gray-600 rounded-full hover:bg-gray-50 transition-colors"
+          >
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Student Profile</h1>
-            <p className="text-sm text-gray-500 font-medium">Manage student details, belts, and certificates</p>
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight">
+              Student Profile
+            </h1>
+            <p className="text-sm text-gray-500 font-medium">
+              Manage student details, belts, and certificates
+            </p>
           </div>
         </div>
 
@@ -371,11 +429,13 @@ const StudentView = () => {
             onClick={() => handelfeeOpen(student.id)}
             className="flex-1 sm:flex-none px-5 py-3 bg-primary hover:bg-primary/60 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#f97316]/20 shrink-0"
           >
-            <Plus size={18} />{" "}
-            <span className="hidden lg:inline">Add Fee</span>
+            <Plus size={18} /> <span className="hidden lg:inline">Add Fee</span>
           </button>
           <button
-            onClick={() => { setIsBeltEditMode(false); setIsBeltModalOpen(true); }}
+            onClick={() => {
+              setIsBeltEditMode(false);
+              setIsBeltModalOpen(true);
+            }}
             className="px-3 py-1.5  bg-orange-50 text-[#f97316] border border-orange-200 font-bold rounded-lg flex items-center gap-1.5 hover:bg-orange-100 transition-colors text-xs shadow-sm"
           >
             <Award size={14} />
@@ -396,7 +456,6 @@ const StudentView = () => {
 
       {/* Top Row: Avatar and Personal Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch mb-6">
-
         {/* Left Col: Profile Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm relative overflow-hidden h-full flex flex-col">
@@ -405,13 +464,21 @@ const StudentView = () => {
             <div className="p-6 pb-0 text-center relative z-10 shrink-0">
               <div className="w-24 h-24 bg-white shadow-md rounded-full mx-auto flex items-center justify-center text-[#f97316] text-4xl font-black mb-4 overflow-hidden">
                 {avatarImageUrl ? (
-                  <img src={avatarImageUrl} alt={`${student.name}'s avatar`} className="w-full h-full object-cover" />
+                  <img
+                    src={avatarImageUrl}
+                    alt={`${student.name}'s avatar`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : student.name ? (
+                  student.name.charAt(0).toUpperCase()
                 ) : (
-                  student.name ? student.name.charAt(0).toUpperCase() : 'S'
+                  "S"
                 )}
               </div>
 
-              <h2 className="text-xl font-bold text-gray-900 mb-1">{student.name}</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">
+                {student.name}
+              </h2>
               <p className="text-sm text-gray-500 flex items-center justify-center gap-1.5 mb-3">
                 <Mail size={13} className="text-gray-400 shrink-0" />
                 <span className="truncate">{student.email}</span>
@@ -421,35 +488,49 @@ const StudentView = () => {
                 <span className="inline-flex items-center gap-1 px-2.5 max-w-30 truncate py-1 rounded-full text-[11px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wide">
                   <IdCard size={12} /> {student.reg_no}
                 </span>
-                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500' : 'bg-red-500'}`} />
-                  {isActive ? 'ACTIVE' : 'INACTIVE'}
+                <span
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${isActive ? "bg-green-500" : "bg-red-500"}`}
+                  />
+                  {isActive ? "ACTIVE" : "INACTIVE"}
                 </span>
               </div>
 
               {/* Full Payment Status Toggle — fires its own PATCH call */}
               <div className="border-t border-gray-50 px-6 pt-3 shrink-0">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Full Payment Status</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                  Full Payment Status
+                </p>
                 <button
                   type="button"
                   onClick={handleTogglePaymentStatus}
                   disabled={paymentStatusSaving}
-                  className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${isFullPayment
-                    ? 'bg-green-50 border-green-200 text-green-700'
-                    : 'bg-amber-50 border-amber-200 text-amber-700'
-                    }`}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl border transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                    isFullPayment
+                      ? "bg-green-50 border-green-200 text-green-700"
+                      : "bg-amber-50 border-amber-200 text-amber-700"
+                  }`}
                 >
                   <span className="text-sm font-bold flex items-center gap-1.5">
-                    <CheckCircle2 size={14} className={isFullPayment ? 'text-green-500' : 'text-amber-400'} />
-                    {isFullPayment ? 'Fully Paid' : 'Payment Pending'}
+                    <CheckCircle2
+                      size={14}
+                      className={
+                        isFullPayment ? "text-green-500" : "text-amber-400"
+                      }
+                    />
+                    {isFullPayment ? "Fully Paid" : "Payment Pending"}
                   </span>
                   <span
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isFullPayment ? 'bg-green-500' : 'bg-gray-300'
-                      }`}
+                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                      isFullPayment ? "bg-green-500" : "bg-gray-300"
+                    }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${isFullPayment ? 'translate-x-4' : 'translate-x-0.5'
-                        }`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                        isFullPayment ? "translate-x-4" : "translate-x-0.5"
+                      }`}
                     />
                   </span>
                 </button>
@@ -463,9 +544,13 @@ const StudentView = () => {
                   <Award size={16} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Current Belt</p>
-                  <span className={`inline-flex items-center mt-0.5 px-2 py-0.5 rounded-md text-xs font-bold border ${beltColors.bg} ${beltColors.text} ${beltColors.border}`}>
-                    {displayBelt || 'Unranked'}
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    Current Belt
+                  </p>
+                  <span
+                    className={`inline-flex items-center mt-0.5 px-2 py-0.5 rounded-md text-xs font-bold border ${beltColors.bg} ${beltColors.text} ${beltColors.border}`}
+                  >
+                    {displayBelt || "Unranked"}
                   </span>
                 </div>
               </div>
@@ -475,8 +560,12 @@ const StudentView = () => {
                   <BookOpen size={16} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Batch</p>
-                  <p className="text-sm font-bold text-gray-900 truncate">{student.batch?.name || student.batch_name || 'Unassigned'}</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    Batch
+                  </p>
+                  <p className="text-sm font-bold text-gray-900 truncate">
+                    {student.batch?.name || student.batch_name || "Unassigned"}
+                  </p>
                 </div>
               </div>
 
@@ -485,8 +574,12 @@ const StudentView = () => {
                   <Building2 size={16} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Branch / Dojo</p>
-                  <p className="text-sm font-bold text-gray-900 truncate">{student.branch_id || student.branch_name || 'Unassigned'}</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    Branch / Dojo
+                  </p>
+                  <p className="text-sm font-bold text-gray-900 truncate">
+                    {student.branch_id || student.branch_name || "Unassigned"}
+                  </p>
                 </div>
               </div>
 
@@ -495,8 +588,12 @@ const StudentView = () => {
                   <Phone size={16} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mobile Number</p>
-                  <p className="text-sm font-bold text-gray-900 truncate">{student.mobile_number || 'N/A'}</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    Mobile Number
+                  </p>
+                  <p className="text-sm font-bold text-gray-900 truncate">
+                    {student.mobile_number || "N/A"}
+                  </p>
                 </div>
               </div>
 
@@ -505,9 +602,13 @@ const StudentView = () => {
                   <Calendar size={16} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Joined On</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                    Joined On
+                  </p>
                   <p className="text-sm font-bold text-gray-900 truncate">
-                    {student.created_at ? formatDate(student.created_at) : 'N/A'}
+                    {student.created_at
+                      ? formatDate(student.created_at)
+                      : "N/A"}
                   </p>
                 </div>
               </div>
@@ -517,38 +618,91 @@ const StudentView = () => {
 
         {/* Right Col: Details */}
         <div className="lg:col-span-2">
-
           {/* Info Card */}
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm h-full flex flex-col justify-center">
-            <h3 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-50 pb-4 shrink-0">Personal Information</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-50 pb-4 shrink-0">
+              Personal Information
+            </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <InfoField icon={User} label="Father's Name" value={student.father_name} />
-              <InfoField icon={Users} label="Mother's Name" value={student.mother_name} />
+              <InfoField
+                icon={User}
+                label="Father's Name"
+                value={student.father_name}
+              />
+              <InfoField
+                icon={Users}
+                label="Mother's Name"
+                value={student.mother_name}
+              />
               <InfoField icon={Activity} label="Gender" value={genderLabel} />
               <InfoField
                 icon={Calendar}
                 label="Date of Birth"
-                value={student.date_of_birth ? formatDate(new Date(student.date_of_birth).toLocaleDateString()) : null}
+                value={
+                  student.date_of_birth
+                    ? formatDate(
+                        new Date(student.date_of_birth).toLocaleDateString(),
+                      )
+                    : null
+                }
               />
-              <InfoField icon={Ruler} label="Height" value={student.height ? `${student.height} cm` : null} />
-              <InfoField icon={Weight} label="Weight" value={student.weight ? `${student.weight} kg` : null} />
+              <InfoField
+                icon={Ruler}
+                label="Height"
+                value={student.height ? `${student.height} cm` : null}
+              />
+              <InfoField
+                icon={Weight}
+                label="Weight"
+                value={student.weight ? `${student.weight} kg` : null}
+              />
               <InfoField
                 icon={Calendar}
                 label="Joining Date"
-                value={student.joining_date ? formatDate(new Date(student.joining_date).toLocaleDateString()) : null}
+                value={
+                  student.joining_date
+                    ? formatDate(
+                        new Date(student.joining_date).toLocaleDateString(),
+                      )
+                    : null
+                }
               />
-              <InfoField icon={UserCog} label="Sensei (Coach)" value={student.sensei} />
-              <InfoField icon={IndianRupee} label="Total Fee" value={student.total_fee ? `₹${student.total_fee}` : '₹0.00'} />
-              <InfoField icon={ScanLine} label="ID Proof Name" value={student.id_proof_name} />
-              <InfoField icon={IdCard} label="ID Proof Number" value={student.id_proof_number} />
+              <InfoField
+                icon={UserCog}
+                label="Sensei (Coach)"
+                value={student.sensei}
+              />
+              <InfoField
+                icon={IndianRupee}
+                label="Total Fee"
+                value={student.total_fee ? `₹${student.total_fee}` : "₹0.00"}
+              />
+              <InfoField
+                icon={ScanLine}
+                label="ID Proof Name"
+                value={student.id_proof_name}
+              />
+              <InfoField
+                icon={IdCard}
+                label="ID Proof Number"
+                value={student.id_proof_number}
+              />
               <div className="md:col-span-2">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"><MapPin size={12} /> Address</p>
-                <p className="font-medium text-gray-900">{student.address || 'N/A'}</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <MapPin size={12} /> Address
+                </p>
+                <p className="font-medium text-gray-900">
+                  {student.address || "N/A"}
+                </p>
               </div>
               <div className="md:col-span-2">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"><StickyNote size={12} /> Notes</p>
-                <p className="font-medium rounded-2xl py-1.5 truncate line-clamp-2 text-wrap text-gray-900">{student.notes || 'N/A'}</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <StickyNote size={12} /> Notes
+                </p>
+                <p className="font-medium rounded-2xl py-1.5 truncate line-clamp-2 text-wrap text-gray-900">
+                  {student.notes || "N/A"}
+                </p>
               </div>
             </div>
           </div>
@@ -557,7 +711,6 @@ const StudentView = () => {
 
       {/* Belt Progression — full width, glass-card style to match student dashboard */}
       <div className="bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl overflow-x-auto rounded-3xl p-6 border border-white/60 dark:border-slate-800 shadow-sm mb-6">
-
         <div className="flex items-center justify-between border-b border-white/50 dark:border-slate-800 pb-4 mb-4">
           <h4 className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <span className="w-8 h-8 rounded-xl bg-[#f97316]/10 text-[#f97316] flex items-center justify-center">
@@ -567,7 +720,10 @@ const StudentView = () => {
           </h4>
 
           <button
-            onClick={() => { setIsBeltEditMode(true); setIsBeltModalOpen(true); }}
+            onClick={() => {
+              setIsBeltEditMode(true);
+              setIsBeltModalOpen(true);
+            }}
             className="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 font-bold rounded-lg flex items-center gap-1.5 hover:bg-blue-100 transition-colors text-xs shadow-sm"
           >
             <Edit size={14} />
@@ -592,75 +748,97 @@ const StudentView = () => {
 
       {/* Achievements — full width */}
       <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-        <h4 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-50 pb-4 shrink-0">Achievements</h4>
+        <h4 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-50 pb-4 shrink-0">
+          Achievements
+        </h4>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {student.certificates && student.certificates.length > 0 ? (
+            student.certificates.map((cert) => {
+              const fileUrls = Array.isArray(cert.certificated)
+                ? cert.certificated.map((f) =>
+                    f.startsWith("http")
+                      ? f
+                      : `${BASE_URL}${f.startsWith("/") ? "" : "/"}${f}`,
+                  )
+                : cert.file_url
+                  ? [cert.file_url]
+                  : [];
 
-          {student.certificates && student.certificates.length > 0 ? student.certificates.map(cert => {
-            const fileUrls = Array.isArray(cert.certificated)
-              ? cert.certificated.map(f =>
-                f.startsWith('http') ? f : `${BASE_URL}${f.startsWith('/') ? '' : '/'}${f}`
-              )
-              : cert.file_url
-                ? [cert.file_url]
-                : [];
+              const thumbUrl = fileUrls[0] || null;
 
-            const thumbUrl = fileUrls[0] || null;
-
-            return (
-              <div
-                key={cert.id || Math.random()}
-                onClick={() => handleViewCert(cert)}
-                className="cursor-pointer border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group bg-white"
-              >
-                <div className="bg-gray-50 aspect-[4/3] flex items-center justify-center relative overflow-hidden">
-                  {thumbUrl ? (
-                    thumbUrl.toLowerCase().endsWith('.pdf') ? (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 group-hover:scale-105 transition-transform">
-                        <FileText className="text-red-500 mb-1" size={24} />
-                        <span className="text-[10px] font-bold text-gray-500">PDF</span>
-                      </div>
+              return (
+                <div
+                  key={cert.id || Math.random()}
+                  onClick={() => handleViewCert(cert)}
+                  className="cursor-pointer border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group bg-white"
+                >
+                  <div className="bg-gray-50 aspect-[4/3] flex items-center justify-center relative overflow-hidden">
+                    {thumbUrl ? (
+                      thumbUrl.toLowerCase().endsWith(".pdf") ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 group-hover:scale-105 transition-transform">
+                          <FileText className="text-red-500 mb-1" size={24} />
+                          <span className="text-[10px] font-bold text-gray-500">
+                            PDF
+                          </span>
+                        </div>
+                      ) : (
+                        <img
+                          src={thumbUrl}
+                          alt={cert.title}
+                          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform"
+                        />
+                      )
                     ) : (
-                      <img src={thumbUrl} alt={cert.title} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform" />
-                    )
-                  ) : (
-                    <Image className='text-gray-400' size={78} />
-                   
-                  )}
-                  {fileUrls.length > 1 && (
-                    <span className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-                      +{fileUrls.length - 1}
-                    </span>
-                  )}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-white text-xs font-bold px-3 py-1 bg-black/50 rounded-full backdrop-blur-sm">View</span>
+                      <Image className="text-gray-400" size={78} />
+                    )}
+                    {fileUrls.length > 1 && (
+                      <span className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                        +{fileUrls.length - 1}
+                      </span>
+                    )}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-xs font-bold px-3 py-1 bg-black/50 rounded-full backdrop-blur-sm">
+                        View
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t border-gray-50 flex flex-col gap-3">
+                    <p
+                      className="text-xs font-bold text-gray-900 truncate text-center"
+                      title={cert.title}
+                    >
+                      {cert.title}
+                    </p>
+                    <div className="flex gap-2 w-full">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditCert(cert);
+                        }}
+                        className="flex-1 flex items-center w-8 h-8 justify-center gap-1.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors text-[11px] font-bold"
+                      >
+                        <Edit size={12} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(cert.id);
+                        }}
+                        className="flex-1 flex items-center w-8 h-8 justify-center gap-1.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors text-[11px] font-bold"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div className="p-3 border-t border-gray-50 flex flex-col gap-3">
-                  <p className="text-xs font-bold text-gray-900 truncate text-center" title={cert.title}>{cert.title}</p>
-                  <div className="flex gap-2 w-full">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleEditCert(cert); }}
-                      className="flex-1 flex items-center w-8 h-8 justify-center gap-1.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors text-[11px] font-bold"
-                    >
-                      <Edit size={12} />
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDelete(cert.id); }}
-                      className="flex-1 flex items-center w-8 h-8 justify-center gap-1.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors text-[11px] font-bold"
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )
-          }) : (
+              );
+            })
+          ) : (
             <div className="col-span-full py-8 text-center text-gray-400 font-medium">
               No certificates uploaded for this student yet.
             </div>
           )}
-
         </div>
       </div>
       <div className="bg-white/70 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-3 md:p-6 border border-white/60 dark:border-slate-800 shadow-sm my-6">
@@ -671,11 +849,8 @@ const StudentView = () => {
             </span>
             Payment Details
           </h4>
-
-          <span className=' px-2 text-nowrap lg:px-6 uppercase font-bold' >Total fee : <span>{student.total_fee}</span></span>
         </div>
         <PaymentDetails isAdmin={true} studentId={student.id} />
-
       </div>
 
       {/* VIEW ACHIEVEMENT MODAL */}
@@ -688,11 +863,16 @@ const StudentView = () => {
       {/* BELT MODAL */}
       <BeltModal
         isOpen={isBeltModalOpen}
-        onClose={() => { setIsBeltModalOpen(false); setBeltToEditPosition(null); }}
+        onClose={() => {
+          setIsBeltModalOpen(false);
+          setBeltToEditPosition(null);
+        }}
         student={student}
         isEdit={isBeltEditMode}
         initialBeltPosition={beltToEditPosition}
-        onSuccess={() => { fetchBelt(); }}
+        onSuccess={() => {
+          fetchBelt();
+        }}
         belts={belts}
       />
 
@@ -734,7 +914,6 @@ const StudentView = () => {
         editingFee={editingFee}
         onSuccess={fetchStudent}
       />
-
     </div>
   );
 };
