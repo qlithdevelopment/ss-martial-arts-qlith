@@ -28,6 +28,7 @@ const PAYMENT_STATUS_OPTIONS = [
 ];
 
 const Students = () => {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -185,20 +186,30 @@ const Students = () => {
         </div>
       ),
       render: (_, row) => {
+        const profileImageUrl = row.profile_image
+          ? `${BASE_URL}/storage/${row.profile_image.replace(/^\/+/, "")}`
+          : null;
+
         const avatarImageUrl = row.avatar
           ? getAvatarUrlByName(row.avatar)
           : null;
         return (
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden">
-              {avatarImageUrl ? (
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt={row.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : avatarImageUrl ? (
                 <img
                   src={avatarImageUrl}
                   alt={row.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                row.name?.charAt(0)
+                row.name?.charAt(0)?.toUpperCase()
               )}
             </div>
             <div className="min-w-0">

@@ -27,6 +27,7 @@ import {
   IdCard,
   Activity,
   CheckCircle2,
+  Pen,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
@@ -75,6 +76,8 @@ const StudentView = () => {
   // ── payment status toggle state ─────────────────────────────────────────────
   const [isFullPayment, setIsFullPayment] = useState(false);
   const [paymentStatusSaving, setPaymentStatusSaving] = useState(false);
+
+  const [profileImageUploading, setProfileImageUploading] = useState(false);
 
   useEffect(() => {
     fetchStudent();
@@ -220,6 +223,59 @@ const StudentView = () => {
   const handelfeeClose = () => {
     setIsFeeModalOpen(false);
     setfeeId(null);
+  };
+
+  const handleProfileImageChange = async (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file || !student) return;
+
+    event.target.value = "";
+
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please select a JPG, PNG, or Jpeg image.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image size must be less than 2 MB.");
+      return;
+    }
+
+    try {
+      setProfileImageUploading(true);
+
+      const formData = new FormData();
+      formData.append("profile_image", file);
+
+      const response = await api.post(
+        `/students/${student.id}/profile-image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      const newProfileImage = response.data?.profile_image;
+
+      setStudent((prev) => ({
+        ...prev,
+        profile_image: newProfileImage,
+      }));
+
+      toast.success("Profile image updated successfully.");
+    } catch (error) {
+      console.error("Failed to upload profile image:", error);
+
+      toast.error(
+        error.response?.data?.message || "Failed to update profile image.",
+      );
+    } finally {
+      setProfileImageUploading(false);
+    }
   };
 
   const StudentViewSkeleton = () => (
@@ -403,6 +459,10 @@ const StudentView = () => {
     ? getAvatarUrlByName(student.avatar)
     : null;
 
+  const profileImageUrl = student.profile_image
+    ? `${BASE_URL}/storage/${student.profile_image.replace(/^\/+/, "")}`
+    : null;
+
   return (
     <div className="w-full animate-fadeIn">
       {/* Header */}
@@ -462,18 +522,50 @@ const StudentView = () => {
             <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-[#f97316]/10 to-transparent"></div>
 
             <div className="p-6 pb-0 text-center relative z-10 shrink-0">
-              <div className="w-24 h-24 bg-white shadow-md rounded-full mx-auto flex items-center justify-center text-[#f97316] text-4xl font-black mb-4 overflow-hidden">
-                {avatarImageUrl ? (
-                  <img
-                    src={avatarImageUrl}
-                    alt={`${student.name}'s avatar`}
-                    className="w-full h-full object-cover"
-                  />
-                ) : student.name ? (
-                  student.name.charAt(0).toUpperCase()
-                ) : (
-                  "S"
-                )}
+              <div className="relative w-24 h-24 mx-auto mb-4">
+                <div className="w-24 h-24 bg-white shadow-md rounded-full flex items-center justify-center text-[#f97316] text-4xl font-black overflow-hidden border border-gray-100">
+                  {profileImageUrl ? (
+                    <img
+                      src={profileImageUrl}
+                      alt={`${student.name}'s profile`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : avatarImageUrl ? (
+                    <img
+                      src={avatarImageUrl}
+                      alt={`${student.name}'s avatar`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : student.name ? (
+                    student.name.charAt(0).toUpperCase()
+                  ) : (
+                    "S"
+                  )}
+                </div>
+
+                {/* Edit Profile Image */}
+                {/* <label
+                  htmlFor="profile-image-upload"
+                  className={`absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#f97316] text-white flex items-center justify-center border-2 border-white shadow-md cursor-pointer hover:bg-orange-600 transition-all ${
+                    profileImageUploading ? "opacity-60 cursor-not-allowed" : ""
+                  }`}
+                  title="Change profile image"
+                >
+                  {profileImageUploading ? (
+                    <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Pen size={14} />
+                  )}
+                </label> */}
+
+                <input
+                  id="profile-image-upload"
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleProfileImageChange}
+                  disabled={profileImageUploading}
+                />
               </div>
 
               <h2 className="text-xl font-bold text-gray-900 mb-1">

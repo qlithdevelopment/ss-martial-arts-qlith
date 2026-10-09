@@ -72,7 +72,14 @@ const Gallery = () => {
   }, []);
 
   return (
-    <section id="gallery" className="relative overflow-hidden w-full min-h-screen bg-black flex flex-col justify-center pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24">
+    <section
+      id="gallery"
+      className={
+        !loading && images.length === 0
+          ? "hidden"
+          : "relative overflow-hidden w-full min-h-screen bg-black flex flex-col justify-center pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24"
+      }
+    >
       {/* MASSIVE BACKGROUND TEXT */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">
         GALLERY

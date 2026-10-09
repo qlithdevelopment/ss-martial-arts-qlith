@@ -70,7 +70,11 @@ const Blog = () => {
   return (
     <section
       id="blog"
-      className="overflow-hidden w-full min-h-screen bg-transparent flex flex-col justify-center py-16 md:py-24 lg:py-32"
+      className={
+        !loading && blogs.length === 0
+          ? "hidden"
+          : "overflow-hidden w-full min-h-screen bg-transparent flex flex-col justify-center py-16 md:py-24 lg:py-32"
+      }
     >
       <div className="global-container lg:!px-23 z-10 w-full">
         {/* Header */}

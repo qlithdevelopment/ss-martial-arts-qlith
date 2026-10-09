@@ -99,7 +99,15 @@ const OurTrainers = () => {
   const SKELETON_COUNT = 3;
 
   return (
-    <section ref={targetRef} id="trainers" className="relative h-[300vh] bg-black">
+    <section
+      ref={targetRef}
+      id="trainers"
+      className={
+        !loading && trainers.length === 0
+          ? "hidden"
+          : "relative h-[300vh] bg-black"
+      }
+    >
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         {/* MASSIVE BACKGROUND TEXT */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-white/[0.03] uppercase tracking-tighter pointer-events-none z-0 whitespace-nowrap select-none">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ChevronRight, X, Link as LinkIcon, ExternalLink } from 'lucide-react';
@@ -190,7 +190,13 @@ const News = () => {
 
 
     return (
-        <section id="news" className="w-full min-h-screen bg-[#f8f9fa] flex flex-col justify-center items-center pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24">
+        <section id="news" 
+         className={
+          !loading && newsData.length === 0
+          ? "hidden"
+          : "w-full min-h-screen bg-[#f8f9fa] flex flex-col justify-center items-center pt-16 pb-12 md:pt-24 md:pb-16 lg:pt-32 lg:pb-24"
+         }
+        >
 
             <div className="global-container !px-0 w-full z-10 flex flex-col items-center">
 
