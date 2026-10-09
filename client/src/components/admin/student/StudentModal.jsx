@@ -455,7 +455,7 @@ const StudentModal = ({ isOpen, onClose, student = null, onSuccess }) => {
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
-                        readOnly={!isEdit}
+                        readOnly={isEdit}
                         required={!isEdit}
                         placeholder="••••••••"
                         value={formData.password}
@@ -572,7 +572,6 @@ const StudentModal = ({ isOpen, onClose, student = null, onSuccess }) => {
                     </label>
                     <input
                       type="number"
-                      required
                       min="0"
                       step="0.01"
                       placeholder="e.g. 500.00"

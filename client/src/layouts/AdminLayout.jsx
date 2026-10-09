@@ -1,14 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { ChevronUp, Clock3 } from "lucide-react";
+import { ChevronUp, Clock3, RefreshCw } from "lucide-react";
 import PasswordResetModal from "../components/PasswordResetModal";
+import api from "../api/axios";
 
 const AdminLayout = () => {
   const [time, setTime] = useState(new Date());
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(window.innerWidth < 768);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+  const STORAGE_LIMIT_MB = 500;
+
+  const [storageUsage, setStorageUsage] = useState({
+    total_size_mb: 0,
+  });
+
+  const [storageLoading, setStorageLoading] = useState(true);
+
+  const fetchStorageUsage = useCallback(async () => {
+    setStorageLoading(true);
+
+    const startTime = Date.now();
+
+    try {
+      const response = await api.get("/storage-usage");
+
+      if (response.data.status) {
+        setStorageUsage({
+          total_size_mb: Number(response.data.data.total_size_mb || 0),
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch storage usage:", error);
+    } finally {
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, 800 - elapsedTime);
+
+      setTimeout(() => {
+        setStorageLoading(false);
+      }, remainingTime);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStorageUsage();
+  }, [fetchStorageUsage]);
+
+  const storageUsedMB = storageUsage.total_size_mb;
+  const storagePercentage = Math.min(
+    (storageUsedMB / STORAGE_LIMIT_MB) * 100,
+    100,
+  );
+
   useEffect(() => {
     if (window.innerWidth < 768) {
       setIsSidebarCollapsed(true);
@@ -52,13 +97,63 @@ const AdminLayout = () => {
           data-collapsed={isSidebarCollapsed}
         >
           {/* LEFT SIDE: Identity Badge */}
-          <div className="flex items-center gap-2 pl-12 md:pl-0">
-            <div className="w-2 h-2 hidden md:flex rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-bold uppercase tracking-wider text-gray-700">
-              Administrator
-            </span>
-          </div>
+          <div className="flex items-center gap-3 pl-12 md:pl-0">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 hidden md:flex rounded-full bg-primary animate-pulse" />
+              <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700">
+                Administrator
+              </span>
+            </div>
 
+            {/* Storage Usage */}
+            <div className="hidden sm:flex items-center gap-2 border-l border-gray-200 pl-3">
+              <div className="flex flex-col gap-1 min-w-[110px]">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] sm:text-xs font-semibold text-gray-500">
+                    {storageLoading
+                      ? "Storage..."
+                      // : `${storageUsedMB.toFixed(2)} / ${STORAGE_LIMIT_MB} MB`}
+                      : ``}
+                  </span>
+
+                  {!storageLoading && (
+                    <span
+                      className={`text-[10px] sm:text-xs font-bold ${
+                        storagePercentage >= 90
+                          ? "text-red-600"
+                          : "text-primary"
+                      }`}
+                    >
+                      {storagePercentage.toFixed(1)}%
+                    </span>
+                  )}
+                </div>
+
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      storagePercentage >= 90 ? "bg-red-500" : "bg-primary"
+                    }`}
+                    style={{ width: `${storagePercentage}%` }}
+                  />
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={fetchStorageUsage}
+                disabled={storageLoading}
+                title="Refresh storage usage"
+                aria-label="Refresh storage usage"
+                className="p-1 rounded-md text-orange-500 hover:text-orange-600 transition-colors disabled:opacity-50"
+              >
+                <RefreshCw
+                  size={14}
+                  className={storageLoading ? "animate-spin" : ""}
+                />
+              </button>
+            </div>
+          </div>
           {/* RIGHT SIDE: Dynamic Digital Clock */}
           <div className="flex items-center gap-2 py-1.5 px-3 rounded-xl">
 

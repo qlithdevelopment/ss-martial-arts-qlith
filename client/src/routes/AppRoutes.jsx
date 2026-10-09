@@ -47,6 +47,7 @@ import NotFound from "../pages/errors/NotFound";
 import Loader from "../components/Loader";
 import BlogDetail from "../pages/public/BlogDetail";
 import WelcomeScreen from "../components/WelcomeScreen";
+import BeltAchievement from "../pages/public/BeltAchievement";
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -84,6 +85,7 @@ const AppRoutes = () => {
         <Route path="/affiliations" element={<Affiliation />} />
         <Route path="/programdetail/:id" element={<ProgramDetail />} />
         <Route path="/news" element={<News />} />
+        <Route path="/beltachievements" element={<BeltAchievement />} />
         
         
 

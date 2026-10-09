@@ -234,22 +234,49 @@ const Dashboard = () => {
                 ))
               ) : (
                 <>
-                  {recentStudents.map((student) => (
-                    <div key={student.id} className="flex items-center justify-between group cursor-pointer" onClick={() => navigate('/admin/students')}>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-sm shrink-0">
-                          {student.name ? student.name.charAt(0).toUpperCase() : 'S'}
+                  {recentStudents.map((student) => {
+                    const profileImageUrl = student.profile_image
+                      ? `${BASE_URL}/storage/${student.profile_image.replace(/^\/+/, "")}`
+                      : null;
+
+                    return (
+                      <div
+                        key={student.id}
+                        className="flex items-center justify-between group cursor-pointer"
+                        onClick={() => navigate("/admin/students")}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-[#f97316]/10 text-[#f97316] flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden">
+                            {profileImageUrl ? (
+                              <img
+                                src={profileImageUrl}
+                                alt={student.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : student.name ? (
+                              student.name.charAt(0).toUpperCase()
+                            ) : (
+                              "S"
+                            )}
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-[#f97316] transition-colors">
+                              {student.name}
+                            </h4>
+
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
+                              {student.belt || "White Belt"}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-[#f97316] transition-colors">{student.name}</h4>
-                          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{student.belt || 'White Belt'}</p>
+
+                        <div className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-md">
+                          ₹{student.total_fee || "0"}
                         </div>
                       </div>
-                      <div className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-md">
-                        ₹{student.total_fee || '0'}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {recentStudents.length === 0 && (
                     <div className="text-center text-gray-400 py-4 font-medium text-sm">
                       No recent students found.

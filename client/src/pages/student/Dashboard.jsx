@@ -60,6 +60,7 @@ const TABS = [
 const VALID_TABS = TABS.map((t) => t.key);
 
 export default function StudentDashboard() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, "");
   const { logout, user } = useAuth();
 
   // ── active tab synced with ?tab= in the URL ─────────────────────────────────
@@ -242,6 +243,9 @@ export default function StudentDashboard() {
   const avatarImageUrl = selectedAvatar
     ? getAvatarUrlByName(selectedAvatar)
     : null;
+  const profileImageUrl = student?.profile_image
+    ? `${BASE_URL}/storage/${student.profile_image.replace(/^\/+/, "")}`
+    : null;
 
   const currentBelt =
     student?.belts?.[student?.belts?.length - 1]?.["belt_position"];
@@ -336,38 +340,20 @@ export default function StudentDashboard() {
               <div>
                 <button
                   type="button"
-                  onClick={() => setIsAvatarModalOpen(true)}
-                  disabled={avatarSaving}
-                  className="group relative w-28 h-28 rounded-2xl bg-primary/15 backdrop-blur-md border border-primary/30 flex items-center justify-center shadow-lg flex-shrink-0 overflow-hidden disabled:opacity-70"
+                  className="group relative w-28 h-28 rounded-2xl bg-primary/15 backdrop-blur-md flex items-center justify-center shadow-lg flex-shrink-0 overflow-hidden disabled:opacity-70"
                 >
-                  {avatarImageUrl ? (
+                  {profileImageUrl ? (
                     <img
-                      src={avatarImageUrl}
-                      alt="Profile avatar"
+                      src={profileImageUrl}
+                      alt={`${displayName || "Student"}'s profile`}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-3xl font-black text-primary">
+                    <span className="text-3xl lg:text-7xl font-black text-primary">
                       {displayName ? displayName.charAt(0).toUpperCase() : "?"}
                     </span>
                   )}
-
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
-                    <Camera size={18} className="text-white" />
-                    <span className="text-[10px] font-bold text-white uppercase tracking-wider">
-                      Change
-                    </span>
-                  </div>
-
-                  {avatarSaving && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    </div>
-                  )}
                 </button>
-                <span className="font-bold lg:hidden text-primary2 text-[12px]">
-                  Click To Change Avatar
-                </span>
               </div>
 
               <div className="flex-1 text-center sm:text-left min-w-0 w-full">

@@ -57,14 +57,15 @@ const YouTubeIcon = ({ className }) => (
   </svg>
 );
 const quicklinks = [
-  "About",
-  "Gallery",
-  "Blog",
-  "Afiliation",
-  "Contact",
-  "Events",
-  "Faq",
-  "News",
+  { label: "About", path: "/about" },
+  { label: "Gallery", path: "/gallery" },
+  { label: "Blog", path: "/blog" },
+  { label: "Affiliation", path: "/affiliations" },
+  { label: "Contact", path: "/contact" },
+  { label: "Events", path: "/events" },
+  { label: "Faq", path: "/faq" },
+  { label: "News", path: "/news" },
+  { label: "Belt Achievement", path: "/beltachievements" },
 ];
 
 const Footer = () => {
@@ -103,10 +104,10 @@ const Footer = () => {
               {quicklinks.map((link) => (
                 <li key={link}>
                   <Link
-                    to={link === "Home" ? "/" : `/${link.toLowerCase()}`}
+                    to={link.path}
                     className="text-secondary hover:text-primary transition-colors duration-300 text-[10px] md:text-sm font-medium"
                   >
-                    {link}
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -120,19 +121,20 @@ const Footer = () => {
             </h4>
             <ul className="flex flex-col gap-1.5 md:gap-3">
               {[
-                "Karate",
-                "Taekwondo",
-                "Boxing",
-                "Kickboxing",
-                "MMA (Mixed Martial Arts)",
-                "Self-Defense",
+                { id: 1, name: "Karate" },
+                { id: 2, name: "Taekwondo" },
+                { id: 3, name: "Boxing" },
+                { id: 4, name: "Kickboxing" },
+                { id: 5, name: "MMA (Mixed Martial Arts)" },
+                { id: 6, name: "Self-Defense" },
+                { id: 10, name: "Gymnastics" },
               ].map((link) => (
-                <li key={link}>
+                <li key={link.id}>
                   <Link
-                    to="/allprograms"
+                    to={`/programdetail/${link.id}`}
                     className="text-secondary hover:text-primary transition-colors duration-300 text-[10px] md:text-sm font-medium"
                   >
-                    {link}
+                    {link.name}
                   </Link>
                 </li>
               ))}

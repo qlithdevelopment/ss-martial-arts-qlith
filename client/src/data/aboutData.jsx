@@ -43,13 +43,15 @@ export const instructorData = {
 
   achievements: [
     "Asian Taekwondo Championship 2025 (Triple Gold Achiever)",
-    "International Karate Championship (Gold Medal)",
+    "International karate Gold medalist",
     "The International Best Teacher Award 2023 in the category of Sports Coaching and Social Work",
     "International Icon Award 2024",
-    "9th Dan Black Belt (IKMO Japan)",
-    "8th Dan Taekwondo Korea",
-    "Shaolin Kung-fu 7th Dan Black Belt (KIO Approved)",
+    "9th dan black belt, karate (IKMO, JAPAN)",
+    "8th dan black belt, taekwondo (korea)",
+    "7th dan black belt, karate (WKF, KIO Approach)",
+    "Sholin kung-fu, 7th dan black belt (International kung-fu council)",
     "Kick-Boxing 2nd Dan Black Belt",
+    "World record holder"
   ],
   badges: [
     "9TH DAN CERTIFIED",
