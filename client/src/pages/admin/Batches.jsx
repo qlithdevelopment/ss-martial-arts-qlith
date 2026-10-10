@@ -302,7 +302,7 @@ const Batches = () => {
   return (
     <div className="w-full">
       {/* Action Bar */}
-      <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex lg:relative right-[-23%] w-full lg:w-[60vw] -top-19 flex-col sm:flex-row gap-4 mb-6">
         <div className={`relative flex-1 ${viewBatch && "invisible"}`}>
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
@@ -330,32 +330,36 @@ const Batches = () => {
       </div>
 
       {viewBatch ? (
-        <ViewBatch
-          batch={selectedBatch}
-          onBack={() => {
-            setViewBatch(false);
-            setSelectedBatch(null);
-          }}
-        />
+        <div className="relative -top-35 md:-top-20 ">
+          <ViewBatch
+            batch={selectedBatch}
+            onBack={() => {
+              setViewBatch(false);
+              setSelectedBatch(null);
+            }}
+          />
+        </div>
       ) : (
         <div>
           {/* AdminTable */}
-          <AdminTable
-            columns={columns}
-            data={batches}
-            isLoading={isLoadingData}
-            skeletonRows={3}
-            emptyIcon={<Users size={28} className="text-gray-400" />}
-            emptyTitle="No batches found"
-            emptyMessage="Create your first batch to get started."
-          />
-          <div className="mt-8">
-            {!loading && batches.length > 0 && pagination?.total > 0 && (
-              <PaginationComponent
-                pagination={pagination}
-                onPageChange={(newPage) => setPage(newPage)}
-              />
-            )}
+          <div className="lg:relative -top-20">
+            <AdminTable
+              columns={columns}
+              data={batches}
+              isLoading={isLoadingData}
+              skeletonRows={3}
+              emptyIcon={<Users size={28} className="text-gray-400" />}
+              emptyTitle="No batches found"
+              emptyMessage="Create your first batch to get started."
+            />
+            <div className="mt-8">
+              {!loading && batches.length > 0 && pagination?.total > 0 && (
+                <PaginationComponent
+                  pagination={pagination}
+                  onPageChange={(newPage) => setPage(newPage)}
+                />
+              )}
+            </div>
           </div>
         </div>
       )}

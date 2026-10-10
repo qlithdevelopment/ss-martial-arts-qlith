@@ -195,7 +195,7 @@ const Students = () => {
           : null;
         return (
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden">
+            <div className="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-[#f97316] font-bold shrink-0 overflow-hidden">
               {profileImageUrl ? (
                 <img
                   src={profileImageUrl}
@@ -220,12 +220,6 @@ const Students = () => {
                 >
                   {row.name}
                 </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5 min-w-0">
-                <Mail size={12} className="shrink-0" />
-                <span className="truncate max-w-[160px]" title={row.email}>
-                  {row.email}
-                </span>
               </div>
             </div>
           </div>
@@ -337,7 +331,7 @@ const Students = () => {
   return (
     <div className="w-full">
       {/* Action Bar */}
-      <div className="flex md:absolute right-5 md:w-[35vw]  lg:w-[60vw] top-18  flex-col sm:flex-row gap-4 mb-6">
+      <div className="flex lg:relative right-[-23%] w-full lg:w-[60vw] -top-19 flex-col lg:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
@@ -355,11 +349,11 @@ const Students = () => {
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           {/* Filter button + dropdown */}
-          <div className="relative" ref={filterRef}>
+          <div className="relative flex-6" ref={filterRef}>
             <button
               type="button"
               onClick={() => setIsFilterOpen((prev) => !prev)}
-              className={`h-full px-4 py-3 border rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm shrink-0 ${
+              className={`h-full w-full px-4 py-3 border rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm shrink-0 ${
                 activeFilterCount > 0
                   ? "bg-orange-50 border-orange-200 text-[#f97316]"
                   : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
@@ -460,21 +454,23 @@ const Students = () => {
       </div>
 
       {/* Table */}
-      <AdminTable
-        columns={COLUMNS}
-        data={students}
-        isLoading={isLoadingData}
-        skeletonRows={3}
-        emptyTitle="No students found"
-        emptyMessage="Add your first student!"
-      />
-      <div className="mt-8">
-        {!isLoadingData && students.length > 0 && pagination?.total > 0 && (
-          <PaginationComponent
-            pagination={pagination}
-            onPageChange={(newPage) => setPage(newPage)}
-          />
-        )}
+      <div className="lg:relative -top-20">
+        <AdminTable
+          columns={COLUMNS}
+          data={students}
+          isLoading={isLoadingData}
+          skeletonRows={3}
+          emptyTitle="No students found"
+          emptyMessage="Add your first student!"
+        />
+        <div className="mt-8">
+          {!isLoadingData && students.length > 0 && pagination?.total > 0 && (
+            <PaginationComponent
+              pagination={pagination}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+          )}
+        </div>
       </div>
 
       {/* Register / Edit Student Modal */}

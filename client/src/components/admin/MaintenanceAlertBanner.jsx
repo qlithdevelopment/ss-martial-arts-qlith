@@ -237,7 +237,7 @@ const MaintenanceAlertBanner = () => {
           <div className="p-3">
             <div
               key={alert.id}
-              className={`p-5 rounded-2xl border transition-all relative  ${card}`}
+              className={`p-3 rounded-2xl border transition-all relative  ${card}`}
             >
               {/* Close / Dismiss Cross Button */}
               <button
