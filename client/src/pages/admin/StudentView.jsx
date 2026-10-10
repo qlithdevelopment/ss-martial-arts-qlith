@@ -544,7 +544,7 @@ const StudentView = () => {
                 </div>
 
                 {/* Edit Profile Image */}
-                {/* <label
+                <label
                   htmlFor="profile-image-upload"
                   className={`absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#f97316] text-white flex items-center justify-center border-2 border-white shadow-md cursor-pointer hover:bg-orange-600 transition-all ${
                     profileImageUploading ? "opacity-60 cursor-not-allowed" : ""
@@ -556,7 +556,7 @@ const StudentView = () => {
                   ) : (
                     <Pen size={14} />
                   )}
-                </label> */}
+                </label>
 
                 <input
                   id="profile-image-upload"

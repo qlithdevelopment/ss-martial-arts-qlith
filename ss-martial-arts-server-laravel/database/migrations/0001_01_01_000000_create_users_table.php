@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('father_name')->nullable();
             $table->string('mother_name')->nullable();
+            $table->string('profile_image')->nullable();
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->date('date_of_birth');
             $table->decimal('height', 5, 2)->nullable(); // e.g. in cm

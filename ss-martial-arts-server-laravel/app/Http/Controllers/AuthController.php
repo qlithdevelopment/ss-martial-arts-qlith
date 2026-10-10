@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\Blog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
@@ -237,6 +238,82 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'An error occurred while resetting password.',
                 'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getStorage()
+    {
+        try {
+            $basePath = storage_path('app/public');
+
+            if (!File::isDirectory($basePath)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Storage directory not found.',
+                    'data' => null,
+                ], 404);
+            }
+
+            $folders = [];
+            $totalBytes = 0;
+
+            // Get every folder directly inside storage/api/public
+            foreach (File::directories($basePath) as $folderPath) {
+                $folderBytes = 0;
+
+                // Include all files in this folder and its subfolders
+                foreach (File::allFiles($folderPath) as $file) {
+                    $folderBytes += $file->getSize();
+                }
+
+                $totalBytes += $folderBytes;
+
+                $folders[] = [
+                    'folder' => basename($folderPath),
+                    'size_bytes' => $folderBytes,
+                    'size_mb' => round($folderBytes / (1024 * 1024), 2),
+                ];
+            }
+
+            // Include files stored directly in public, outside any folder
+            $rootFilesBytes = 0;
+
+            foreach (File::files($basePath) as $file) {
+                $rootFilesBytes += $file->getSize();
+            }
+
+            $totalBytes += $rootFilesBytes;
+
+            // Largest folders first
+            usort($folders, function ($a, $b) {
+                return $b['size_bytes'] <=> $a['size_bytes'];
+            });
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Storage usage fetched successfully.',
+                'data' => [
+                    'path' => 'storage/api/public',
+                    'total_size_bytes' => $totalBytes,
+                    'total_size_mb' => round(
+                        $totalBytes / (1024 * 1024),
+                        2
+                    ),
+                    'root_files_size_mb' => round(
+                        $rootFilesBytes / (1024 * 1024),
+                        2
+                    ),
+                    'folders' => $folders,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to fetch storage usage.',
+                'data' => null,
             ], 500);
         }
     }

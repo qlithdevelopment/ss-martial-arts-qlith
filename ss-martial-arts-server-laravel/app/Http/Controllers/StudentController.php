@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -56,7 +57,8 @@ class StudentController extends Controller
                     'users.id_proof_number',
                     'users.created_at',
                     'batches.name as batch_name',
-                    'users.branch_id as branch_name'
+                    'users.branch_id as branch_name',
+                    'users.profile_image',
                 );
 
             // Apply search filter if search parameter is present
@@ -206,7 +208,7 @@ class StudentController extends Controller
                 'branch_id' => 'nullable|string|max:255',
                 'sensei' => 'nullable|string|max:255',
                 'belt' => 'nullable|string|max:50', // Completely optional field
-                'total_fee' => 'required|numeric|min:0',
+                'total_fee' => 'nullable|numeric|min:0',
                 'notes' => 'nullable|string',
                 'id_proof_name' => 'nullable|string|max:255',
                 'id_proof_number' => 'nullable|string|max:255',
@@ -230,7 +232,7 @@ class StudentController extends Controller
                 'branch_id' => $validated['branch_id'] ?? null,
                 'sensei' => $validated['sensei'] ?? null,
                 'belt' => $validated['belt'] ?? '', // Saves empty string if omitted
-                'total_fee' => $validated['total_fee'],
+                'total_fee' => $validated['total_fee'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'id_proof_name' => $validated['id_proof_name'] ?? null,
                 'id_proof_number' => $validated['id_proof_number'] ?? null,
@@ -368,7 +370,7 @@ class StudentController extends Controller
                 'branch_id' => 'nullable|string|max:255',
                 'sensei' => 'nullable|string|max:255',
                 'belt' => 'nullable|string|max:50', // Optional field rule configurations
-                'total_fee' => 'required|numeric|min:0',
+                'total_fee' => 'nullable|numeric|min:0',
                 'notes' => 'nullable|string',
                 'id_proof_name' => 'nullable|string|max:255',
                 'id_proof_number' => 'nullable|string|max:255',
@@ -392,7 +394,7 @@ class StudentController extends Controller
                 'branch_id' => $validated['branch_id'] ?? null,
                 'sensei' => $validated['sensei'] ?? null,
                 'belt' => $validated['belt'] ?? '', // Keeps standard empty string default assignment
-                'total_fee' => $validated['total_fee'],
+                'total_fee' => $validated['total_fee'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'id_proof_name' => $validated['id_proof_name'] ?? null,
                 'id_proof_number' => $validated['id_proof_number'] ?? null,
@@ -432,6 +434,14 @@ class StudentController extends Controller
     {
         try {
             $student = User::where('role', 'student')->findOrFail($id);
+
+            if (
+                $student->profile_image &&
+                Storage::disk('public')->exists($student->profile_image)
+            ) {
+                Storage::disk('public')->delete($student->profile_image);
+            }
+            
             $student->delete();
 
             return response()->json([
@@ -544,6 +554,61 @@ class StudentController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
 
+        }
+    }
+
+    public function updateProfileImage(Request $request, $id)
+    {
+        try {
+            $student = User::where('role', 'student')->findOrFail($id);
+
+            if ($request->hasFile('profile_image')) {
+
+                if (
+                    $student->profile_image &&
+                    Storage::disk('public')->exists($student->profile_image)
+                ) {
+                    Storage::disk('public')->delete($student->profile_image);
+                }
+
+                $path = $request->file('profile_image')->store(
+                    'profile-images',
+                    'public'
+                );
+
+                $student->update([
+                    'profile_image' => $path,
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile image updated successfully.',
+                'profile_image' => $student->profile_image,
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first(),
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Student not found.',
+            ], 404);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update profile image.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 }

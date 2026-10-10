@@ -90,7 +90,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="animate-fadeIn max-w-7xl mx-auto">
+    <div className="animate-fadeIn  mx-auto">
       <div className="flex flex-col md:flex-row justify-end items-start md:items-center mb-4 gap-4">
         
         <div className="flex items-end justify-end gap-4">

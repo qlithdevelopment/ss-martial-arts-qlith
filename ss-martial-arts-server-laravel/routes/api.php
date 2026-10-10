@@ -15,6 +15,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\TestimonialController;
 
@@ -68,6 +69,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::get('/contacts', [ContactController::class, 'index']);
         Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
+        Route::get('/storage-usage', [AuthController::class, 'getStorage']);
+        Route::get('/maintenance-check', [MaintenanceController::class, 'checkAlert']);
 
         Route::post('/trainers', [TrainerController::class, 'store']);
         Route::put('/trainers/{trainer}', [TrainerController::class, 'update']);
@@ -84,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/students/{id}', [StudentController::class, 'update']);
         Route::delete('/students/{id}', [StudentController::class, 'destroy']);
         Route::get('/students', [StudentController::class, 'index']);
+        Route::post('/students/{id}/profile-image', [StudentController::class, 'updateProfileImage']);
 
         Route::get('/student/fee-status', [PaymentController::class, 'myFeeStatus']);
         Route::post('/payments/add', [PaymentController::class, 'addPayment']);

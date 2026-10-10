@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { ChevronUp, Clock3, RefreshCw } from "lucide-react";
 import PasswordResetModal from "../components/PasswordResetModal";
 import api from "../api/axios";
+import MaintenanceAlertBanner from "../components/admin/MaintenanceAlertBanner";
 
 const AdminLayout = () => {
   const [time, setTime] = useState(new Date());
@@ -85,7 +86,7 @@ const AdminLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-white text-gray-800">
-      {/* RESPONSIVE SIDEBAR NAVIGATION */}
+      
       <Sidebar isCollapsed={isSidebarCollapsed} setIsCollapsed={setIsSidebarCollapsed} />
 
       {/* VIEWPORT ACTION FRAME */}
@@ -96,14 +97,18 @@ const AdminLayout = () => {
           className="fixed top-0 right-0 left-0 md:left-auto md:w-[calc(100%-16.5rem)] data-[collapsed=true]:md:w-[calc(100%-5rem)] h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-30 transition-all duration-300"
           data-collapsed={isSidebarCollapsed}
         >
+               
+          
+         
           {/* LEFT SIDE: Identity Badge */}
           <div className="flex items-center gap-3 pl-12 md:pl-0">
             <div className="flex items-center gap-2">
+             
               <div className="w-2 h-2 hidden md:flex rounded-full bg-primary animate-pulse" />
               <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-700">
                 Administrator
               </span>
-            </div>
+          </div> 
 
             {/* Storage Usage */}
             <div className="hidden sm:flex items-center gap-2 border-l border-gray-200 pl-3">
@@ -174,8 +179,8 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        {/* INJECTED ADMIN MANAGEMENT PANELS */}
         <main className="flex-1 p-4 mt-14 overflow-y-auto">
+          <MaintenanceAlertBanner/>
           <Outlet />
         </main>
         
